@@ -22,7 +22,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 // dist/index.js → ../../MCP  |  src/index.ts (tsx dev) → ../../MCP
-const MCP_DIR = resolve(__dirname, "..", "..", "MCP");
+const MCP_DIR = resolve(__dirname, "..", "docs");
 function loadDoc(name) {
     const p = resolve(MCP_DIR, name);
     if (!existsSync(p)) {

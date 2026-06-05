@@ -1,76 +1,115 @@
-# DS v1.2 — MCP Server
+# shadcn-mcp — Design System v1.2 MCP Server
 
-A real [Model Context Protocol](https://modelcontextprotocol.io/) server that exposes the Design System v1.2 documentation as callable tools for AI agents (Claude Code, Cursor, etc.).
-
-Instead of reading markdown files manually, agents call structured tools to get token lookups, component docs, dashboard patterns, and live lint checks.
+An [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server that gives AI agents direct access to the Design System v1.2. Token lookups, component docs, dashboard patterns, live lint checks — all callable as tools inside Claude Code, Cursor, or any MCP-compatible client.
 
 ---
 
-## Setup
+## Install & Run
 
 ```bash
-cd mcp-server
+git clone https://github.com/brahimrizqHireme/shadcn-mcp.git
+cd shadcn-mcp
 npm install
-npm run build
 ```
+
+That's it. The compiled server is already in `dist/` — no build step needed.
 
 ---
 
-## Adding to Claude Code
+## Add to Claude Code
 
-Add to `~/.claude/settings.json` (global) or `.claude/settings.json` (project-only):
+### Option A — Project only (`.claude/settings.json` in your repo)
 
 ```json
 {
   "mcpServers": {
     "ds-shadcn": {
       "command": "node",
-      "args": ["/Users/macbook/Desktop/ds-shadcn-v1.2/mcp-server/dist/index.js"]
+      "args": ["/absolute/path/to/shadcn-mcp/dist/index.js"]
     }
   }
 }
 ```
 
-Restart Claude Code. The 8 `ds_*` tools will appear in the agent's toolset.
+### Option B — Global (available in every project)
+
+Run once:
+
+```bash
+claude mcp add ds-shadcn node /absolute/path/to/shadcn-mcp/dist/index.js
+```
+
+Restart Claude Code. The 8 `ds_*` tools appear automatically.
 
 ---
 
 ## Tools
 
-| Tool | Description |
-|---|---|
-| `ds_get_tokens` | Token reference table by category (text, background, action, border, status, icon, spacing, radius, shadow, motion, size, all) |
-| `ds_resolve_violation` | Forbidden class → correct DS token. Input: `"text-slate-600"` → Output: `"text-text-secondary"` |
-| `ds_lint_snippet` | Check JSX/TSX code for DS violations. Returns line number, match, message, and suggested fix — same rules as `npm run lint:colors` |
-| `ds_get_component` | Full docs + copy-paste TSX examples for any shadcn/DS component. Pass `"list"` for all components |
-| `ds_get_pattern` | Canonical TSX implementation of a dashboard pattern (app shell, top bar, sidebar, stat card, data table, empty state…). Pass `"list"` for all patterns |
-| `ds_get_template_zone` | Exact DS token translation for the Gemini template zones: header, sidebar, main |
-| `ds_get_guide` | Sections of the Agent Guide: `golden_rules`, `decision_tree`, `anti_patterns`, `token_cheat_sheet`, `accessibility`, `icons`, `page_steps`, `quick_reference` |
-| `ds_setup_enforcement` | Complete 3-layer enforcement setup: lint script source + CLAUDE.md template + husky pre-commit hook |
+| Tool | Input | What it returns |
+|---|---|---|
+| `ds_get_tokens` | `category` (text / background / action / border / status / icon / spacing / radius / shadow / motion / size / all) | Token reference table with use cases |
+| `ds_resolve_violation` | `class_name` e.g. `"text-slate-600"` | `text-text-secondary` — the correct DS replacement |
+| `ds_lint_snippet` | `code` (JSX/TSX string) | All DS color violations with line numbers and suggested fixes |
+| `ds_get_component` | `name` e.g. `"button"` or `"list"` | Full component docs + copy-paste TSX examples |
+| `ds_get_pattern` | `name` e.g. `"data table"` or `"list"` | Canonical dashboard pattern implementation |
+| `ds_get_template_zone` | `zone` (header / sidebar / main / all) | Exact DS token translation for that layout zone |
+| `ds_get_guide` | `section` (golden_rules / decision_tree / anti_patterns / token_cheat_sheet / accessibility / icons / page_steps / quick_reference) | Agent guide section |
+| `ds_setup_enforcement` | — | Complete 3-layer enforcement setup: lint script source + CLAUDE.md template + husky pre-commit hook |
 
 ---
 
-## Data sources
+## Usage examples
 
-The server reads from `../MCP/` at startup:
-
+**Resolve a linter violation:**
 ```
-MCP/
-├── TOKENS.md            → ds_get_tokens, ds_resolve_violation, ds_lint_snippet
-├── COMPONENTS.md        → ds_get_component
-├── DASHBOARD_PATTERNS.md → ds_get_pattern
-├── TEMPLATE_STYLE.md    → ds_get_template_zone
-├── AGENT_GUIDE.md       → ds_get_guide
-└── ENFORCEMENT.md       → ds_setup_enforcement
+ds_resolve_violation("bg-white")
+→ ✅ bg-surface-elevated
 ```
 
-Updating a markdown file is immediately reflected the next time the server starts.
+**Lint before committing:**
+```
+ds_lint_snippet('<div className="text-slate-900 bg-red-50">')
+→ 2 violations with fixes
+```
+
+**Look up a component:**
+```
+ds_get_component("badge")
+→ variants, props, copy-paste TSX
+```
+
+**Get the decision tree:**
+```
+ds_get_guide("decision_tree")
+→ "I need to show status → use Badge variant=success|warning|destructive..."
+```
 
 ---
 
-## Development
+## What's included
+
+```
+shadcn-mcp/
+├── src/index.ts          TypeScript source (single file, ~500 lines)
+├── dist/index.js         Compiled server — run this directly
+├── docs/
+│   ├── TOKENS.md         Full token reference (colors, spacing, radius, shadow, motion)
+│   ├── COMPONENTS.md     Every shadcn component with props + TSX examples
+│   ├── DASHBOARD_PATTERNS.md  AppShell, TopBar, Sidebar, DataTable, StatCard…
+│   ├── TEMPLATE_STYLE.md Canonical Gemini template zone-by-zone translation
+│   ├── AGENT_GUIDE.md    Golden rules, decision tree, anti-patterns, accessibility
+│   └── ENFORCEMENT.md    3-layer color enforcement system
+├── package.json
+└── tsconfig.json
+```
+
+The server reads from `docs/` at startup — no external dependencies, no network calls.
+
+---
+
+## Rebuild from source
 
 ```bash
-npm run dev      # run with tsx (no build step)
-npm run build    # compile to dist/
+npm run build    # tsc → dist/
+npm run dev      # run with tsx (no build step, for development)
 ```
