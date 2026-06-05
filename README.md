@@ -10,9 +10,87 @@ An [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server that 
 git clone https://github.com/brahimrizqHireme/shadcn-mcp.git
 cd shadcn-mcp
 npm install
+npm run build
 ```
 
-That's it. The compiled server is already in `dist/` — no build step needed.
+Run locally over stdio:
+
+```bash
+npm start
+```
+
+Run locally over Streamable HTTP:
+
+```bash
+cp .env.example .env
+MCP_TRANSPORT=http PORT=3000 npm start
+```
+
+The HTTP MCP endpoint is available at:
+
+```text
+http://localhost:3000/mcp
+```
+
+Health check:
+
+```text
+http://localhost:3000/health
+```
+
+---
+
+## Build
+
+Build the TypeScript source into `dist/`:
+
+```bash
+npm run build
+```
+
+Development mode with `tsx`:
+
+```bash
+npm run dev
+```
+
+Production start:
+
+```bash
+npm start
+```
+
+`dist/` is generated output and is intentionally ignored by Git.
+
+---
+
+## Docker
+
+Build the image:
+
+```bash
+docker build -t ds-shadcn-mcp .
+```
+
+Run with the default port from the Dockerfile:
+
+```bash
+docker run --rm -p 3000:3000 ds-shadcn-mcp
+```
+
+Run with a custom port:
+
+```bash
+docker run --rm -e PORT=3011 -p 3011:3011 ds-shadcn-mcp
+```
+
+Run with values from `.env`:
+
+```bash
+docker run --rm --env-file .env -p 3000:3000 ds-shadcn-mcp
+```
+
+The Docker image runs as a non-root user, starts with `MCP_TRANSPORT=http`, and reads `PORT` from the environment.
 
 ---
 
@@ -91,7 +169,6 @@ ds_get_guide("decision_tree")
 ```
 shadcn-mcp/
 ├── src/index.ts          TypeScript source (single file, ~500 lines)
-├── dist/index.js         Compiled server — run this directly
 ├── docs/
 │   ├── TOKENS.md         Full token reference (colors, spacing, radius, shadow, motion)
 │   ├── COMPONENTS.md     Every shadcn component with props + TSX examples

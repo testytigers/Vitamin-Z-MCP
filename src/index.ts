@@ -15,6 +15,7 @@
 
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import {
   CallToolRequestSchema,
   ErrorCode,
@@ -22,6 +23,7 @@ import {
   McpError,
 } from "@modelcontextprotocol/sdk/types.js";
 import { existsSync, readFileSync } from "fs";
+import { createServer as createHttpServer } from "node:http";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 
@@ -390,144 +392,145 @@ const GUIDE_ALIASES: Record<string, string> = {
 
 // ── MCP Server ────────────────────────────────────────────────────────────────
 
-const server = new Server(
-  { name: "ds-shadcn-mcp", version: "1.2.0" },
-  { capabilities: { tools: {} } }
-);
+function createDsServer(): Server {
+  const server = new Server(
+    { name: "ds-shadcn-mcp", version: "1.2.0" },
+    { capabilities: { tools: {} } }
+  );
 
-server.setRequestHandler(ListToolsRequestSchema, async () => ({
-  tools: [
-    {
-      name: "ds_get_tokens",
-      description:
-        "Get the DS token reference table for a category. Returns token names, approximate values, and use cases. Category options: text, background, action, border, status, icon, spacing, radius, shadow, motion, size, all. Defaults to all color tokens.",
-      inputSchema: {
-        type: "object",
-        properties: {
-          category: {
-            type: "string",
-            description:
-              "Token category: text | background | action | border | status | icon | spacing | radius | shadow | motion | size | all",
-            default: "all",
+  server.setRequestHandler(ListToolsRequestSchema, async () => ({
+    tools: [
+      {
+        name: "ds_get_tokens",
+        description:
+          "Get the DS token reference table for a category. Returns token names, approximate values, and use cases. Category options: text, background, action, border, status, icon, spacing, radius, shadow, motion, size, all. Defaults to all color tokens.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            category: {
+              type: "string",
+              description:
+                "Token category: text | background | action | border | status | icon | spacing | radius | shadow | motion | size | all",
+              default: "all",
+            },
           },
         },
       },
-    },
-    {
-      name: "ds_resolve_violation",
-      description:
-        "Given a forbidden Tailwind class (e.g. 'text-slate-600', 'bg-white', 'bg-[#4f46e5]', 'hover:bg-slate-100'), returns the correct DS token replacement and the category it belongs to. Use this when the linter flags a violation.",
-      inputSchema: {
-        type: "object",
-        properties: {
-          class_name: {
-            type: "string",
-            description: "The forbidden class to resolve, e.g. 'text-slate-600' or 'bg-[#4f46e5]'",
+      {
+        name: "ds_resolve_violation",
+        description:
+          "Given a forbidden Tailwind class (e.g. 'text-slate-600', 'bg-white', 'bg-[#4f46e5]', 'hover:bg-slate-100'), returns the correct DS token replacement and the category it belongs to. Use this when the linter flags a violation.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            class_name: {
+              type: "string",
+              description: "The forbidden class to resolve, e.g. 'text-slate-600' or 'bg-[#4f46e5]'",
+            },
           },
-        },
-        required: ["class_name"],
-      },
-    },
-    {
-      name: "ds_lint_snippet",
-      description:
-        "Check a JSX/TSX code snippet for Design System color violations. Returns each violation with its line number, the forbidden match, an explanation, and the suggested DS replacement. Mirrors the behavior of `npm run lint:colors`.",
-      inputSchema: {
-        type: "object",
-        properties: {
-          code: {
-            type: "string",
-            description: "The JSX/TSX code snippet to check",
-          },
-        },
-        required: ["code"],
-      },
-    },
-    {
-      name: "ds_get_component",
-      description:
-        "Get full documentation (variants, props, copy-paste TSX examples, rules) for a named shadcn/DS component such as button, badge, card, table, input, select, dialog, sheet, switch, tooltip, tabs, etc. Pass 'list' to see all available components.",
-      inputSchema: {
-        type: "object",
-        properties: {
-          name: {
-            type: "string",
-            description:
-              "Component name (e.g. 'button', 'badge', 'card', 'table', 'dialog', 'sheet', 'switch') or 'list' to see all components",
-          },
-        },
-        required: ["name"],
-      },
-    },
-    {
-      name: "ds_get_pattern",
-      description:
-        "Get the canonical TSX implementation of a dashboard layout pattern. Patterns include: app shell, announcement banner, top bar, sidebar, stat card, data table, empty state, page header, filter bar, chart card, full page template. Pass 'list' to see all.",
-      inputSchema: {
-        type: "object",
-        properties: {
-          name: {
-            type: "string",
-            description:
-              "Pattern name (e.g. 'app shell', 'top bar', 'data table', 'stat card', 'empty state') or 'list' to see all patterns",
-          },
-        },
-        required: ["name"],
-      },
-    },
-    {
-      name: "ds_get_template_zone",
-      description:
-        "Get the exact DS token translation for a layout zone from the canonical Gemini template (the visual law). Use this to verify that your header, sidebar, or main content area matches the template spec. Zones: header, sidebar, main, all.",
-      inputSchema: {
-        type: "object",
-        properties: {
-          zone: {
-            type: "string",
-            description: "Zone: 'header' | 'sidebar' | 'main' | 'all'",
-            default: "all",
-          },
+          required: ["class_name"],
         },
       },
-    },
-    {
-      name: "ds_get_guide",
-      description:
-        "Get a section from the Agent Guide. Available sections: golden_rules, decision_tree (what to use for each UI need), anti_patterns, token_cheat_sheet, accessibility, icons, page_steps (step-by-step new page), composing (new patterns), quick_reference, imports.",
-      inputSchema: {
-        type: "object",
-        properties: {
-          section: {
-            type: "string",
-            description:
-              "Section key: golden_rules | decision_tree | anti_patterns | token_cheat_sheet | accessibility | icons | page_steps | composing | quick_reference | imports | all",
+      {
+        name: "ds_lint_snippet",
+        description:
+          "Check a JSX/TSX code snippet for Design System color violations. Returns each violation with its line number, the forbidden match, an explanation, and the suggested DS replacement. Mirrors the behavior of `npm run lint:colors`.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            code: {
+              type: "string",
+              description: "The JSX/TSX code snippet to check",
+            },
+          },
+          required: ["code"],
+        },
+      },
+      {
+        name: "ds_get_component",
+        description:
+          "Get full documentation (variants, props, copy-paste TSX examples, rules) for a named shadcn/DS component such as button, badge, card, table, input, select, dialog, sheet, switch, tooltip, tabs, etc. Pass 'list' to see all available components.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            name: {
+              type: "string",
+              description:
+                "Component name (e.g. 'button', 'badge', 'card', 'table', 'dialog', 'sheet', 'switch') or 'list' to see all components",
+            },
+          },
+          required: ["name"],
+        },
+      },
+      {
+        name: "ds_get_pattern",
+        description:
+          "Get the canonical TSX implementation of a dashboard layout pattern. Patterns include: app shell, announcement banner, top bar, sidebar, stat card, data table, empty state, page header, filter bar, chart card, full page template. Pass 'list' to see all.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            name: {
+              type: "string",
+              description:
+                "Pattern name (e.g. 'app shell', 'top bar', 'data table', 'stat card', 'empty state') or 'list' to see all patterns",
+            },
+          },
+          required: ["name"],
+        },
+      },
+      {
+        name: "ds_get_template_zone",
+        description:
+          "Get the exact DS token translation for a layout zone from the canonical Gemini template (the visual law). Use this to verify that your header, sidebar, or main content area matches the template spec. Zones: header, sidebar, main, all.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            zone: {
+              type: "string",
+              description: "Zone: 'header' | 'sidebar' | 'main' | 'all'",
+              default: "all",
+            },
           },
         },
-        required: ["section"],
       },
-    },
-    {
-      name: "ds_setup_enforcement",
-      description:
-        "Get the complete 3-layer DS color enforcement setup: Layer 1 — lint script source code ready to copy into scripts/lint-colors.mjs, Layer 2 — CLAUDE.md template structure, Layer 3 — husky pre-commit hook setup. Use when setting up enforcement in a new project.",
-      inputSchema: {
-        type: "object",
-        properties: {},
+      {
+        name: "ds_get_guide",
+        description:
+          "Get a section from the Agent Guide. Available sections: golden_rules, decision_tree (what to use for each UI need), anti_patterns, token_cheat_sheet, accessibility, icons, page_steps (step-by-step new page), composing (new patterns), quick_reference, imports.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            section: {
+              type: "string",
+              description:
+                "Section key: golden_rules | decision_tree | anti_patterns | token_cheat_sheet | accessibility | icons | page_steps | composing | quick_reference | imports | all",
+            },
+          },
+          required: ["section"],
+        },
       },
-    },
-  ],
-}));
+      {
+        name: "ds_setup_enforcement",
+        description:
+          "Get the complete 3-layer DS color enforcement setup: Layer 1 — lint script source code ready to copy into scripts/lint-colors.mjs, Layer 2 — CLAUDE.md template structure, Layer 3 — husky pre-commit hook setup. Use when setting up enforcement in a new project.",
+        inputSchema: {
+          type: "object",
+          properties: {},
+        },
+      },
+    ],
+  }));
 
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  const { name, arguments: args } = request.params;
+  server.setRequestHandler(CallToolRequestSchema, async (request) => {
+    const { name, arguments: args } = request.params;
 
-  try {
-    switch (name) {
-      // ── ds_get_tokens ───────────────────────────────────────────────────────
-      case "ds_get_tokens": {
-        const category = ((args?.category as string) ?? "all").trim();
-        return { content: [{ type: "text", text: getTokenContent(category) }] };
-      }
+    try {
+      switch (name) {
+        // ── ds_get_tokens ───────────────────────────────────────────────────────
+        case "ds_get_tokens": {
+          const category = ((args?.category as string) ?? "all").trim();
+          return { content: [{ type: "text", text: getTokenContent(category) }] };
+        }
 
       // ── ds_resolve_violation ────────────────────────────────────────────────
       case "ds_resolve_violation": {
@@ -766,21 +769,121 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         return { content: [{ type: "text", text: DOCS.enforcement }] };
       }
 
-      default:
-        throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${name}`);
+        default:
+          throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${name}`);
+      }
+    } catch (err) {
+      if (err instanceof McpError) throw err;
+      throw new McpError(ErrorCode.InternalError, `Tool error: ${String(err)}`);
     }
-  } catch (err) {
-    if (err instanceof McpError) throw err;
-    throw new McpError(ErrorCode.InternalError, `Tool error: ${String(err)}`);
-  }
-});
+  });
+
+  return server;
+}
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 
-async function main() {
+function parsePort(value: string | undefined): number {
+  const raw = value ?? "3000";
+  const port = Number.parseInt(raw, 10);
+  if (!Number.isInteger(port) || port < 1 || port > 65535 || String(port) !== raw.trim()) {
+    throw new Error(`Invalid PORT value "${raw}". Use an integer from 1 to 65535.`);
+  }
+  return port;
+}
+
+function sendJson(res: import("node:http").ServerResponse, statusCode: number, body: unknown) {
+  res.writeHead(statusCode, { "Content-Type": "application/json" });
+  res.end(JSON.stringify(body));
+}
+
+async function startStdioServer() {
+  const server = createDsServer();
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error(`DS v1.2 MCP server running on stdio — docs dir: ${MCP_DIR}`);
+}
+
+function startHttpServer() {
+  const port = parsePort(process.env.PORT);
+  const host = process.env.HOST ?? "0.0.0.0";
+  const mcpPath = process.env.MCP_PATH ?? "/mcp";
+
+  const httpServer = createHttpServer(async (req, res) => {
+    const url = new URL(req.url ?? "/", `http://${req.headers.host ?? "localhost"}`);
+
+    if (url.pathname === "/health") {
+      sendJson(res, 200, { status: "ok", transport: "http" });
+      return;
+    }
+
+    if (url.pathname !== mcpPath) {
+      sendJson(res, 404, { error: "Not found" });
+      return;
+    }
+
+    if (req.method !== "POST") {
+      res.setHeader("Allow", "POST");
+      sendJson(res, 405, {
+        jsonrpc: "2.0",
+        error: {
+          code: -32000,
+          message: "Method not allowed. Use POST for stateless Streamable HTTP.",
+        },
+        id: null,
+      });
+      return;
+    }
+
+    const server = createDsServer();
+    const transport = new StreamableHTTPServerTransport({
+      sessionIdGenerator: undefined,
+    });
+
+    res.on("close", () => {
+      void transport.close();
+      void server.close();
+    });
+
+    try {
+      await server.connect(transport);
+      await transport.handleRequest(req, res);
+    } catch (err) {
+      console.error("HTTP MCP request failed:", err);
+      if (!res.headersSent) {
+        sendJson(res, 500, {
+          jsonrpc: "2.0",
+          error: {
+            code: -32603,
+            message: "Internal server error",
+          },
+          id: null,
+        });
+      }
+    }
+  });
+
+  httpServer.listen(port, host, () => {
+    console.error(`DS v1.2 MCP server listening on http://${host}:${port}${mcpPath} — docs dir: ${MCP_DIR}`);
+  });
+
+  for (const signal of ["SIGINT", "SIGTERM"] as const) {
+    process.on(signal, () => {
+      httpServer.close(() => process.exit(0));
+    });
+  }
+}
+
+async function main() {
+  const transport = (process.env.MCP_TRANSPORT ?? (process.env.PORT ? "http" : "stdio")).toLowerCase();
+  if (transport === "http" || transport === "streamable-http") {
+    startHttpServer();
+    return;
+  }
+  if (transport !== "stdio") {
+    throw new Error(`Unsupported MCP_TRANSPORT "${transport}". Use "stdio" or "http".`);
+  }
+  await startStdioServer();
 }
 
 main().catch((err) => {
