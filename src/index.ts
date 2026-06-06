@@ -22,6 +22,7 @@ import {
   ListToolsRequestSchema,
   McpError,
 } from "@modelcontextprotocol/sdk/types.js";
+import "dotenv/config";
 import { existsSync, readFileSync } from "fs";
 import { createServer as createHttpServer } from "node:http";
 import { dirname, resolve } from "path";
@@ -797,6 +798,34 @@ function sendJson(res: import("node:http").ServerResponse, statusCode: number, b
   res.end(JSON.stringify(body));
 }
 
+function getBearerToken(): string {
+  const token = process.env.MCP_BEARER_TOKEN?.trim();
+  if (!token) {
+    throw new Error("MCP_BEARER_TOKEN is required when MCP_TRANSPORT=http.");
+  }
+  return token;
+}
+
+function isAuthorized(req: import("node:http").IncomingMessage, expectedToken: string): boolean {
+  const authorization = req.headers.authorization;
+  if (!authorization) return false;
+
+  const match = authorization.match(/^Bearer\s+(.+)$/i);
+  return match?.[1]?.trim() === expectedToken;
+}
+
+function sendUnauthorized(res: import("node:http").ServerResponse) {
+  res.setHeader("WWW-Authenticate", 'Bearer realm="ds-shadcn-mcp"');
+  sendJson(res, 401, {
+    jsonrpc: "2.0",
+    error: {
+      code: -32001,
+      message: "Unauthorized. Provide a valid Bearer token.",
+    },
+    id: null,
+  });
+}
+
 async function startStdioServer() {
   const server = createDsServer();
   const transport = new StdioServerTransport();
@@ -808,6 +837,7 @@ function startHttpServer() {
   const port = parsePort(process.env.PORT);
   const host = process.env.HOST ?? "0.0.0.0";
   const mcpPath = process.env.MCP_PATH ?? "/mcp";
+  const bearerToken = getBearerToken();
 
   const httpServer = createHttpServer(async (req, res) => {
     const url = new URL(req.url ?? "/", `http://${req.headers.host ?? "localhost"}`);
@@ -819,6 +849,11 @@ function startHttpServer() {
 
     if (url.pathname !== mcpPath) {
       sendJson(res, 404, { error: "Not found" });
+      return;
+    }
+
+    if (!isAuthorized(req, bearerToken)) {
+      sendUnauthorized(res);
       return;
     }
 
@@ -864,7 +899,7 @@ function startHttpServer() {
   });
 
   httpServer.listen(port, host, () => {
-    console.error(`DS v1.2 MCP server listening on http://${host}:${port}${mcpPath} — docs dir: ${MCP_DIR}`);
+    console.error(`DS v1.2 MCP server listening on http://${host}:${port}${mcpPath} with Bearer auth — docs dir: ${MCP_DIR}`);
   });
 
   for (const signal of ["SIGINT", "SIGTERM"] as const) {

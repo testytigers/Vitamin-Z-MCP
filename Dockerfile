@@ -18,7 +18,8 @@ ENV NODE_ENV=production \
     MCP_TRANSPORT=http \
     HOST=0.0.0.0 \
     PORT=3000 \
-    MCP_PATH=/mcp
+    MCP_PATH=/mcp \
+    MCP_BEARER_TOKEN=
 
 WORKDIR /app
 

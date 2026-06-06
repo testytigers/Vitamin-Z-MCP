@@ -23,13 +23,19 @@ Run locally over Streamable HTTP:
 
 ```bash
 cp .env.example .env
-MCP_TRANSPORT=http PORT=3000 npm start
+npm start
 ```
 
 The HTTP MCP endpoint is available at:
 
 ```text
 http://localhost:3000/mcp
+```
+
+HTTP transport requires Bearer authentication. Set `MCP_BEARER_TOKEN` in `.env`, then send it with MCP requests:
+
+```text
+Authorization: Bearer <your MCP_BEARER_TOKEN>
 ```
 
 Health check:
@@ -75,13 +81,13 @@ docker build -t ds-shadcn-mcp .
 Run with the default port from the Dockerfile:
 
 ```bash
-docker run --rm -p 3000:3000 ds-shadcn-mcp
+docker run --rm --env-file .env -p 3000:3000 ds-shadcn-mcp
 ```
 
 Run with a custom port:
 
 ```bash
-docker run --rm -e PORT=3011 -p 3011:3011 ds-shadcn-mcp
+docker run --rm --env-file .env -e PORT=3011 -p 3011:3011 ds-shadcn-mcp
 ```
 
 Run with values from `.env`:
@@ -90,7 +96,7 @@ Run with values from `.env`:
 docker run --rm --env-file .env -p 3000:3000 ds-shadcn-mcp
 ```
 
-The Docker image runs as a non-root user, starts with `MCP_TRANSPORT=http`, and reads `PORT` from the environment.
+The Docker image runs as a non-root user, starts with `MCP_TRANSPORT=http`, and reads `PORT` plus `MCP_BEARER_TOKEN` from the environment.
 
 ---
 
