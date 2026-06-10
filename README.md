@@ -1,150 +1,78 @@
-# shadcn-mcp — Design System v1.2 MCP Server
+# ds-mcp — Design System v1.2 MCP Server (v2)
 
-An [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server with 7 tools for building DS-compliant Next.js pages from voice commands. The star tool — `build_page` — takes a natural-language command verbatim and returns a complete, ready-to-save page. `validate_code` auto-fixes violations in one round-trip, so a small model never needs to know token names.
+Voice-command-optimized MCP server for the DS. The full loop is now hands-free: speak → `build_page(save:true)` → file on disk. Iterate by voice with `edit_page`. The markdown docs in `MCP/` stay the single source of truth — edit them and restart the server; no rebuild needed.
 
----
-
-## Install
+## Setup (one time)
 
 ```bash
-git clone https://github.com/brahimrizqHireme/shadcn-mcp.git
-cd shadcn-mcp
+cd MCP/server
 npm install
+npm run build
 ```
 
-The compiled server is already in `dist/` — no build step needed.
+Run check: `node dist/index.js` should print `ds-mcp ready — 7 docs, 86 sections indexed`.
 
----
+## Connect a client
 
-## Connect to your client
+All configs are in `clients/` (stdio, `node dist/index.js`, with `DS_PROJECT_DIR` pointing at your app):
 
-### Claude Code / Claude Desktop (stdio)
+| Client | Where to put it |
+|---|---|
+| **LM Studio** | Merge `clients/lmstudio-mcp.json` into `~/.lmstudio/mcp.json` (or Program → Install → Edit mcp.json) |
+| **Claude Desktop** | Merge `clients/claude-desktop-config.json` into `~/Library/Application Support/Claude/claude_desktop_config.json` |
+| **Claude Code** | Copy `clients/claude-code.mcp.json` to your project root as `.mcp.json` |
+| **Custom Ollama/Hermes pipeline** | Spawn `node /Users/macbook/Desktop/ds-shadcn-v1.2/MCP/server/dist/index.js` with env `DS_PROJECT_DIR` set, speak MCP over stdio |
 
-```bash
-claude mcp add ds-shadcn node /absolute/path/to/shadcn-mcp/dist/index.js
-```
-
-Or merge `clients/claude-desktop.json` into `~/Library/Application Support/Claude/claude_desktop_config.json`. Restart — the 7 tools appear automatically.
-
-### LM Studio / Ollama (HTTP)
-
-Start the server in HTTP mode:
-
-```bash
-MCP_TRANSPORT=http PORT=3000 MCP_BEARER_TOKEN=your-secret node dist/index.js
-```
-
-Then merge `clients/lm-studio.json` or `clients/ollama.json` into your client config (see `clients/` for both).
-
----
-
-## System-prompt snippet (Hermes / Ollama voice pipeline)
-
-Paste this into your model's system prompt to make the voice → page loop zero-thought:
-
-```
-You have access to a Design System MCP server with 7 tools.
-
-RULES:
-1. When the user asks to build or create a page, ALWAYS call build_page with their
-   exact transcribed words. Do not paraphrase. Save the returned file to the
-   returned filePath.
-2. When any code contains color classes (text-*, bg-*, border-*), call validate_code
-   first. Apply the returned fixed code directly — never manually edit colors.
-3. Before starting any new component or page, call get_cheatsheet once.
-4. To look up a component, call get_component. For layout patterns, call get_pattern.
-5. If you need a specific token, call get_tokens with the category.
-6. For anything else DS-related, call search_ds with your question as the query.
-
-TOOL NAMES: build_page · validate_code · get_component · get_pattern · get_tokens · search_ds · get_cheatsheet
-```
-
----
+Env vars: `DS_PROJECT_DIR` = your Next.js app root (where pages get written, default `../coliix` next to the MCP folder). `DS_DOCS_DIR` = docs location if you move them.
 
 ## Tools
 
-| Tool | Input | Returns |
+| Tool | What it does | Typical voice trigger |
 |---|---|---|
-| `build_page` | `command` — natural-language voice request | Complete Next.js page + suggested file path |
-| `validate_code` | `code` — JSX/TSX snippet | Auto-fixed code with list of every substitution |
-| `get_component` | `name` (e.g. `"button"`, `"badge"`) or `"list"` | Component docs + copy-paste TSX |
-| `get_pattern` | `name` (e.g. `"data table"`, `"stat card"`) or `"list"` | Canonical pattern implementation |
-| `get_tokens` | `category` (text / background / action / border / status / icon / all) | Token reference table |
-| `search_ds` | `query` — any question or keyword | Top 5 matching doc sections |
-| `get_cheatsheet` | — | Compact token + decision tree + forbidden-class card |
+| `build_page` | **Primary.** Intent → complete DS-compliant page. With `save:true` it writes the file too — one call, done. Infers sections (stats/tabs/charts/table/form/empty); accepts `columns`, `stats`, `charts`. | "Build me a shipments page with stats and a table" |
+| `edit_page` | Adds/removes whole sections on an existing page, merges imports, prunes orphaned helpers, syntax-checks, saves. | "Add a revenue chart to the orders page" |
+| `save_page` | Validated write for LLM-authored code: TS syntax check + DS validation with autofix, then save. Refuses broken code. | (used by the LLM, not spoken) |
+| `list_pages` | Lists existing routes. | "What pages do we have?" |
+| `validate_code` | TS syntax check + DS enforcement with **auto-fixed** code returned. | "Check this code" |
+| `get_component` | Compact API + example for one shadcn component. | "How do I use Badge?" |
+| `get_pattern` | One canonical blueprint (sidebar, data table, empty state…). | "Show me the sidebar pattern" |
+| `get_tokens` | Token table by category. | "What are the radius tokens?" |
+| `search_ds` | Synonym-aware fuzzy search across all docs ("rounded corners" → radius tokens). | Anything else |
+| `get_cheatsheet` | ~60-line rules primer. Once per session. | Session start |
 
----
-
-## Examples
-
-**Voice → page:**
-```
-build_page("build me a shipments page with stats and a table")
-→ Shipments page with 4 KPI cards + data table
-   Save to: src/app/(dashboard)/shipments/page.tsx
-
-build_page("an invoices dashboard with kpis")
-→ Invoices page with stat cards
-   Save to: src/app/(dashboard)/invoices/page.tsx
-
-build_page("make a settings page with a form")
-→ Settings form page with 2 card sections
-   Save to: src/app/(dashboard)/settings/page.tsx
-```
-
-**Auto-fix violations:**
-```
-validate_code('<div className="text-slate-900 bg-white border-red-200">')
-→ Fixed: text-text-primary · bg-surface-elevated · border-status-error-border
-```
-
-**Search:**
-```
-search_ds("badge status variant")
-→ Top 5 doc sections covering badge variants and status usage
-```
-
----
-
-## What's included
+## The voice → page loop (zero file handling)
 
 ```
-shadcn-mcp/
-├── src/index.ts              TypeScript source — single file
-├── dist/index.js             Compiled server (run this)
-├── docs/
-│   ├── TOKENS.md             Full token reference
-│   ├── COMPONENTS.md         shadcn components + TSX examples
-│   ├── DASHBOARD_PATTERNS.md AppShell, TopBar, Sidebar, DataTable, StatCard…
-│   ├── TEMPLATE_STYLE.md     Gemini template zone-by-zone translation
-│   ├── AGENT_GUIDE.md        Golden rules, decision tree, anti-patterns
-│   └── ENFORCEMENT.md        3-layer color enforcement system
-├── clients/
-│   ├── claude-code.json      Claude Code / Claude Desktop config
-│   ├── claude-desktop.json   Claude Desktop config
-│   ├── lm-studio.json        LM Studio HTTP config
-│   └── ollama.json           Ollama pipeline config + system-prompt snippet
-├── Dockerfile                Container build
-├── .env.example              Environment variables reference
-└── package.json
+🎤 "Build me an orders page with KPIs and a table of order, status, customer, total"
+        ▼  build_page({ intent, columns: [...], save: true })
+        ✓ SAVED to src/app/(dashboard)/orders/page.tsx
+
+🎤 "Add a revenue chart to the orders page"
+        ▼  edit_page({ page: "orders", instruction: "add a revenue chart" })
+        ✓ SAVED — chart section spliced in, imports merged
+
+🎤 "Actually remove the KPIs"
+        ▼  edit_page({ page: "orders", instruction: "remove the kpis" })
+        ✓ SAVED — section removed, unused helpers & imports pruned
 ```
 
-Docs are re-indexed at startup from `docs/` — no external dependencies, no network calls.
+Every write is gated: TypeScript syntax check + DS token validation. Broken or non-compliant code never reaches disk.
 
----
+For best speed with a small local model, add to its system prompt:
 
-## Rebuild from source
+> You build dashboard pages with the ds-mcp tools. To create a page, call `build_page` with the user's words as `intent` and `save: true` — nothing else needed. To change an existing page, call `edit_page` with the page name and the user's words as `instruction`. Only write code yourself for things the tools can't do, and save it with `save_page`. Use `get_component`/`search_ds` for lookups.
 
-```bash
-npm run build    # tsc → dist/
-npm run dev      # run with tsx (no build step)
+## Layout
+
 ```
-
----
-
-## Docker
-
-```bash
-docker build -t ds-mcp .
-docker run -e MCP_TRANSPORT=http -e PORT=3000 -e MCP_BEARER_TOKEN=your-secret -p 3000:3000 ds-mcp
+server/
+├── src/
+│   ├── index.ts      ← server + 10 tool definitions
+│   ├── scaffold.ts   ← intent parsing + section generators (shared with editor)
+│   ├── editor.ts     ← section splice/remove, import merge, orphan pruning
+│   ├── project.ts    ← DS_PROJECT_DIR resolution, safe confined writes
+│   ├── validator.ts  ← DS rules + autofix + TypeScript syntax check
+│   ├── docIndex.ts   ← chunks ../​*.md by heading, synonym-aware search
+│   └── cheatsheet.ts ← session primer
+└── clients/          ← ready-made configs per client
 ```

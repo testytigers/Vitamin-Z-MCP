@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "ds-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/macbook/Desktop/ds-shadcn-v1.2/MCP/server/dist/index.js"
+      ],
+      "env": {
+        "DS_PROJECT_DIR": "/Users/macbook/Downloads/ds-shadcn-v1.2/coliix"
+      }
+    }
+  }
+}
