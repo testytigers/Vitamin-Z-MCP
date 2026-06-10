@@ -1,0 +1,11 @@
+{
+  "_comment": "LM Studio → Settings → MCP Servers → Add server (HTTP mode). Start server with: MCP_TRANSPORT=http PORT=3000 MCP_BEARER_TOKEN=your-secret node dist/index.js",
+  "mcpServers": {
+    "ds-shadcn": {
+      "url": "http://localhost:3000/mcp",
+      "headers": {
+        "Authorization": "Bearer your-secret-token-here"
+      }
+    }
+  }
+}

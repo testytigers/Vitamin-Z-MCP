@@ -1,171 +1,107 @@
 # shadcn-mcp — Design System v1.2 MCP Server
 
-An [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server that gives AI agents direct access to the Design System v1.2. Token lookups, component docs, dashboard patterns, live lint checks — all callable as tools inside Claude Code, Cursor, or any MCP-compatible client.
+An [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server with 7 tools for building DS-compliant Next.js pages from voice commands. The star tool — `build_page` — takes a natural-language command verbatim and returns a complete, ready-to-save page. `validate_code` auto-fixes violations in one round-trip, so a small model never needs to know token names.
 
 ---
 
-## Install & Run
+## Install
 
 ```bash
 git clone https://github.com/brahimrizqHireme/shadcn-mcp.git
 cd shadcn-mcp
 npm install
-npm run build
 ```
 
-Run locally over stdio:
-
-```bash
-npm start
-```
-
-Run locally over Streamable HTTP:
-
-```bash
-cp .env.example .env
-npm start
-```
-
-The HTTP MCP endpoint is available at:
-
-```text
-http://localhost:3000/mcp
-```
-
-HTTP transport requires Bearer authentication. Set `MCP_BEARER_TOKEN` in `.env`, then send it with MCP requests:
-
-```text
-Authorization: Bearer <your MCP_BEARER_TOKEN>
-```
-
-Health check:
-
-```text
-http://localhost:3000/health
-```
+The compiled server is already in `dist/` — no build step needed.
 
 ---
 
-## Build
+## Connect to your client
 
-Build the TypeScript source into `dist/`:
-
-```bash
-npm run build
-```
-
-Development mode with `tsx`:
-
-```bash
-npm run dev
-```
-
-Production start:
-
-```bash
-npm start
-```
-
-`dist/` is generated output and is intentionally ignored by Git.
-
----
-
-## Docker
-
-Build the image:
-
-```bash
-docker build -t ds-shadcn-mcp .
-```
-
-Run with the default port from the Dockerfile:
-
-```bash
-docker run --rm --env-file .env -p 3000:3000 ds-shadcn-mcp
-```
-
-Run with a custom port:
-
-```bash
-docker run --rm --env-file .env -e PORT=3011 -p 3011:3011 ds-shadcn-mcp
-```
-
-Run with values from `.env`:
-
-```bash
-docker run --rm --env-file .env -p 3000:3000 ds-shadcn-mcp
-```
-
-The Docker image runs as a non-root user, starts with `MCP_TRANSPORT=http`, and reads `PORT` plus `MCP_BEARER_TOKEN` from the environment.
-
----
-
-## Add to Claude Code
-
-### Option A — Project only (`.claude/settings.json` in your repo)
-
-```json
-{
-  "mcpServers": {
-    "ds-shadcn": {
-      "command": "node",
-      "args": ["/absolute/path/to/shadcn-mcp/dist/index.js"]
-    }
-  }
-}
-```
-
-### Option B — Global (available in every project)
-
-Run once:
+### Claude Code / Claude Desktop (stdio)
 
 ```bash
 claude mcp add ds-shadcn node /absolute/path/to/shadcn-mcp/dist/index.js
 ```
 
-Restart Claude Code. The 8 `ds_*` tools appear automatically.
+Or merge `clients/claude-desktop.json` into `~/Library/Application Support/Claude/claude_desktop_config.json`. Restart — the 7 tools appear automatically.
+
+### LM Studio / Ollama (HTTP)
+
+Start the server in HTTP mode:
+
+```bash
+MCP_TRANSPORT=http PORT=3000 MCP_BEARER_TOKEN=your-secret node dist/index.js
+```
+
+Then merge `clients/lm-studio.json` or `clients/ollama.json` into your client config (see `clients/` for both).
+
+---
+
+## System-prompt snippet (Hermes / Ollama voice pipeline)
+
+Paste this into your model's system prompt to make the voice → page loop zero-thought:
+
+```
+You have access to a Design System MCP server with 7 tools.
+
+RULES:
+1. When the user asks to build or create a page, ALWAYS call build_page with their
+   exact transcribed words. Do not paraphrase. Save the returned file to the
+   returned filePath.
+2. When any code contains color classes (text-*, bg-*, border-*), call validate_code
+   first. Apply the returned fixed code directly — never manually edit colors.
+3. Before starting any new component or page, call get_cheatsheet once.
+4. To look up a component, call get_component. For layout patterns, call get_pattern.
+5. If you need a specific token, call get_tokens with the category.
+6. For anything else DS-related, call search_ds with your question as the query.
+
+TOOL NAMES: build_page · validate_code · get_component · get_pattern · get_tokens · search_ds · get_cheatsheet
+```
 
 ---
 
 ## Tools
 
-| Tool | Input | What it returns |
+| Tool | Input | Returns |
 |---|---|---|
-| `ds_get_tokens` | `category` (text / background / action / border / status / icon / spacing / radius / shadow / motion / size / all) | Token reference table with use cases |
-| `ds_resolve_violation` | `class_name` e.g. `"text-slate-600"` | `text-text-secondary` — the correct DS replacement |
-| `ds_lint_snippet` | `code` (JSX/TSX string) | All DS color violations with line numbers and suggested fixes |
-| `ds_get_component` | `name` e.g. `"button"` or `"list"` | Full component docs + copy-paste TSX examples |
-| `ds_get_pattern` | `name` e.g. `"data table"` or `"list"` | Canonical dashboard pattern implementation |
-| `ds_get_template_zone` | `zone` (header / sidebar / main / all) | Exact DS token translation for that layout zone |
-| `ds_get_guide` | `section` (golden_rules / decision_tree / anti_patterns / token_cheat_sheet / accessibility / icons / page_steps / quick_reference) | Agent guide section |
-| `ds_setup_enforcement` | — | Complete 3-layer enforcement setup: lint script source + CLAUDE.md template + husky pre-commit hook |
+| `build_page` | `command` — natural-language voice request | Complete Next.js page + suggested file path |
+| `validate_code` | `code` — JSX/TSX snippet | Auto-fixed code with list of every substitution |
+| `get_component` | `name` (e.g. `"button"`, `"badge"`) or `"list"` | Component docs + copy-paste TSX |
+| `get_pattern` | `name` (e.g. `"data table"`, `"stat card"`) or `"list"` | Canonical pattern implementation |
+| `get_tokens` | `category` (text / background / action / border / status / icon / all) | Token reference table |
+| `search_ds` | `query` — any question or keyword | Top 5 matching doc sections |
+| `get_cheatsheet` | — | Compact token + decision tree + forbidden-class card |
 
 ---
 
-## Usage examples
+## Examples
 
-**Resolve a linter violation:**
+**Voice → page:**
 ```
-ds_resolve_violation("bg-white")
-→ ✅ bg-surface-elevated
-```
+build_page("build me a shipments page with stats and a table")
+→ Shipments page with 4 KPI cards + data table
+   Save to: src/app/(dashboard)/shipments/page.tsx
 
-**Lint before committing:**
-```
-ds_lint_snippet('<div className="text-slate-900 bg-red-50">')
-→ 2 violations with fixes
-```
+build_page("an invoices dashboard with kpis")
+→ Invoices page with stat cards
+   Save to: src/app/(dashboard)/invoices/page.tsx
 
-**Look up a component:**
-```
-ds_get_component("badge")
-→ variants, props, copy-paste TSX
+build_page("make a settings page with a form")
+→ Settings form page with 2 card sections
+   Save to: src/app/(dashboard)/settings/page.tsx
 ```
 
-**Get the decision tree:**
+**Auto-fix violations:**
 ```
-ds_get_guide("decision_tree")
-→ "I need to show status → use Badge variant=success|warning|destructive..."
+validate_code('<div className="text-slate-900 bg-white border-red-200">')
+→ Fixed: text-text-primary · bg-surface-elevated · border-status-error-border
+```
+
+**Search:**
+```
+search_ds("badge status variant")
+→ Top 5 doc sections covering badge variants and status usage
 ```
 
 ---
@@ -174,19 +110,26 @@ ds_get_guide("decision_tree")
 
 ```
 shadcn-mcp/
-├── src/index.ts          TypeScript source (single file, ~500 lines)
+├── src/index.ts              TypeScript source — single file
+├── dist/index.js             Compiled server (run this)
 ├── docs/
-│   ├── TOKENS.md         Full token reference (colors, spacing, radius, shadow, motion)
-│   ├── COMPONENTS.md     Every shadcn component with props + TSX examples
-│   ├── DASHBOARD_PATTERNS.md  AppShell, TopBar, Sidebar, DataTable, StatCard…
-│   ├── TEMPLATE_STYLE.md Canonical Gemini template zone-by-zone translation
-│   ├── AGENT_GUIDE.md    Golden rules, decision tree, anti-patterns, accessibility
-│   └── ENFORCEMENT.md    3-layer color enforcement system
-├── package.json
-└── tsconfig.json
+│   ├── TOKENS.md             Full token reference
+│   ├── COMPONENTS.md         shadcn components + TSX examples
+│   ├── DASHBOARD_PATTERNS.md AppShell, TopBar, Sidebar, DataTable, StatCard…
+│   ├── TEMPLATE_STYLE.md     Gemini template zone-by-zone translation
+│   ├── AGENT_GUIDE.md        Golden rules, decision tree, anti-patterns
+│   └── ENFORCEMENT.md        3-layer color enforcement system
+├── clients/
+│   ├── claude-code.json      Claude Code / Claude Desktop config
+│   ├── claude-desktop.json   Claude Desktop config
+│   ├── lm-studio.json        LM Studio HTTP config
+│   └── ollama.json           Ollama pipeline config + system-prompt snippet
+├── Dockerfile                Container build
+├── .env.example              Environment variables reference
+└── package.json
 ```
 
-The server reads from `docs/` at startup — no external dependencies, no network calls.
+Docs are re-indexed at startup from `docs/` — no external dependencies, no network calls.
 
 ---
 
@@ -194,5 +137,14 @@ The server reads from `docs/` at startup — no external dependencies, no networ
 
 ```bash
 npm run build    # tsc → dist/
-npm run dev      # run with tsx (no build step, for development)
+npm run dev      # run with tsx (no build step)
+```
+
+---
+
+## Docker
+
+```bash
+docker build -t ds-mcp .
+docker run -e MCP_TRANSPORT=http -e PORT=3000 -e MCP_BEARER_TOKEN=your-secret -p 3000:3000 ds-mcp
 ```

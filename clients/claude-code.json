@@ -1,0 +1,12 @@
+{
+  "_comment": "Run once: claude mcp add ds-shadcn node /absolute/path/to/shadcn-mcp/dist/index.js",
+  "mcpServers": {
+    "ds-shadcn": {
+      "command": "node",
+      "args": ["/absolute/path/to/shadcn-mcp/dist/index.js"],
+      "env": {
+        "MCP_TRANSPORT": "stdio"
+      }
+    }
+  }
+}
