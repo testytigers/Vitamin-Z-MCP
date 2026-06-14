@@ -21,9 +21,9 @@ All configs are in `clients/` (stdio, `node dist/index.js`, with `DS_PROJECT_DIR
 | **LM Studio** | Merge `clients/lmstudio-mcp.json` into `~/.lmstudio/mcp.json` (or Program → Install → Edit mcp.json) |
 | **Claude Desktop** | Merge `clients/claude-desktop-config.json` into `~/Library/Application Support/Claude/claude_desktop_config.json` |
 | **Claude Code** | Copy `clients/claude-code.mcp.json` to your project root as `.mcp.json` |
-| **Custom Ollama/Hermes pipeline** | Spawn `node /Users/macbook/Desktop/ds-shadcn-v1.2/MCP/server/dist/index.js` with env `DS_PROJECT_DIR` set, speak MCP over stdio |
+| **Custom Ollama/Hermes pipeline** | Spawn `node /path/to/MCP/server/dist/index.js` with env `DS_PROJECT_DIR` set, speak MCP over stdio |
 
-Env vars: `DS_PROJECT_DIR` = your Next.js app root (where pages get written, default `../coliix` next to the MCP folder). `DS_DOCS_DIR` = docs location if you move them.
+Env vars: `DS_PROJECT_DIR` = your Next.js app root (where pages get written, **required**). `DS_DOCS_DIR` = docs location if you move them.
 
 ## Tools
 

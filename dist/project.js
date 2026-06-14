@@ -4,18 +4,13 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { DOCS_DIR } from "./docIndex.js";
 export function projectDir() {
     if (process.env.DS_PROJECT_DIR && fs.existsSync(process.env.DS_PROJECT_DIR)) {
         return path.resolve(process.env.DS_PROJECT_DIR);
     }
-    // fallback: a 'coliix' (or any Next.js app) sitting next to the MCP folder
-    const sibling = path.resolve(DOCS_DIR, "..", "coliix");
-    if (fs.existsSync(sibling))
-        return sibling;
     return null;
 }
-export const NO_PROJECT_MSG = "No project configured. Set the DS_PROJECT_DIR environment variable in your MCP client config to your Next.js app root (e.g. /Users/macbook/Downloads/ds-shadcn-v1.2/coliix), then restart the server.";
+export const NO_PROJECT_MSG = "No project configured. Set the DS_PROJECT_DIR environment variable in your MCP client config to your Next.js app root (e.g. /home/user/my-app), then restart the server.";
 /** Resolve a relative file path inside the project, blocking traversal. */
 export function safeResolve(rel) {
     const root = projectDir();
