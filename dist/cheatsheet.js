@@ -6,7 +6,7 @@ export const CHEATSHEET = `# DS v1.2 — Cheat Sheet (the law)
 
 ## Golden rules
 1. ONLY semantic tokens. Never slate-*/gray-*/indigo-*/hex/rgba. Never dark: modifiers.
-2. Layout zones: TopBar=bg-bg-inverse text-text-on-inverse · Sidebar=bg-surface-elevated border-r border-border-default · Main=bg-surface-sunken p-8 · Cards=bg-surface-elevated border-border-default rounded-card shadow-card
+2. Layout zones: Shell=bg-surface-sunken · TopBar=transparent (no bg, no border) · Sidebar=transparent (no bg, no border) · Main=bg-surface-elevated rounded-tl-card border border-border-subtle · Cards=bg-surface-elevated border-border-default rounded-card shadow-card
 3. One primary Button per page (variant="primary"); secondary actions use variant="outline" or "ghost".
 4. Tables ALWAYS inside <Card><CardContent className="p-0">.
 5. Status via <Badge variant="success|warning|destructive|info|outline"> — never custom colors.
