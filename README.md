@@ -1,4 +1,4 @@
-# ds-mcp — Design System v1.2 MCP Server (v2)
+# vitamin-z — Design System v1.2 MCP Server (v2)
 
 Voice-command-optimized MCP server for the DS. The full loop is now hands-free: speak → `build_page(save:true)` → file on disk. Iterate by voice with `edit_page`. The markdown docs in `MCP/` stay the single source of truth — edit them and restart the server; no rebuild needed.
 
@@ -10,7 +10,7 @@ npm install
 npm run build
 ```
 
-Run check: `node dist/index.js` should print `ds-mcp ready — 7 docs, 86 sections indexed`.
+Run check: `node dist/index.js` should print `vitamin-z ready — 7 docs, 86 sections indexed`.
 
 ## Connect a client
 
@@ -60,7 +60,7 @@ Every write is gated: TypeScript syntax check + DS token validation. Broken or n
 
 For best speed with a small local model, add to its system prompt:
 
-> You build dashboard pages with the ds-mcp tools. To create a page, call `build_page` with the user's words as `intent` and `save: true` — nothing else needed. To change an existing page, call `edit_page` with the page name and the user's words as `instruction`. Only write code yourself for things the tools can't do, and save it with `save_page`. Use `get_component`/`search_ds` for lookups.
+> You build dashboard pages with the vitamin-z tools. To create a page, call `build_page` with the user's words as `intent` and `save: true` — nothing else needed. To change an existing page, call `edit_page` with the page name and the user's words as `instruction`. Only write code yourself for things the tools can't do, and save it with `save_page`. Use `get_component`/`search_ds` for lookups.
 
 ## Layout
 

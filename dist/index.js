@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * ds-mcp — MCP server for Design System v1.2
+ * vitamin-z — MCP server for Design System v1.2
  *
  * Built for voice-driven workflows: a local LLM receives a transcribed
  * command ("build me a shipments page with stats and a table"), calls
@@ -18,7 +18,7 @@ import { parseOps, applyOps } from "./editor.js";
 import { saveFile, listPages, findPage, readFileRel, projectDir } from "./project.js";
 import { CHEATSHEET } from "./cheatsheet.js";
 const stats = loadIndex();
-const server = new McpServer({ name: "ds-mcp", version: "2.0.0" }, {
+const server = new McpServer({ name: "vitamin-z", version: "2.0.0" }, {
     instructions: `Design System v1.2 server. Voice loop: (1) to CREATE a page, call build_page with save:true — done in one call; (2) to CHANGE an existing page ("add a chart to orders"), call edit_page; (3) only call validate_code on code YOU wrote or hand-modified. Use get_component / get_tokens / get_pattern / search_ds for targeted lookups. Call get_cheatsheet once per session. Never write raw Tailwind colors (slate-*, gray-*, hex) — only DS semantic tokens.`,
 });
 function text(s) {
@@ -289,9 +289,9 @@ server.registerTool("get_cheatsheet", {
 async function main() {
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    console.error(`ds-mcp ready — ${stats.files} docs, ${stats.chunks} sections indexed from ${DOCS_DIR}`);
+    console.error(`vitamin-z ready — ${stats.files} docs, ${stats.chunks} sections indexed from ${DOCS_DIR}`);
 }
 main().catch((err) => {
-    console.error("ds-mcp fatal:", err);
+    console.error("vitamin-z fatal:", err);
     process.exit(1);
 });

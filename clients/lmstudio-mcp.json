@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "ds-mcp": {
+    "vitamin-z": {
       "command": "node",
       "args": [
         "/Users/macbook/Desktop/ds-shadcn-v1.2/MCP/server/dist/index.js"
