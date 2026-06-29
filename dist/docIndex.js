@@ -10,8 +10,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-/** Docs live two levels up from dist/ (MCP/server/dist → MCP/). Overridable. */
-export const DOCS_DIR = process.env.DS_DOCS_DIR ?? path.resolve(__dirname, "..", "..");
+/** Docs live in the repo's docs/ dir (vitamin-z/dist → vitamin-z/docs). Overridable. */
+export const DOCS_DIR = process.env.DS_DOCS_DIR ?? path.resolve(__dirname, "..", "docs");
 const DOC_FILES = [
     "TEMPLATE_STYLE.md",
     "TOKENS.md",

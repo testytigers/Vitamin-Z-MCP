@@ -405,6 +405,155 @@ import {
 
 ---
 
+## Popover
+
+**File:** `popover.tsx`
+**Sub-components:** `Popover`, `PopoverTrigger`, `PopoverContent`, `PopoverAnchor`
+
+Floating panel anchored to a trigger. Base for `Combobox`. Content is DS-tokenized: `rounded-overlay border-border-default bg-surface-popover shadow-popover`. Never restyle the panel chrome with raw colors.
+
+```tsx
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+
+<Popover>
+  <PopoverTrigger asChild>
+    <Button variant="outline">Open</Button>
+  </PopoverTrigger>
+  <PopoverContent align="start" className="w-64">
+    <p className="text-sm text-text-primary">Panel content</p>
+  </PopoverContent>
+</Popover>
+```
+
+**Rules:**
+- Add `overflow-hidden` when children (search input, list) must clip to the rounded corners — otherwise square child corners poke past the border and look broken.
+- Default width is `w-72`; override via `className`. Use `w-[var(--radix-popover-trigger-width)]` to match the trigger width (combobox pattern).
+
+---
+
+## Command
+
+**File:** `command.tsx` (built on `cmdk`)
+**Sub-components:** `Command`, `CommandInput`, `CommandList`, `CommandEmpty`, `CommandGroup`, `CommandItem`, `CommandSeparator`
+
+Searchable command/list primitive. Mostly used inside `Popover` to build a `Combobox`. The input separator is `border-b border-border-subtle`; selected item state is `data-[selected=true]:bg-action-ghost-hover`. Items carry `outline-none` — never add a raw focus ring.
+
+```tsx
+import {
+  Command, CommandInput, CommandList, CommandEmpty,
+  CommandGroup, CommandItem,
+} from "@/components/ui/command";
+
+<Command>
+  <CommandInput placeholder="Search..." />
+  <CommandList>
+    <CommandEmpty>No results.</CommandEmpty>
+    <CommandGroup>
+      <CommandItem value="alger" onSelect={() => {}}>Alger</CommandItem>
+      <CommandItem value="oran" onSelect={() => {}}>Oran</CommandItem>
+    </CommandGroup>
+  </CommandList>
+</Command>
+```
+
+**Rules:** padding lives on `CommandGroup` (`p-1`), NOT on `CommandList` — don't double up or rows get inset twice.
+
+---
+
+## Combobox
+
+**File:** `combobox.tsx`
+**Exports:** `Combobox` (single-select), `MultiCombobox` (multi-select), type `ComboboxOption`
+
+Searchable select built from `Popover` + `Command`. **This is the DS-correct way to do a searchable/typeahead dropdown** — do NOT hand-roll a `DropdownMenu` + `<input>`. Use plain `Select` when the option list is short and needs no search; use `Combobox` when it's long or searchable.
+
+`ComboboxOption` = `{ value: string; label: string; sublabel?: string }`. `sublabel` renders a muted second line (e.g. shop owner under shop name) and is included in the search match.
+
+```tsx
+import { Combobox, MultiCombobox } from "@/components/ui/combobox";
+
+// Single-select
+<Combobox
+  options={[{ value: "hub-alger", label: "Hub Alger" }, { value: "hub-oran", label: "Hub Oran" }]}
+  value={hub}
+  onChange={setHub}
+  placeholder="Select a hub"
+  searchPlaceholder="Search hub..."
+/>
+
+// Single-select with sub-labels (e.g. shop + owner)
+<Combobox
+  options={shops.map((s) => ({ value: s.id, label: s.name, sublabel: s.owner }))}
+  value={shop}
+  onChange={setShop}
+  placeholder="All shops"
+  searchPlaceholder="Shop or owner..."
+/>
+
+// Multi-select (checkbox rows, count in trigger, inline clear ✕)
+<MultiCombobox
+  options={cities.map((c) => ({ value: c, label: c }))}
+  value={selectedCities}
+  onChange={setSelectedCities}
+  placeholder="All cities"
+  searchPlaceholder="Search a city..."
+/>
+```
+
+**Props:** `options`, `value`, `onChange`, `placeholder`, `searchPlaceholder`, `emptyText`, `className`, `contentClassName`. `Combobox` also takes `clearValue` (sentinel for "nothing selected", default `""`) — re-selecting the active option clears it.
+
+**Rules:**
+- Trigger matches `Select`'s chrome: `h-9 border-border-default bg-surface-elevated rounded-control shadow-control focus:border-border-focus focus:shadow-focus`. Don't restyle borders with raw colors.
+- Works inside a `Sheet` (the filter pattern) — the popover layers above the sheet correctly.
+- For a multiselect filter, surface chosen values as removable pills outside the combobox (see DASHBOARD_PATTERNS → Filter Sheet).
+
+---
+
+## Sheet
+
+**File:** `sheet.tsx`
+**Sub-components:** `Sheet`, `SheetTrigger`, `SheetClose`, `SheetContent`, `SheetHeader`, `SheetFooter`, `SheetTitle`
+
+Right-anchored slide-over panel (Radix Dialog). Used for filters, detail panels, quick edits.
+
+```tsx
+import {
+  Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetFooter,
+} from "@/components/ui/sheet";
+
+<Sheet open={open} onOpenChange={setOpen}>
+  <SheetContent className="w-[420px] sm:w-[480px] flex flex-col p-0">
+    <SheetHeader className="px-6 py-5 border-b border-border-subtle">
+      <SheetTitle>Filtres</SheetTitle>
+    </SheetHeader>
+    <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">{/* fields */}</div>
+    <SheetFooter>
+      <Button variant="outline">Annuler</Button>
+      <div className="flex items-center gap-2">
+        <Button variant="outline">Réinitialiser</Button>
+        <Button>Appliquer</Button>
+      </div>
+    </SheetFooter>
+  </SheetContent>
+</Sheet>
+```
+
+**Layer stack (DS z-index tokens):** overlay = `z-overlay` (300), content = `z-modal` (400). Both sit ABOVE the sticky header/sidebar (`z-sticky`, 200) — the sheet is the superior layer when open. `Popover`/`Combobox` opened *inside* a sheet use `z-popover` (500), so they correctly layer above the sheet content. Never lower a sheet below `z-overlay`.
+
+**Footer convention (`SheetFooter` defaults to `justify-between`):** secondary/cancel on the LEFT, primary actions grouped on the RIGHT. Buttons **hug their content** — do NOT use `flex-1`/full-width buttons.
+
+```tsx
+<SheetFooter>
+  <Button variant="outline" onClick={cancel}>Annuler</Button>
+  <div className="flex items-center gap-2">
+    <Button variant="outline" onClick={reset}>Réinitialiser</Button>
+    <Button onClick={apply}>Appliquer</Button>
+  </div>
+</SheetFooter>
+```
+
+---
+
 ## Avatar
 
 **File:** `avatar.tsx`
@@ -713,6 +862,8 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from "@/components/ui/breadcrumb";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem, CommandSeparator } from "@/components/ui/command";
+import { Combobox, MultiCombobox } from "@/components/ui/combobox"; // searchable single/multi select (Popover + Command)
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from "@/components/ui/sheet";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext, PaginationEllipsis } from "@/components/ui/pagination";
@@ -725,7 +876,7 @@ import { Toggle } from "@/components/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 // ── Layout components (Next.js) ──
-import { AppShell, PageContent, PageHeader } from "@/components/layout/app-shell";
+import { PageHeader } from "@/components/layout/page-header"; // title + description + actions; no icon, no breadcrumb
 import { Header } from "@/components/layout/header";
 import { Sidebar } from "@/components/layout/sidebar";
 ```

@@ -34,16 +34,16 @@ The script walks every `.tsx` / `.ts` file under `src/` and fails on any of thes
 | ❌ Forbidden | ✅ Correct replacement |
 |---|---|
 | **Hardcoded hex / rgba** | |
-| `bg-[#4f46e5]` | `bg-action-primary` |
-| `bg-[#4338ca]` | `bg-action-primary-hover` |
-| `text-[#4f46e5]` | `text-icon-interactive` |
-| `border-[#4f46e5]` | `border-border-focus` |
-| `ring-[#4f46e5]` | `ring-border-focus` |
-| `bg-[rgba(79,70,229,0.04)]` | `bg-action-primary-tint` |
-| `bg-[rgba(79,70,229,0.08)]` | `bg-action-primary-subtle` |
-| `bg-[rgba(79,70,229,0.1)]` | `bg-action-primary-subtle` |
-| `bg-[rgba(79,70,229,0.12)]` | `bg-action-primary-subtle` |
-| `border-[rgba(79,70,229,...)]` | `border-action-primary-subtle` |
+| `bg-[#004030]` | `bg-action-primary` |
+| `bg-[#003526]` | `bg-action-primary-hover` |
+| `text-[#004030]` | `text-icon-interactive` |
+| `border-[#004030]` | `border-border-focus` |
+| `ring-[#004030]` | `ring-border-focus` |
+| `bg-[rgba(0,64,48,0.04)]` | `bg-action-primary-tint` |
+| `bg-[rgba(0,64,48,0.08)]` | `bg-action-primary-subtle` |
+| `bg-[rgba(0,64,48,0.1)]` | `bg-action-primary-subtle` |
+| `bg-[rgba(0,64,48,0.12)]` | `bg-action-primary-subtle` |
+| `border-[rgba(0,64,48,...)]` | `border-action-primary-subtle` |
 | Any other `bg-[#...]`, `text-[#...]`, `border-[#...]` | Use a DS token |
 | **Text primitives** | |
 | `text-slate-900` | `text-text-primary` |
@@ -85,8 +85,8 @@ const SCAN_DIRS = ["app/(dashboard)", "app/(auth)", "components"];
 const RULES = [
   { pattern: /(?:bg|text|border|ring)-\[#[0-9a-fA-F]+\]/g,
     message: "Hardcoded hex — use a DS token" },
-  { pattern: /(?:bg|border|text)-\[rgba\(\s*79\s*,\s*70\s*,\s*229/g,
-    message: "Hardcoded purple rgba — use bg-action-primary-subtle or bg-action-primary-tint" },
+  { pattern: /(?:bg|border|text)-\[rgba\(\s*0\s*,\s*64\s*,\s*48/g,
+    message: "Hardcoded brand rgba — use bg-action-primary-subtle or bg-action-primary-tint" },
   { pattern: /text-slate-\d+/g,
     message: "Raw text-slate-* — use text-text-{primary|strong|secondary|subtle|muted|disabled}" },
   { pattern: /\bbg-white\b/g,

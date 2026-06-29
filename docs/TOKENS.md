@@ -32,7 +32,7 @@ Tailwind utilities (text-text-primary, bg-bg-secondary, rounded-control)
 | `bg-surface-canvas`   | `--color-surface-canvas`      | #ffffff        | #020617         |
 | `bg-surface-elevated` | `--color-surface-elevated`    | #ffffff        | #0f172a         |
 | `bg-surface-overlay`  | `--color-surface-overlay`     | #ffffff        | #1e293b         |
-| `bg-surface-sunken`   | `--color-surface-sunken`      | #f1f5f9        | #020617         |
+| `bg-surface-sunken`   | `--color-surface-sunken`      | #f8fafc        | #020617         |
 | `bg-surface-popover`  | `--color-surface-popover`     | #ffffff        | #1e293b         |
 
 **Usage guide:**
@@ -54,6 +54,8 @@ Tailwind utilities (text-text-primary, bg-bg-secondary, rounded-control)
 
 ### Action Colors
 
+**Brand accent = green** ramp: `50 #ecf6f2 · 100 #cfe7df · 200 #a6d2c4 · 300 #72b8a3 · 400 #3d9580 · 500 #156a52 (primary button) · 600 #004030 (hover · also icon-interactive / border-focus) · 700 #003526 (active) · 800 #002a1e · 900 #001d15`. `subtle`/`tint` are `rgba(0,64,48,0.1)` / `rgba(0,64,48,0.06)`. Never hardcode — always use the `action-primary` / `icon-interactive` / `border-focus` tokens below.
+
 | Tailwind class                  | Use case                         |
 |---------------------------------|----------------------------------|
 | `bg-action-primary`             | Primary button background        |
@@ -62,8 +64,10 @@ Tailwind utilities (text-text-primary, bg-bg-secondary, rounded-control)
 | `bg-action-primary-disabled`    | Disabled button                  |
 | `bg-action-primary-subtle`      | Subtle accent fill (selected rows, 0.1 opacity) |
 | `bg-action-primary-tint`        | Very light accent tint (row hover, 0.06 opacity) |
-| `bg-action-secondary`           | Secondary button background      |
-| `bg-action-secondary-hover`     | Secondary button hover           |
+| `bg-action-secondary`           | Secondary button bg (brand-50)   |
+| `bg-action-secondary-hover`     | Secondary button hover (brand-100) |
+
+> Secondary button text + border reuse the **primary color** token directly: `text-action-primary border-action-primary`.
 | `bg-action-ghost-hover`         | Ghost button / nav item hover    |
 | `bg-action-ghost-active`        | Ghost button pressed             |
 | `bg-action-destructive`         | Destructive/danger button        |
@@ -90,7 +94,7 @@ Tailwind utilities (text-text-primary, bg-bg-secondary, rounded-control)
 | `border-border-subtle`  | slate-100     | Section dividers, very light separators |
 | `border-border-default` | slate-200     | Default card / input border     |
 | `border-border-hover`   | slate-300     | Hovered border                  |
-| `border-border-focus`   | purple-600    | Focused input ring              |
+| `border-border-focus`   | brand-600 (#004030) | Focused input ring        |
 | `border-border-error`   | red-500       | Error state                     |
 
 ### Status Colors

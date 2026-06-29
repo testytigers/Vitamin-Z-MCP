@@ -2,6 +2,8 @@
 
 > This folder is the **machine-readable interface** to the Design System v1.2. It is written for AI agents (Hermes and others) that generate, modify, or review dashboard UI code. Every file is self-contained and can be read independently.
 
+> ⚡ **There is now a real MCP server in [`server/`](./server/README.md).** Agents should connect to it instead of reading these files raw: `build_page` turns a voice command into a complete DS-compliant page, `validate_code` autofixes violations, and the lookup tools serve compact slices of these docs. These markdown files remain the source of truth — the server indexes them at startup.
+
 ---
 
 ## What Is This?
@@ -57,10 +59,10 @@ text-status-success-fg                text-green-600
 text-status-error-fg                  text-red-600
 text-status-warning-fg                text-yellow-600
 text-status-attention-fg              text-orange-600
-bg-action-primary                     bg-[#4f46e5]
-text-icon-interactive                 text-[#4f46e5]
-bg-action-primary-subtle              bg-[rgba(79,70,229,0.1)]
-bg-action-primary-tint                bg-[rgba(79,70,229,0.04)]
+bg-action-primary                     bg-[#004030]
+text-icon-interactive                 text-[#004030]
+bg-action-primary-subtle              bg-[rgba(0,64,48,0.1)]
+bg-action-primary-tint                bg-[rgba(0,64,48,0.04)]
 data-appearance="dark" on root        dark: Tailwind prefix
 Badge variant="success"               custom green badge span
 ```

@@ -23,7 +23,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       {/* ── Body: Sidebar + Main ─────────────────────*/}
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
-        <main className="flex-1 overflow-y-auto bg-surface-sunken">
+        <main className="flex-1 overflow-y-auto [scrollbar-gutter:stable] bg-surface-sunken">
           {children}
         </main>
       </div>
@@ -35,9 +35,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
 **Critical rules:**
 - The root `div` carries `data-appearance` (not `<html>` in React) — this drives all token switching
+- TopBar = white (`bg-surface-elevated border-b border-border-default`); Sidebar = white (`bg-surface-elevated border-r border-border-default`); `<main>` = light gray canvas (`bg-surface-sunken`)
 - `h-screen overflow-hidden` on root prevents double scrollbars
 - Only `<main>` scrolls — sidebar and topbar are sticky
-- Use `bg-surface-sunken` on main (slightly grey background)
+- **Always put `[scrollbar-gutter:stable]` on the scrolling `<main>`** — reserves the scrollbar gutter so content does NOT shift sideways when a page toggles between scrollable and non-scrollable
 
 ---
 
@@ -233,7 +234,24 @@ function SidebarItem({
 
 ## 5. Page Header
 
-Every page's main content area starts with a page header.
+**ALWAYS use the shared `<PageHeader>` component** — never hand-roll a header `<div>` with an `<h1>`. It is the single source of truth, so header styling changes in one place.
+
+```tsx
+import { PageHeader } from "@/components/layout/page-header";
+
+<PageHeader
+  title="Colis"
+  description={<>{count} colis trouvés</>}   // optional: subtitle / count / status badges
+  actions={                                   // optional: right-aligned controls
+    <>
+      <Button variant="outline" size="md" className="gap-1.5"><Upload className="w-4 h-4" />Importer</Button>
+      <Button size="md" className="gap-1.5"><Plus className="w-4 h-4" />Ajouter</Button>
+    </>
+  }
+/>
+```
+
+**Rules (enforced by the component):** NO icon next to the title. NO breadcrumb row. `title` is a plain string. Put subtitle text, counts, or status `<Badge>`s in `description`. Put all action controls in `actions` — and they must all be the **same height**: `<Button size="md">` (h-9) so they line up with `SelectTrigger`/date inputs (h-9). Never mix `size="sm"` buttons with h-9 controls in the header.
 
 ```tsx
 function PageHeader({
@@ -297,35 +315,31 @@ function PageContent({ children }: { children: React.ReactNode }) {
 
 ## 7. Stat / KPI Cards Grid
 
+KPI stats are a **single bordered strip** divided into equal columns by thin vertical rules — NOT separate floating cards, and NO icons. Each cell: a label with a dotted underline, then the big value below.
+
 ```tsx
 const stats = [
-  { label: "Total Revenue", value: "$12,450", trend: "+14.5%", up: true },
-  { label: "Active Users",  value: "1,234",   trend: "+2.5%",  up: true },
-  { label: "Conversion",    value: "85.2%",   trend: "-1.2%",  up: false },
-  { label: "Open Tickets",  value: "432",     trend: "0%",     up: null },
+  { label: "Active users", value: "23" },
+  { label: "New users",    value: "23" },
+  { label: "Avg. engagement", value: "8s" },
+  { label: "Event count",  value: "111" },
 ];
 
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-stack-lg">
-  {stats.map((s) => (
-    <Card key={s.label} className="p-5 hover:shadow-popover transition-shadow duration-normal">
-      <p className="text-sm font-medium text-text-secondary mb-2">{s.label}</p>
-      <div className="flex items-end justify-between">
-        <span className="text-2xl font-bold text-text-primary">{s.value}</span>
-        <span className={cn(
-          "text-xs font-medium",
-          s.up === true  && "text-status-success-fg",
-          s.up === false && "text-status-error-fg",
-          s.up === null  && "text-text-muted"
-        )}>
-          {s.trend}
-        </span>
-      </div>
-    </Card>
+<div className="bg-surface-elevated border border-border-default rounded-card grid grid-cols-2 lg:grid-cols-4 divide-x divide-border-subtle">
+  {stats.map(({ label, value }) => (
+    <div key={label} className="px-6 py-5">
+      <p className="inline-block text-sm text-text-secondary border-b border-dotted border-border-hover pb-1 mb-2">
+        {label}
+      </p>
+      <p className="text-3xl font-bold text-text-primary">{value}</p>
+    </div>
   ))}
 </div>
 ```
 
-**Grid rule:** Always `grid-cols-1 md:grid-cols-2 lg:grid-cols-4` for 4-up KPI rows.
+**Rules:** No icons on stat cells. One enclosing `Card`/bordered container with `divide-x divide-border-subtle` between columns (not gapped separate cards). Label gets a dotted underline (`border-b border-dotted border-border-hover`, `inline-block`). Value is `text-3xl font-bold text-text-primary`.
+
+**Grid rule:** Always `grid-cols-2 lg:grid-cols-4` for 4-up KPI rows.
 
 ---
 
@@ -360,6 +374,98 @@ const stats = [
   </div>
 </div>
 ```
+
+---
+
+## 8b. Filter Sheet (Combobox + Pills)
+
+The standard pattern for a table with many filters: a **Filtres** button (with active-count badge) opens a `Sheet`; inside, searchable fields use `Combobox`/`MultiCombobox`, short lists use `Select`, single dates use one `<input type="date">` (NOT a from/to range unless a range is truly needed), booleans use `Switch`. Edits go to a `temp` copy and only commit on **Appliquer** (Annuler / Réinitialiser also provided). Applied filters render as removable **pills** above the table.
+
+```tsx
+const EMPTY = { cities: [], hub: "all", shop: "all", date: "", stockOnly: false };
+const [filters, setFilters] = React.useState(EMPTY); // applied
+const [temp, setTemp] = React.useState(EMPTY);       // in-sheet draft
+const [open, setOpen] = React.useState(false);
+const setT = (patch) => setTemp((t) => ({ ...t, ...patch }));
+
+// Filters trigger (in the toolbar)
+<button
+  onClick={() => { setTemp(filters); setOpen(true); }}
+  className={cn(
+    "h-8 inline-flex items-center gap-1.5 px-3 rounded-md border text-sm transition-colors",
+    activeCount > 0
+      ? "border-border-focus bg-action-primary-subtle text-icon-interactive"
+      : "border-border-default bg-surface-elevated text-text-secondary hover:border-border-hover",
+  )}
+>
+  <ListFilter className="w-4 h-4" /> Filtres
+  {activeCount > 0 && (
+    <span className="bg-action-primary text-text-on-accent text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+      {activeCount}
+    </span>
+  )}
+</button>
+
+// Pills bar (above the table, only when filters are applied)
+<div className="flex items-center gap-2 px-4 py-2 border-b border-border-subtle bg-bg-secondary flex-wrap">
+  <span className="text-xs text-text-muted">Filtres actifs :</span>
+  {pills.map((p) => (
+    <span key={p.key} className="inline-flex items-center gap-1 bg-action-primary-subtle text-xs px-2.5 py-1 rounded-full">
+      <span className="text-text-secondary">{p.label} :</span>
+      <span className="text-icon-interactive font-medium">{p.val}</span>
+      <button onClick={p.clear} className="text-text-muted hover:text-status-error-fg"><X className="w-3 h-3" /></button>
+    </span>
+  ))}
+  <button onClick={() => setFilters(EMPTY)} className="text-xs text-text-muted hover:text-status-error-fg ml-auto flex items-center gap-1">
+    <X className="w-3 h-3" /> Effacer tout
+  </button>
+</div>
+
+// The sheet
+<Sheet open={open} onOpenChange={(o) => !o && setOpen(false)}>
+  <SheetContent className="w-[420px] sm:w-[480px] flex flex-col p-0">
+    <SheetHeader className="px-6 py-5 border-b border-border-subtle">
+      <SheetTitle className="flex items-center gap-2"><ListFilter className="w-4 h-4 text-icon-interactive" /> Filtres</SheetTitle>
+    </SheetHeader>
+
+    <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
+      <div className="space-y-2">
+        <Label className="text-sm font-medium text-text-primary">City</Label>
+        <MultiCombobox options={cityOpts} value={temp.cities} onChange={(v) => setT({ cities: v })}
+          placeholder="All cities" searchPlaceholder="Search a city..." />
+      </div>
+      <div className="space-y-2">
+        <Label className="text-sm font-medium text-text-primary">Shop / Owner</Label>
+        <Combobox options={shopOpts} value={temp.shop === "all" ? "" : temp.shop}
+          onChange={(v) => setT({ shop: v === "" ? "all" : v })}
+          placeholder="All shops" searchPlaceholder="Shop or owner..." />
+      </div>
+      <Separator />
+      <div className="space-y-2">
+        <Label htmlFor="f-date" className="text-sm font-medium text-text-primary">Date</Label>
+        <input id="f-date" type="date" value={temp.date} onChange={(e) => setT({ date: e.target.value })}
+          className="h-9 w-full rounded-md border border-border-default bg-surface-sunken px-3 text-sm text-text-primary focus:outline-none focus:border-border-focus" />
+      </div>
+      <Separator />
+      <div className="flex items-center justify-between py-1">
+        <Label htmlFor="f-stock" className="text-sm font-medium text-text-primary">Stock only</Label>
+        <Switch id="f-stock" checked={temp.stockOnly} onCheckedChange={(v) => setT({ stockOnly: v })} />
+      </div>
+    </div>
+
+    {/* Footer: cancel LEFT, clear+apply RIGHT, buttons hug (SheetFooter is justify-between) */}
+    <SheetFooter>
+      <Button variant="outline" onClick={() => setOpen(false)}>Annuler</Button>
+      <div className="flex items-center gap-2">
+        <Button variant="outline" onClick={() => setTemp(EMPTY)}>Réinitialiser</Button>
+        <Button onClick={() => { setFilters(temp); setOpen(false); }}>Appliquer</Button>
+      </div>
+    </SheetFooter>
+  </SheetContent>
+</Sheet>
+```
+
+**Column visibility** lives next to the Filtres button as a `DropdownMenu` of `Checkbox` rows (keep the menu open on toggle with `onSelect={(e) => e.preventDefault()}`); render each table column conditionally and compute the empty-state `colSpan` from the count of visible columns.
 
 ---
 

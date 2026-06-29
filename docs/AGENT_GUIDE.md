@@ -200,9 +200,9 @@ The lint script rejects ALL of these. See `ENFORCEMENT.md` for the complete forb
 <span className="text-green-600">Success</span>              // → text-status-success-fg
 <span className="text-red-600">Error</span>                  // → text-status-error-fg
 <span className="text-orange-600">Overdue</span>             // → text-status-attention-fg
-<div className="bg-[#4f46e5]">...</div>         // → bg-action-primary
-<div className="text-[#4f46e5]">...</div>       // → text-icon-interactive
-<div className="bg-[rgba(79,70,229,0.1)]">...</div> // → bg-action-primary-subtle
+<div className="bg-[#004030]">...</div>         // → bg-action-primary
+<div className="text-[#004030]">...</div>       // → text-icon-interactive
+<div className="bg-[rgba(0,64,48,0.1)]">...</div> // → bg-action-primary-subtle
 ```
 
 ```tsx
@@ -216,8 +216,8 @@ The lint script rejects ALL of these. See `ENFORCEMENT.md` for the complete forb
 <span className="text-status-success-fg">Success</span>
 <span className="text-status-error-fg">Error</span>
 <span className="text-status-attention-fg">Overdue</span>
-<div className="bg-action-primary">Purple fill</div>
-<div className="text-icon-interactive">Purple icon</div>
+<div className="bg-action-primary">Brand fill</div>
+<div className="text-icon-interactive">Brand icon</div>
 <div className="bg-action-primary-subtle">Selected row tint</div>
 ```
 

@@ -19,16 +19,16 @@ const FIX_MAP: Array<[RegExp, string | ((m: string) => string)]> = [
   [/hover:bg-slate-100\b/g, "hover:bg-action-ghost-hover"],
   [/hover:bg-slate-200\b/g, "hover:bg-action-ghost-active"],
   [/hover:bg-slate-50\b/g, "hover:bg-surface-sunken"],
-  // known hex values
-  [/bg-\[#4f46e5\]/gi, "bg-action-primary"],
-  [/bg-\[#4338ca\]/gi, "bg-action-primary-hover"],
-  [/text-\[#4f46e5\]/gi, "text-icon-interactive"],
-  [/border-\[#4f46e5\]/gi, "border-border-focus"],
-  [/ring-\[#4f46e5\]/gi, "ring-border-focus"],
-  // purple rgba
-  [/bg-\[rgba\(\s*79\s*,\s*70\s*,\s*229\s*,\s*0?\.0[1-6]\s*\)\]/g, "bg-action-primary-tint"],
-  [/bg-\[rgba\(\s*79\s*,\s*70\s*,\s*229[^\]]*\]/g, "bg-action-primary-subtle"],
-  [/border-\[rgba\(\s*79\s*,\s*70\s*,\s*229[^\]]*\]/g, "border-action-primary-subtle"],
+  // known hex values (brand green #004030)
+  [/bg-\[#004030\]/gi, "bg-action-primary"],
+  [/bg-\[#003526\]/gi, "bg-action-primary-hover"],
+  [/text-\[#004030\]/gi, "text-icon-interactive"],
+  [/border-\[#004030\]/gi, "border-border-focus"],
+  [/ring-\[#004030\]/gi, "ring-border-focus"],
+  // brand rgba (0,64,48)
+  [/bg-\[rgba\(\s*0\s*,\s*64\s*,\s*48\s*,\s*0?\.0[1-6]\s*\)\]/g, "bg-action-primary-tint"],
+  [/bg-\[rgba\(\s*0\s*,\s*64\s*,\s*48[^\]]*\]/g, "bg-action-primary-subtle"],
+  [/border-\[rgba\(\s*0\s*,\s*64\s*,\s*48[^\]]*\]/g, "border-action-primary-subtle"],
   // text slate scale
   [/text-slate-900\b/g, "text-text-primary"],
   [/text-slate-800\b/g, "text-text-primary"],
