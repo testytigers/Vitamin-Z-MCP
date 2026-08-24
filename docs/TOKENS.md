@@ -54,7 +54,7 @@ Tailwind utilities (text-text-primary, bg-bg-secondary, rounded-control)
 
 ### Action Colors
 
-**Brand accent = green** ramp: `50 #ecf6f2 · 100 #cfe7df · 200 #a6d2c4 · 300 #72b8a3 · 400 #3d9580 · 500 #156a52 (primary button) · 600 #004030 (hover · also icon-interactive / border-focus) · 700 #003526 (active) · 800 #002a1e · 900 #001d15`. `subtle`/`tint` are `rgba(0,64,48,0.1)` / `rgba(0,64,48,0.06)`. Never hardcode — always use the `action-primary` / `icon-interactive` / `border-focus` tokens below.
+**Brand accent = green** ramp: `50 #ecf6f2 · 100 #cfe7df · 200 #a6d2c4 · 300 #72b8a3 (dark-mode accent) · 400 #3d9580 · 500 #156a52 (primary button · icon-interactive · border-focus) · 600 #004030 (hover) · 700 #003526 (active) · 800 #002a1e · 900 #001d15`. `subtle`/`tint` are `rgba(21,106,82,0.12)` / `rgba(21,106,82,0.07)`. Never hardcode — always use the `action-primary` / `icon-interactive` / `border-focus` tokens below.
 
 | Tailwind class                  | Use case                         |
 |---------------------------------|----------------------------------|
@@ -94,7 +94,7 @@ Tailwind utilities (text-text-primary, bg-bg-secondary, rounded-control)
 | `border-border-subtle`  | slate-100     | Section dividers, very light separators |
 | `border-border-default` | slate-200     | Default card / input border     |
 | `border-border-hover`   | slate-300     | Hovered border                  |
-| `border-border-focus`   | brand-600 (#004030) | Focused input ring        |
+| `border-border-focus`   | brand-500 (#156a52) | Focused input ring        |
 | `border-border-error`   | red-500       | Error state                     |
 
 ### Status Colors
@@ -122,15 +122,60 @@ Tailwind utilities (text-text-primary, bg-bg-secondary, rounded-control)
 | `text-icon-on-accent`  | Icon on accent background           |
 | `text-icon-interactive`| Interactive icon (buttons, links)   |
 | `text-icon-disabled`   | Disabled icon                       |
+| `text-icon-on-accent`  | Icon on an accent background        |
+
+### Chart / Data-Viz Colors
+
+Charts are the one place raw hex is tempting — don't. Every series colour is a token,
+so charts re-theme with the rest of the system and stay legible in dark mode.
+
+**Single / dual series** — use the semantic four:
+
+| Tailwind class      | Use case                              |
+|---------------------|---------------------------------------|
+| `chart-primary`     | Main series                           |
+| `chart-secondary`   | Comparison / previous period          |
+| `chart-accent`      | Attention series (returns, failures)  |
+| `chart-muted`       | Track, background fill, "other"       |
+
+**Three or more series** — use the categorical ramp **in order, without skipping**.
+Order is fixed so the same category keeps its colour across every chart in the app:
+
+| Tailwind class  | Light     | Dark      |
+|-----------------|-----------|-----------|
+| `chart-cat-1`   | `#3d9580` | `#5fbfa5` |
+| `chart-cat-2`   | `#2563eb` | `#60a5fa` |
+| `chart-cat-3`   | `#f97316` | `#fb923c` |
+| `chart-cat-4`   | `#7c3aed` | `#a78bfa` |
+| `chart-cat-5`   | `#db2777` | `#f472b6` |
+| `chart-cat-6`   | `#0891b2` | `#22d3ee` |
+| `chart-cat-7`   | `#ca8a04` | `#facc15` |
+| `chart-cat-8`   | `#64748b` | `#94a3b8` |
+
+**Ordered / magnitude data** (heat maps, choropleths, density) — use the sequential
+ramp, low → high. It is brand-derived, so it reads as "more green = more":
+
+`chart-seq-1` → `chart-seq-2` → `chart-seq-3` → `chart-seq-4` → `chart-seq-5`
+
+**Chart structure:** `chart-grid` (grid lines), `chart-axis` (axis lines and ticks).
+
+```tsx
+// Recharts example — tokens via CSS variables
+<Line dataKey="livre"   stroke="var(--color-chart-cat-1)" />
+<Line dataKey="retour"  stroke="var(--color-chart-cat-3)" />
+<CartesianGrid stroke="var(--color-chart-grid)" />
+```
 
 ---
 
 ## 2. Typography Tokens
 
 ### Font Families (Tailwind)
-- `font-sans` → Inter / Segoe UI / system-ui
-- `font-mono` → JetBrains Mono / Fira Code
-- `font-serif` → Merriweather / Georgia
+- `font-sans` → Inter (loaded via `next/font/google` as `--font-body`)
+- `font-heading` → Inter (same face as body; weight carries the hierarchy)
+- `font-mono` → JetBrains Mono (loaded via `next/font/google` as `--font-mono`), falls back to `ui-monospace` / `SFMono-Regular`. Use for reference codes, SKUs, tracking numbers — anything where digits must align in a column.
+
+> There is no `font-serif`. Do not use it; it resolves to the browser default, not a DS token.
 
 ### Font Sizes (Tailwind)
 | Class     | Value  | Use case                    |
@@ -151,18 +196,21 @@ Tailwind utilities (text-text-primary, bg-bg-secondary, rounded-control)
 - `font-semibold` (600) → headings, card titles
 - `font-bold` (700) → page titles, display
 
-### Composite Typography (CSS variable — use directly via `style` prop or CSS)
-```css
---font-heading-h1  → 700 30px/1.25 Inter
---font-heading-h2  → 600 24px/1.375 Inter
---font-heading-h3  → 600 20px/1.375 Inter
---font-heading-h4  → 600 18px/1.5 Inter
---font-body-md     → 400 16px/1.5 Inter
---font-body-sm     → 400 14px/1.5 Inter
---font-label-md    → 500 14px/1 Inter
---font-label-sm    → 500 12px/1 Inter
---font-code-md     → 400 14px/1.5 JetBrains Mono
-```
+### Composite Typography — use these utility pairs, not CSS variables
+
+There are no `--font-heading-h1`-style composite variables in the build. Compose
+with Tailwind utilities instead:
+
+| Role       | Utilities                                          |
+|------------|----------------------------------------------------|
+| Page title | `text-3xl font-bold tracking-tight text-text-primary` |
+| Section    | `text-xl font-semibold text-text-primary`          |
+| Card title | `text-base font-semibold text-text-primary`        |
+| Body       | `text-sm text-text-primary`                        |
+| Label      | `text-sm font-medium text-text-secondary`          |
+| Caption    | `text-xs text-text-muted`                          |
+| Metric     | `text-2xl font-bold text-text-primary`             |
+| Code / ref | `font-mono text-xs`                                |
 
 ---
 
@@ -249,10 +297,14 @@ Also use as padding: `p-stack-md`, `py-stack-lg`, etc.
 ### Easing (Tailwind `ease-*`)
 | Class            | Curve                         | Use case         |
 |------------------|-------------------------------|------------------|
-| `ease-ease-out`  | cubic-bezier(0,0,0.2,1)       | Most transitions |
-| `ease-ease-in`   | cubic-bezier(0.4,0,1,1)       | Exit animations  |
-| `ease-ease-in-out` | cubic-bezier(0.4,0,0.2,1)   | Hover states     |
+| `ease-out`       | cubic-bezier(0,0,0.2,1)       | Most transitions |
+| `ease-in`        | cubic-bezier(0.4,0,1,1)       | Exit animations  |
+| `ease-in-out`    | cubic-bezier(0.4,0,0.2,1)     | Hover states     |
 | `ease-spring`    | cubic-bezier(0.175,0.885,0.32,1.275) | Playful entrance |
+
+> These override Tailwind's built-in `ease-*` classes so they resolve to DS motion
+> tokens. `ease-ease-out` / `ease-ease-in-out` still work as deprecated aliases;
+> `ease-ease-in` never existed — use `ease-in`.
 
 ---
 
@@ -282,19 +334,33 @@ Applied automatically by Button/Input/Select variants. Use as CSS variables if b
 <div data-appearance="dark">...</div>
 ```
 
-### Brand mode (blue accent)
-```html
-<html data-brand="brand">...</html>
-```
-
-### Dark + Brand
-```html
-<html data-appearance="dark" data-brand="brand">...</html>
-```
-
 ### Compact density
 ```html
 <html data-density="compact">...</html>
 ```
+Shrinks spacing (`stack-*`, `inline-*`, `comp-*`, `cont-*`) and control heights only.
+Colours, radii and type sizes are unchanged.
 
-> **Agent rule:** Place `data-appearance` and `data-brand` on `<html>` or the root layout wrapper. Never override individual token values inline — switch the mode attribute instead.
+### There is no brand mode
+
+`data-brand` is **not implemented** and must never be used. Earlier drafts of this doc
+described a `data-brand="brand"` blue-accent axis; no such block exists in
+`globals.css`, so the attribute silently does nothing. The green brand ramp is the
+only accent. `coliix/CLAUDE.md` also explicitly forbids it.
+
+> **Agent rule:** Place `data-appearance` and `data-density` on `<html>` or the root
+> layout wrapper. Never override individual token values inline — switch the mode
+> attribute instead.
+
+### Implementation status
+
+| Axis | Attribute | Status |
+|---|---|---|
+| Appearance | `data-appearance="light"` | ✅ default (also on `:root`) |
+| Appearance | `data-appearance="dark"` | ✅ implemented |
+| Density | `data-density="compact"` | ✅ implemented |
+| Brand | `data-brand="*"` | ❌ does not exist — do not use |
+
+Note: the app's root `<html>` currently sets no `data-appearance` attribute. Light
+tokens are also declared on `:root`, so light is the effective default; add
+`data-appearance="dark"` to switch.
