@@ -1,0 +1,668 @@
+/* ============================================================
+   Design System v1.2 — Token CSS Custom Properties
+   Architecture: Primitives → Semantics → Components
+   Mode axis: [data-appearance="light|dark"] × [data-brand="default|brand"]
+   Density axis: [data-density="default|compact"]
+   ============================================================ */
+
+/* ── Primitives (always available, _ prefix = internal) ───── */
+:root {
+  /* Color palette */
+  --_color-slate-50: #f8fafc;
+  --_color-slate-100: #f1f5f9;
+  --_color-slate-200: #e2e8f0;
+  --_color-slate-300: #cbd5e1;
+  --_color-slate-400: #94a3b8;
+  --_color-slate-500: #64748b;
+  --_color-slate-600: #475569;
+  --_color-slate-700: #334155;
+  --_color-slate-800: #1e293b;
+  --_color-slate-900: #0f172a;
+  --_color-slate-950: #020617;
+
+  --_color-blue-50: #eff6ff;
+  --_color-blue-100: #dbeafe;
+  --_color-blue-200: #bfdbfe;
+  --_color-blue-300: #93c5fd;
+  --_color-blue-400: #60a5fa;
+  --_color-blue-500: #3b82f6;
+  --_color-blue-600: #2563eb;
+  --_color-blue-700: #1d4ed8;
+  --_color-blue-800: #1e40af;
+  --_color-blue-900: #1e3a8a;
+  --_color-blue-950: #172554;
+
+  --_color-red-50: #fef2f2;
+  --_color-red-100: #fee2e2;
+  --_color-red-200: #fecaca;
+  --_color-red-300: #fca5a5;
+  --_color-red-400: #f87171;
+  --_color-red-500: #ef4444;
+  --_color-red-600: #dc2626;
+  --_color-red-700: #b91c1c;
+  --_color-red-800: #991b1b;
+  --_color-red-900: #7f1d1d;
+  --_color-red-950: #450a0a;
+
+  --_color-green-50: #f0fdf4;
+  --_color-green-100: #dcfce7;
+  --_color-green-200: #bbf7d0;
+  --_color-green-300: #86efac;
+  --_color-green-400: #4ade80;
+  --_color-green-500: #22c55e;
+  --_color-green-600: #16a34a;
+  --_color-green-700: #15803d;
+  --_color-green-800: #166534;
+  --_color-green-900: #14532d;
+  --_color-green-950: #052e16;
+
+  --_color-yellow-50: #fefce8;
+  --_color-yellow-100: #fef9c3;
+  --_color-yellow-200: #fef08a;
+  --_color-yellow-300: #fde047;
+  --_color-yellow-400: #facc15;
+  --_color-yellow-500: #eab308;
+  --_color-yellow-600: #ca8a04;
+  --_color-yellow-700: #a16207;
+  --_color-yellow-800: #854d0e;
+  --_color-yellow-900: #713f12;
+  --_color-yellow-950: #422006;
+
+  --_color-orange-50: #fff7ed;
+  --_color-orange-500: #f97316;
+  --_color-orange-600: #ea580c;
+
+  --_color-purple-50: #faf5ff;
+  --_color-purple-500: #a855f7;
+  --_color-purple-600: #9333ea;
+
+  --_color-white: #ffffff;
+  --_color-black: #000000;
+  --_color-transparent: transparent;
+
+  /* Size scale */
+  --_size-0: 0px;
+  --_size-0_5: 2px;
+  --_size-1: 4px;
+  --_size-1_5: 6px;
+  --_size-2: 8px;
+  --_size-2_5: 10px;
+  --_size-3: 12px;
+  --_size-3_5: 14px;
+  --_size-4: 16px;
+  --_size-5: 20px;
+  --_size-6: 24px;
+  --_size-7: 28px;
+  --_size-8: 32px;
+  --_size-9: 36px;
+  --_size-10: 40px;
+  --_size-11: 44px;
+  --_size-12: 48px;
+  --_size-14: 56px;
+  --_size-16: 64px;
+  --_size-20: 80px;
+  --_size-24: 96px;
+  --_size-32: 128px;
+  --_size-40: 160px;
+  --_size-48: 192px;
+  --_size-64: 256px;
+  --_size-80: 320px;
+  --_size-96: 384px;
+
+  /* Typography */
+  --_font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --_font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+  --_font-serif: 'Merriweather', Georgia, ui-serif, serif;
+
+  --_font-size-xs: 12px;
+  --_font-size-sm: 14px;
+  --_font-size-base: 16px;
+  --_font-size-lg: 18px;
+  --_font-size-xl: 20px;
+  --_font-size-2xl: 24px;
+  --_font-size-3xl: 30px;
+  --_font-size-4xl: 36px;
+  --_font-size-5xl: 48px;
+
+  --_font-weight-regular: 400;
+  --_font-weight-medium: 500;
+  --_font-weight-semibold: 600;
+  --_font-weight-bold: 700;
+
+  --_line-height-none: 1;
+  --_line-height-tight: 1.25;
+  --_line-height-snug: 1.375;
+  --_line-height-normal: 1.5;
+  --_line-height-relaxed: 1.625;
+
+  /* Radius */
+  --_radius-none: 0px;
+  --_radius-sm: 4px;
+  --_radius-md: 6px;
+  --_radius-lg: 8px;
+  --_radius-xl: 12px;
+  --_radius-2xl: 16px;
+  --_radius-full: 9999px;
+
+  /* Shadow primitives — light */
+  --_shadow-none: none;
+  --_shadow-xs: 0 1px 2px 0 rgba(0,0,0,0.05);
+  --_shadow-sm: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px -1px rgba(0,0,0,0.1);
+  --_shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+  --_shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+  --_shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+
+  /* Shadow primitives — dark (v1.2: stronger opacity for dark surfaces) */
+  --_shadow-dark-xs: 0 1px 2px 0 rgba(0,0,0,0.3);
+  --_shadow-dark-sm: 0 1px 3px 0 rgba(0,0,0,0.4), 0 1px 2px -1px rgba(0,0,0,0.4);
+  --_shadow-dark-md: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -2px rgba(0,0,0,0.4);
+  --_shadow-dark-lg: 0 10px 15px -3px rgba(0,0,0,0.5), 0 4px 6px -4px rgba(0,0,0,0.4);
+  --_shadow-dark-xl: 0 20px 25px -5px rgba(0,0,0,0.5), 0 8px 10px -6px rgba(0,0,0,0.4);
+
+  /* Border width */
+  --_border-width-none: 0px;
+  --_border-width-sm: 0.5px;
+  --_border-width-md: 1px;
+  --_border-width-lg: 2px;
+
+  /* Motion */
+  --_duration-instant: 0ms;
+  --_duration-fast: 100ms;
+  --_duration-normal: 200ms;
+  --_duration-slow: 300ms;
+  --_duration-deliberate: 500ms;
+
+  --_easing-linear: linear;
+  --_easing-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --_easing-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --_easing-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --_easing-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  /* Chart hue primitives — the three families the base ramps don't cover.
+     Categorical series need 8 mutually distinguishable hues; slate/blue/
+     green/red/yellow/orange/purple supply five of them. */
+  --_color-cyan-300: #67e8f9;
+  --_color-cyan-600: #0891b2;
+  --_color-pink-300: #f9a8d4;
+  --_color-pink-600: #db2777;
+  --_color-teal-300: #5eead4;
+  --_color-teal-600: #0d9488;
+
+  /* 400 steps for orange/purple — the base ramps stop at 500, which leaves
+     dark-mode chart series unable to lighten like every other hue. */
+  --_color-orange-400: #fb923c;
+  --_color-purple-400: #c084fc;
+}
+
+/* ============================================================
+   SEMANTIC TOKENS — Light / Default (base)
+   ============================================================ */
+:root,
+[data-appearance="light"] {
+
+  /* Surface */
+  --color-surface-canvas: var(--_color-white);
+  --color-surface-elevated: var(--_color-white);
+  --color-surface-overlay: var(--_color-white);
+  --color-surface-sunken: var(--_color-slate-100);
+  --color-surface-popover: var(--_color-white);
+
+  /* Background */
+  --color-bg-primary: var(--_color-white);
+  --color-bg-secondary: var(--_color-slate-100);
+  --color-bg-tertiary: var(--_color-slate-200);
+  --color-bg-disabled: var(--_color-slate-100);
+  --color-bg-inverse: var(--_color-slate-900);
+
+  /* Action — Primary */
+  --color-action-primary-bg: var(--_color-slate-900);
+  --color-action-primary-bg-hover: var(--_color-slate-800);
+  --color-action-primary-bg-active: var(--_color-slate-700);
+  --color-action-primary-bg-disabled: var(--_color-slate-100);
+  --color-action-primary-text: var(--_color-white);
+  --color-action-primary-text-disabled: var(--_color-slate-400);
+  --color-action-primary-bg-subtle: rgba(59, 130, 246, 0.1);
+
+  /* Action — Secondary */
+  --color-action-secondary-bg: var(--_color-slate-100);
+  --color-action-secondary-bg-hover: var(--_color-slate-200);
+  --color-action-secondary-bg-active: var(--_color-slate-300);
+
+  /* Action — Ghost */
+  --color-action-ghost-bg-hover: var(--_color-slate-100);
+  --color-action-ghost-bg-active: var(--_color-slate-200);
+
+  /* Action — Destructive */
+  --color-action-destructive-bg: var(--_color-red-600);
+  --color-action-destructive-bg-hover: var(--_color-red-700);
+  --color-action-destructive-bg-active: var(--_color-red-800);
+
+  /* Action — Link */
+  --color-action-link-text: var(--_color-blue-600);
+  --color-action-link-text-hover: var(--_color-blue-700);
+
+  /* Status */
+  --color-status-error-fg: var(--_color-red-600);
+  --color-status-error-bg: var(--_color-red-50);
+  --color-status-error-border: var(--_color-red-200);
+  --color-status-success-fg: var(--_color-green-600);
+  --color-status-success-bg: var(--_color-green-50);
+  --color-status-success-border: var(--_color-green-200);
+  --color-status-warning-fg: var(--_color-yellow-600);
+  --color-status-warning-bg: var(--_color-yellow-50);
+  --color-status-warning-border: var(--_color-yellow-200);
+  --color-status-info-fg: var(--_color-blue-600);
+  --color-status-info-bg: var(--_color-blue-50);
+  --color-status-info-border: var(--_color-blue-200);
+
+  /* Text */
+  --color-text-primary: var(--_color-slate-900);
+  --color-text-secondary: var(--_color-slate-600);
+  --color-text-tertiary: var(--_color-slate-500);
+  --color-text-muted: var(--_color-slate-400);
+  --color-text-disabled: var(--_color-slate-300);
+  --color-text-on-accent: var(--_color-white);
+  --color-text-on-destructive: var(--_color-white);
+  --color-text-on-inverse: var(--_color-white);
+  --color-text-link: var(--_color-blue-600);
+  --color-text-placeholder: var(--_color-slate-400);
+
+  /* Border */
+  --color-border-default: var(--_color-slate-200);
+  --color-border-hover: var(--_color-slate-300);
+  --color-border-focus: var(--_color-blue-500);
+  --color-border-disabled: var(--_color-slate-200);
+  --color-border-error: var(--_color-red-500);
+  --color-border-success: var(--_color-green-500);
+
+  /* Icon */
+  --color-icon-default: var(--_color-slate-700);
+  --color-icon-muted: var(--_color-slate-400);
+  --color-icon-on-accent: var(--_color-white);
+  --color-icon-on-inverse: var(--_color-white);
+  --color-icon-interactive: var(--_color-slate-600);
+  --color-icon-disabled: var(--_color-slate-300);
+
+  /* Shadow — light mode */
+  --shadow-control: var(--_shadow-xs);
+  --shadow-card: var(--_shadow-sm);
+  --shadow-popover: var(--_shadow-md);
+  --shadow-overlay: var(--_shadow-lg);
+
+  /* Focus ring */
+  --focus-ring-color: var(--_color-blue-500);
+  --focus-ring-shadow: 0 0 0 2px var(--_color-white), 0 0 0 4px var(--_color-blue-500);
+
+  /* Chart — semantic roles (1–2 series) */
+  --color-chart-primary: var(--_color-blue-600);
+  --color-chart-secondary: var(--_color-blue-300);
+  --color-chart-accent: var(--_color-orange-500);
+  --color-chart-muted: var(--_color-slate-200);
+
+  /* Chart — categorical series. Use in order; never skip, so a given
+     category keeps its colour across every chart in the product. */
+  --color-chart-cat-1: var(--_color-blue-600);
+  --color-chart-cat-2: var(--_color-orange-500);
+  --color-chart-cat-3: var(--_color-green-600);
+  --color-chart-cat-4: var(--_color-purple-500);
+  --color-chart-cat-5: var(--_color-pink-600);
+  --color-chart-cat-6: var(--_color-cyan-600);
+  --color-chart-cat-7: var(--_color-yellow-600);
+  --color-chart-cat-8: var(--_color-teal-600);
+
+  /* Chart — sequential ramp, low → high (magnitude, heat maps, density) */
+  --color-chart-seq-1: var(--_color-blue-100);
+  --color-chart-seq-2: var(--_color-blue-300);
+  --color-chart-seq-3: var(--_color-blue-500);
+  --color-chart-seq-4: var(--_color-blue-700);
+  --color-chart-seq-5: var(--_color-blue-900);
+
+  /* Chart — structure */
+  --color-chart-grid: var(--_color-slate-200);
+  --color-chart-axis: var(--_color-slate-400);
+}
+
+/* ============================================================
+   SEMANTIC TOKENS — Light / Brand override
+   ============================================================ */
+[data-brand="brand"] {
+  --color-surface-sunken: var(--_color-blue-50);
+  --color-bg-primary: var(--_color-white);
+  --color-bg-secondary: var(--_color-blue-50);
+  --color-bg-tertiary: var(--_color-blue-100);
+  --color-bg-inverse: var(--_color-blue-900);
+
+  --color-action-primary-bg: var(--_color-blue-600);
+  --color-action-primary-bg-hover: var(--_color-blue-500);
+  --color-action-primary-bg-active: var(--_color-blue-700);
+  --color-action-primary-bg-subtle: rgba(37, 99, 235, 0.12);
+
+  --color-action-secondary-bg: var(--_color-blue-50);
+  --color-action-secondary-bg-hover: var(--_color-blue-100);
+  --color-action-secondary-bg-active: var(--_color-blue-200);
+  --color-action-ghost-bg-hover: var(--_color-blue-50);
+  --color-action-ghost-bg-active: var(--_color-blue-100);
+
+  --color-action-link-text: var(--_color-blue-700);
+  --color-action-link-text-hover: var(--_color-blue-800);
+
+  --color-border-default: var(--_color-blue-200);
+  --color-border-hover: var(--_color-blue-300);
+  --color-border-focus: var(--_color-blue-600);
+
+  --color-icon-interactive: var(--_color-blue-600);
+
+  --focus-ring-color: var(--_color-blue-600);
+  --focus-ring-shadow: 0 0 0 2px var(--_color-white), 0 0 0 4px var(--_color-blue-600);
+}
+
+/* ============================================================
+   SEMANTIC TOKENS — Dark / Default
+   ============================================================ */
+[data-appearance="dark"] {
+  color-scheme: dark;
+
+  --color-surface-canvas: var(--_color-slate-950);
+  --color-surface-elevated: var(--_color-slate-900);
+  --color-surface-overlay: var(--_color-slate-800);
+  --color-surface-sunken: var(--_color-slate-950);
+  --color-surface-popover: var(--_color-slate-800);
+
+  --color-bg-primary: var(--_color-slate-950);
+  --color-bg-secondary: var(--_color-slate-800);
+  --color-bg-tertiary: var(--_color-slate-700);
+  --color-bg-disabled: var(--_color-slate-800);
+  --color-bg-inverse: var(--_color-slate-50);
+
+  --color-action-primary-bg: var(--_color-slate-50);
+  --color-action-primary-bg-hover: var(--_color-slate-200);
+  --color-action-primary-bg-active: var(--_color-slate-300);
+  --color-action-primary-bg-disabled: var(--_color-slate-800);
+  --color-action-primary-text: var(--_color-slate-900);
+  --color-action-primary-text-disabled: var(--_color-slate-500);
+  --color-action-primary-bg-subtle: rgba(59, 130, 246, 0.2);
+
+  --color-action-secondary-bg: var(--_color-slate-800);
+  --color-action-secondary-bg-hover: var(--_color-slate-700);
+  --color-action-secondary-bg-active: var(--_color-slate-600);
+
+  --color-action-ghost-bg-hover: var(--_color-slate-800);
+  --color-action-ghost-bg-active: var(--_color-slate-700);
+
+  --color-action-destructive-bg: var(--_color-red-600);
+  --color-action-destructive-bg-hover: var(--_color-red-500);
+  --color-action-destructive-bg-active: var(--_color-red-400);
+
+  --color-action-link-text: var(--_color-blue-400);
+  --color-action-link-text-hover: var(--_color-blue-300);
+
+  --color-status-error-fg: var(--_color-red-400);
+  --color-status-error-bg: var(--_color-red-950);
+  --color-status-error-border: var(--_color-red-800);
+  --color-status-success-fg: var(--_color-green-400);
+  --color-status-success-bg: var(--_color-green-950);
+  --color-status-success-border: var(--_color-green-800);
+  --color-status-warning-fg: var(--_color-yellow-400);
+  --color-status-warning-bg: var(--_color-yellow-950);
+  --color-status-warning-border: var(--_color-yellow-800);
+  --color-status-info-fg: var(--_color-blue-400);
+  --color-status-info-bg: var(--_color-blue-950);
+  --color-status-info-border: var(--_color-blue-800);
+
+  --color-text-primary: var(--_color-slate-50);
+  --color-text-secondary: var(--_color-slate-400);
+  --color-text-tertiary: var(--_color-slate-500);
+  --color-text-muted: var(--_color-slate-500);
+  --color-text-disabled: var(--_color-slate-600);
+  --color-text-on-accent: var(--_color-slate-900);
+  --color-text-on-destructive: var(--_color-white);
+  --color-text-on-inverse: var(--_color-slate-900);
+  --color-text-link: var(--_color-blue-400);
+  --color-text-placeholder: var(--_color-slate-500);
+
+  --color-border-default: var(--_color-slate-700);
+  --color-border-hover: var(--_color-slate-600);
+  --color-border-focus: var(--_color-blue-400);
+  --color-border-disabled: var(--_color-slate-800);
+  --color-border-error: var(--_color-red-400);
+  --color-border-success: var(--_color-green-400);
+
+  --color-icon-default: var(--_color-slate-300);
+  --color-icon-muted: var(--_color-slate-500);
+  --color-icon-on-accent: var(--_color-slate-900);
+  --color-icon-on-inverse: var(--_color-slate-900);
+  --color-icon-interactive: var(--_color-slate-300);
+  --color-icon-disabled: var(--_color-slate-600);
+
+  /* Shadow — dark mode (v1.2 fix) */
+  --shadow-control: var(--_shadow-dark-xs);
+  --shadow-card: var(--_shadow-dark-sm);
+  --shadow-popover: var(--_shadow-dark-md);
+  --shadow-overlay: var(--_shadow-dark-lg);
+
+  --focus-ring-shadow: 0 0 0 2px var(--_color-slate-950), 0 0 0 4px var(--_color-blue-400);
+
+  /* Chart — dark. Series lighten so they carry against a dark canvas;
+     the sequential ramp inverts so "more" stays "more visible". */
+  --color-chart-primary: var(--_color-blue-400);
+  --color-chart-secondary: var(--_color-blue-700);
+  --color-chart-accent: var(--_color-orange-400);
+  --color-chart-muted: var(--_color-slate-700);
+
+  --color-chart-cat-1: var(--_color-blue-400);
+  --color-chart-cat-2: var(--_color-orange-400);
+  --color-chart-cat-3: var(--_color-green-400);
+  --color-chart-cat-4: var(--_color-purple-400);
+  --color-chart-cat-5: var(--_color-pink-300);
+  --color-chart-cat-6: var(--_color-cyan-300);
+  --color-chart-cat-7: var(--_color-yellow-400);
+  --color-chart-cat-8: var(--_color-teal-300);
+
+  --color-chart-seq-1: var(--_color-blue-900);
+  --color-chart-seq-2: var(--_color-blue-700);
+  --color-chart-seq-3: var(--_color-blue-500);
+  --color-chart-seq-4: var(--_color-blue-300);
+  --color-chart-seq-5: var(--_color-blue-100);
+
+  --color-chart-grid: var(--_color-slate-800);
+  --color-chart-axis: var(--_color-slate-600);
+}
+
+/* ============================================================
+   SEMANTIC TOKENS — Dark / Brand override
+   ============================================================ */
+[data-appearance="dark"][data-brand="brand"] {
+  --color-surface-canvas: var(--_color-slate-950);
+  --color-surface-sunken: var(--_color-blue-950);
+  --color-bg-primary: var(--_color-blue-950);
+  --color-bg-secondary: var(--_color-blue-900);
+  --color-bg-tertiary: var(--_color-blue-800);
+  --color-bg-inverse: var(--_color-blue-50);
+
+  --color-action-primary-bg: var(--_color-blue-500);
+  --color-action-primary-bg-hover: var(--_color-blue-400);
+  --color-action-primary-bg-active: var(--_color-blue-600);
+  --color-action-primary-text: var(--_color-white);
+
+  --color-action-secondary-bg: var(--_color-blue-900);
+  --color-action-secondary-bg-hover: var(--_color-blue-800);
+  --color-action-ghost-bg-hover: var(--_color-blue-900);
+  --color-action-ghost-bg-active: var(--_color-blue-800);
+
+  --focus-ring-shadow: 0 0 0 2px var(--_color-slate-950), 0 0 0 4px var(--_color-blue-400);
+}
+
+/* ============================================================
+   ALIAS TOKENS — Radius, Z-index, Motion
+   ============================================================ */
+:root {
+  /* Radius */
+  --radius-control: var(--_radius-md);
+  --radius-card: var(--_radius-lg);
+  --radius-overlay: var(--_radius-xl);
+  --radius-pill: var(--_radius-full);
+
+  /* Z-index */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-popover: 500;
+  --z-toast: 600;
+  --z-tooltip: 700;
+
+  /* Motion */
+  --motion-fast: var(--_duration-fast) var(--_easing-ease-out);
+  --motion-normal: var(--_duration-normal) var(--_easing-ease-in-out);
+  --motion-slow: var(--_duration-slow) var(--_easing-ease-in-out);
+  --motion-spring: var(--_duration-normal) var(--_easing-spring);
+
+  /* Typography composite */
+  --font-display-lg: var(--_font-weight-bold) var(--_font-size-5xl)/var(--_line-height-tight) var(--_font-sans);
+  --font-heading-h1: var(--_font-weight-bold) var(--_font-size-3xl)/var(--_line-height-tight) var(--_font-sans);
+  --font-heading-h2: var(--_font-weight-semibold) var(--_font-size-2xl)/var(--_line-height-snug) var(--_font-sans);
+  --font-heading-h3: var(--_font-weight-semibold) var(--_font-size-xl)/var(--_line-height-snug) var(--_font-sans);
+  --font-heading-h4: var(--_font-weight-semibold) var(--_font-size-lg)/var(--_line-height-normal) var(--_font-sans);
+  --font-body-lg: var(--_font-weight-regular) var(--_font-size-lg)/var(--_line-height-relaxed) var(--_font-sans);
+  --font-body-md: var(--_font-weight-regular) var(--_font-size-base)/var(--_line-height-normal) var(--_font-sans);
+  --font-body-sm: var(--_font-weight-regular) var(--_font-size-sm)/var(--_line-height-normal) var(--_font-sans);
+  --font-label-lg: var(--_font-weight-medium) var(--_font-size-base)/var(--_line-height-none) var(--_font-sans);
+  --font-label-md: var(--_font-weight-medium) var(--_font-size-sm)/var(--_line-height-none) var(--_font-sans);
+  --font-label-sm: var(--_font-weight-medium) var(--_font-size-xs)/var(--_line-height-none) var(--_font-sans);
+  --font-code-md: var(--_font-weight-regular) var(--_font-size-sm)/var(--_line-height-normal) var(--_font-mono);
+}
+
+/* ============================================================
+   DENSITY TOKENS — Default
+   ============================================================ */
+:root,
+[data-density="default"] {
+  --spacing-stack-xs: var(--_size-1);
+  --spacing-stack-sm: var(--_size-2);
+  --spacing-stack-md: var(--_size-3);
+  --spacing-stack-lg: var(--_size-4);
+  --spacing-stack-xl: var(--_size-6);
+  --spacing-stack-2xl: var(--_size-8);
+  --spacing-inline-xs: var(--_size-1);
+  --spacing-inline-sm: var(--_size-2);
+  --spacing-inline-md: var(--_size-3);
+  --spacing-inline-lg: var(--_size-4);
+  --spacing-component-px: var(--_size-4);
+  --spacing-component-py: var(--_size-2);
+  --spacing-container-px: var(--_size-6);
+  --spacing-section-gap: var(--_size-12);
+
+  /* Component sizing */
+  --control-height-sm: var(--_size-8);
+  --control-height-md: var(--_size-9);
+  --control-height-lg: var(--_size-10);
+  --control-px-sm: var(--_size-3);
+  --control-px-md: var(--_size-4);
+  --control-px-lg: var(--_size-8);
+  --control-py-sm: var(--_size-1_5);
+  --control-py-md: var(--_size-2);
+  --control-py-lg: var(--_size-2_5);
+  --control-font-sm: var(--_font-size-xs);
+  --control-font-md: var(--_font-size-sm);
+  --control-font-lg: var(--_font-size-base);
+}
+
+/* ============================================================
+   DENSITY TOKENS — Compact
+   ============================================================ */
+[data-density="compact"] {
+  --spacing-stack-xs: var(--_size-0_5);
+  --spacing-stack-sm: var(--_size-1_5);
+  --spacing-stack-md: var(--_size-2);
+  --spacing-stack-lg: var(--_size-3);
+  --spacing-stack-xl: var(--_size-4);
+  --spacing-stack-2xl: var(--_size-6);
+  --spacing-inline-xs: var(--_size-0_5);
+  --spacing-inline-sm: var(--_size-1_5);
+  --spacing-inline-md: var(--_size-2);
+  --spacing-inline-lg: var(--_size-3);
+  --spacing-component-px: var(--_size-3);
+  --spacing-component-py: var(--_size-1_5);
+  --spacing-container-px: var(--_size-4);
+  --spacing-section-gap: var(--_size-8);
+
+  --control-height-sm: var(--_size-7);
+  --control-height-md: var(--_size-8);
+  --control-height-lg: var(--_size-9);
+  --control-px-sm: var(--_size-2);
+  --control-px-md: var(--_size-3);
+  --control-px-lg: var(--_size-6);
+  --control-py-sm: var(--_size-1);
+  --control-py-md: var(--_size-1_5);
+  --control-py-lg: var(--_size-2);
+  --control-font-sm: var(--_font-size-xs);
+  --control-font-md: var(--_font-size-xs);
+  --control-font-lg: var(--_font-size-sm);
+}
+
+/* ============================================================
+   COMPONENT TOKENS
+   ============================================================ */
+:root {
+  /* Button */
+  --button-radius: var(--radius-control);
+  --button-font-weight: var(--_font-weight-medium);
+  --button-transition: background-color var(--motion-fast), color var(--motion-fast), border-color var(--motion-fast), box-shadow var(--motion-fast);
+
+  /* Input */
+  --input-radius: var(--radius-control);
+  --input-border-width: var(--_border-width-md);
+  --input-transition: border-color var(--motion-fast), box-shadow var(--motion-fast);
+
+  /* Card */
+  --card-radius: var(--radius-card);
+  --card-border-width: var(--_border-width-md);
+  --card-bg: var(--color-surface-elevated);
+  --card-border: var(--color-border-default);
+  --card-shadow: var(--shadow-card);
+
+  /* Badge */
+  --badge-radius: var(--radius-pill);
+
+  /* Dialog */
+  --dialog-radius: var(--radius-overlay);
+  --dialog-shadow: var(--shadow-overlay);
+  --dialog-z: var(--z-modal);
+
+  /* Popover */
+  --popover-radius: var(--radius-overlay);
+  --popover-shadow: var(--shadow-popover);
+  --popover-z: var(--z-popover);
+
+  /* Tooltip */
+  --tooltip-radius: var(--_radius-sm);
+  --tooltip-z: var(--z-tooltip);
+
+  /* Select */
+  --select-radius: var(--radius-control);
+
+  /* Switch */
+  --switch-radius: var(--radius-pill);
+  --switch-thumb-bg: #ffffff;
+
+  /* Slider */
+  --slider-thumb-bg: #ffffff;
+  --slider-radius: var(--radius-pill);
+
+  /* Progress */
+  --progress-radius: var(--radius-pill);
+
+  /* Avatar */
+  --avatar-radius: var(--radius-pill);
+
+  /* Toast */
+  --toast-radius: var(--radius-card);
+  --toast-shadow: var(--shadow-overlay);
+  --toast-z: var(--z-toast);
+
+  /* Accordion */
+  --accordion-border: var(--color-border-default);
+
+  /* Separator */
+  --separator-color: var(--color-border-default);
+}

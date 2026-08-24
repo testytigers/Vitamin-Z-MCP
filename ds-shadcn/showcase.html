@@ -1,0 +1,2522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DS v1.2 — Component Documentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ════════════════════════════════════════════════
+   DS v1.2 TOKEN SYSTEM
+════════════════════════════════════════════════ */
+:root {
+  --_slate-50:#f8fafc;--_slate-100:#f1f5f9;--_slate-200:#e2e8f0;--_slate-300:#cbd5e1;
+  --_slate-400:#94a3b8;--_slate-500:#64748b;--_slate-600:#475569;--_slate-700:#334155;
+  --_slate-800:#1e293b;--_slate-900:#0f172a;--_slate-950:#020617;
+  --_blue-50:#eff6ff;--_blue-100:#dbeafe;--_blue-200:#bfdbfe;--_blue-300:#93c5fd;
+  --_blue-400:#60a5fa;--_blue-500:#3b82f6;--_blue-600:#2563eb;--_blue-700:#1d4ed8;
+  --_blue-800:#1e40af;--_blue-900:#1e3a8a;--_blue-950:#172554;
+  --_red-50:#fef2f2;--_red-100:#fee2e2;--_red-200:#fecaca;--_red-400:#f87171;
+  --_red-500:#ef4444;--_red-600:#dc2626;--_red-700:#b91c1c;--_red-800:#991b1b;--_red-950:#450a0a;
+  --_green-50:#f0fdf4;--_green-200:#bbf7d0;--_green-400:#4ade80;
+  --_green-500:#22c55e;--_green-600:#16a34a;--_green-800:#166534;--_green-950:#052e16;
+  --_yellow-50:#fefce8;--_yellow-200:#fef08a;--_yellow-400:#facc15;
+  --_yellow-600:#ca8a04;--_yellow-800:#854d0e;--_yellow-950:#422006;
+  --_white:#ffffff;--_black:#000000;
+
+  /* Radius */
+  --r-sm:4px;--r-md:6px;--r-lg:8px;--r-xl:12px;--r-pill:9999px;
+
+  /* Shadow light */
+  --sh-xs:0 1px 2px 0 rgba(0,0,0,.05);
+  --sh-sm:0 1px 3px 0 rgba(0,0,0,.1),0 1px 2px -1px rgba(0,0,0,.1);
+  --sh-md:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);
+  --sh-lg:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);
+  /* Shadow dark */
+  --sh-dark-xs:0 1px 2px 0 rgba(0,0,0,.3);
+  --sh-dark-sm:0 1px 3px 0 rgba(0,0,0,.4),0 1px 2px -1px rgba(0,0,0,.4);
+  --sh-dark-md:0 4px 6px -1px rgba(0,0,0,.4),0 2px 4px -2px rgba(0,0,0,.4);
+  --sh-dark-lg:0 10px 15px -3px rgba(0,0,0,.5),0 4px 6px -4px rgba(0,0,0,.4);
+
+  /* Motion */
+  --ease-out:cubic-bezier(0,0,.2,1);--ease-in-out:cubic-bezier(.4,0,.2,1);
+  --dur-fast:100ms;--dur-normal:200ms;--dur-slow:300ms;
+
+  /* Fonts */
+  --font-display:'Fraunces',Georgia,serif;
+  --font-sans:'Geist','Segoe UI',system-ui,sans-serif;
+  --font-mono:'DM Mono','JetBrains Mono',monospace;
+}
+
+/* ── Light / Default ── */
+:root,[data-appearance="light"] {
+  --canvas:var(--_white);--elevated:var(--_white);--overlay:var(--_white);
+  --sunken:var(--_slate-100);--popover:var(--_white);
+  --bg-2:var(--_slate-100);--bg-3:var(--_slate-200);--bg-dis:var(--_slate-100);
+  --act-p:var(--_slate-900);--act-p-h:var(--_slate-800);--act-p-a:var(--_slate-700);
+  --act-p-dis:var(--_slate-100);--act-p-txt:var(--_white);
+  --act-p-subtle:rgba(59,130,246,.1);
+  --act-s:var(--_slate-100);--act-s-h:var(--_slate-200);
+  --act-ghost-h:var(--_slate-100);--act-ghost-a:var(--_slate-200);
+  --act-d:var(--_red-600);--act-d-h:var(--_red-700);--act-d-a:var(--_red-800);
+  --act-link:var(--_blue-600);--act-link-h:var(--_blue-700);
+  --err-fg:var(--_red-600);--err-bg:var(--_red-50);--err-bd:var(--_red-200);
+  --ok-fg:var(--_green-600);--ok-bg:var(--_green-50);--ok-bd:var(--_green-200);
+  --warn-fg:var(--_yellow-600);--warn-bg:var(--_yellow-50);--warn-bd:var(--_yellow-200);
+  --info-fg:var(--_blue-600);--info-bg:var(--_blue-50);--info-bd:var(--_blue-200);
+  --txt-1:var(--_slate-900);--txt-2:var(--_slate-600);--txt-3:var(--_slate-500);
+  --txt-muted:var(--_slate-400);--txt-dis:var(--_slate-300);
+  --txt-accent:var(--_white);--txt-destr:var(--_white);--txt-inv:var(--_white);
+  --txt-ph:var(--_slate-400);--txt-link:var(--_blue-600);
+  --bd:var(--_slate-200);--bd-h:var(--_slate-300);--bd-focus:var(--_blue-500);
+  --bd-dis:var(--_slate-200);--bd-err:var(--_red-500);
+  --icon:var(--_slate-700);--icon-muted:var(--_slate-400);--icon-int:var(--_slate-600);
+  --sh-ctrl:var(--sh-xs);--sh-card:var(--sh-sm);--sh-pop:var(--sh-md);--sh-ovl:var(--sh-lg);
+  --focus-ring:0 0 0 2px var(--_white),0 0 0 4px var(--_blue-500);
+  --focus-color:var(--_blue-500);
+}
+/* ── Light / Brand ── */
+[data-brand="brand"] {
+  --act-p:var(--_blue-600);--act-p-h:var(--_blue-500);--act-p-a:var(--_blue-700);
+  --act-p-subtle:rgba(37,99,235,.12);
+  --act-s:var(--_blue-50);--act-s-h:var(--_blue-100);
+  --act-ghost-h:var(--_blue-50);--act-ghost-a:var(--_blue-100);
+  --bg-2:var(--_blue-50);--bg-3:var(--_blue-100);
+  --bd:var(--_blue-200);--bd-h:var(--_blue-300);--bd-focus:var(--_blue-600);
+  --act-link:var(--_blue-700);--act-link-h:var(--_blue-800);
+  --focus-ring:0 0 0 2px var(--_white),0 0 0 4px var(--_blue-600);
+}
+/* ── Dark / Default ── */
+[data-appearance="dark"] {
+  color-scheme:dark;
+  --canvas:var(--_slate-950);--elevated:var(--_slate-900);--overlay:var(--_slate-800);
+  --sunken:var(--_slate-950);--popover:var(--_slate-800);
+  --bg-2:var(--_slate-800);--bg-3:var(--_slate-700);--bg-dis:var(--_slate-800);
+  --act-p:var(--_slate-50);--act-p-h:var(--_slate-200);--act-p-a:var(--_slate-300);
+  --act-p-dis:var(--_slate-800);--act-p-txt:var(--_slate-900);
+  --act-p-subtle:rgba(59,130,246,.2);
+  --act-s:var(--_slate-800);--act-s-h:var(--_slate-700);
+  --act-ghost-h:var(--_slate-800);--act-ghost-a:var(--_slate-700);
+  --act-d:var(--_red-600);--act-d-h:var(--_red-500);--act-d-a:var(--_red-400);
+  --act-link:var(--_blue-400);--act-link-h:var(--_blue-300);
+  --err-fg:var(--_red-400);--err-bg:var(--_red-950);--err-bd:var(--_red-800);
+  --ok-fg:var(--_green-400);--ok-bg:var(--_green-950);--ok-bd:var(--_green-800);
+  --warn-fg:var(--_yellow-400);--warn-bg:var(--_yellow-950);--warn-bd:var(--_yellow-800);
+  --info-fg:var(--_blue-400);--info-bg:var(--_blue-950);--info-bd:var(--_blue-800);
+  --txt-1:var(--_slate-50);--txt-2:var(--_slate-400);--txt-3:var(--_slate-500);
+  --txt-muted:var(--_slate-500);--txt-dis:var(--_slate-600);
+  --txt-accent:var(--_slate-900);--txt-destr:var(--_white);--txt-inv:var(--_slate-900);
+  --txt-ph:var(--_slate-500);--txt-link:var(--_blue-400);
+  --bd:var(--_slate-700);--bd-h:var(--_slate-600);--bd-focus:var(--_blue-400);
+  --bd-dis:var(--_slate-800);--bd-err:var(--_red-400);
+  --icon:var(--_slate-300);--icon-muted:var(--_slate-500);--icon-int:var(--_slate-300);
+  --sh-ctrl:var(--sh-dark-xs);--sh-card:var(--sh-dark-sm);--sh-pop:var(--sh-dark-md);--sh-ovl:var(--sh-dark-lg);
+  --focus-ring:0 0 0 2px var(--_slate-950),0 0 0 4px var(--_blue-400);
+  --focus-color:var(--_blue-400);
+}
+[data-appearance="dark"][data-brand="brand"] {
+  --act-p:var(--_blue-500);--act-p-h:var(--_blue-400);--act-p-txt:var(--_white);
+  --act-s:var(--_blue-900);--act-s-h:var(--_blue-800);
+  --bg-2:var(--_blue-900);
+}
+
+/* ════════════════════════════════════════════════
+   RESET & BASE
+════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-sans);
+  background:var(--canvas);
+  color:var(--txt-1);
+  line-height:1.5;
+  min-height:100vh;
+  transition:background-color var(--dur-normal) var(--ease-in-out),
+             color var(--dur-normal) var(--ease-in-out);
+}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+code,pre{font-family:var(--font-mono)}
+
+/* ════════════════════════════════════════════════
+   LAYOUT
+════════════════════════════════════════════════ */
+.app{display:flex;min-height:100vh}
+
+/* Sidebar */
+.sidebar{
+  position:fixed;top:0;left:0;bottom:0;
+  width:248px;
+  background:var(--elevated);
+  border-right:1px solid var(--bd);
+  display:flex;flex-direction:column;
+  z-index:100;
+  overflow:hidden;
+}
+.sidebar-header{
+  padding:20px 16px 12px;
+  border-bottom:1px solid var(--bd);
+  flex-shrink:0;
+}
+.sidebar-brand{
+  font-family:var(--font-display);
+  font-size:18px;font-weight:600;
+  color:var(--txt-1);letter-spacing:-0.01em;
+}
+.sidebar-version{
+  font-size:11px;font-weight:500;
+  color:var(--txt-muted);margin-top:2px;
+  font-family:var(--font-mono);letter-spacing:0.05em;
+}
+.sidebar-nav{
+  flex:1;overflow-y:auto;padding:8px 8px 24px;
+  scrollbar-width:thin;scrollbar-color:var(--bd) transparent;
+}
+.nav-group-label{
+  font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--txt-muted);padding:12px 8px 4px;
+}
+.nav-item{
+  display:flex;align-items:center;gap:8px;
+  padding:6px 8px;border-radius:var(--r-md);
+  font-size:13px;font-weight:400;color:var(--txt-2);
+  cursor:pointer;border:none;background:none;width:100%;text-align:left;
+  transition:background-color var(--dur-fast) var(--ease-out),color var(--dur-fast);
+}
+.nav-item:hover{background:var(--act-ghost-h);color:var(--txt-1)}
+.nav-item.active{background:var(--act-p-subtle);color:var(--act-p);font-weight:500}
+.nav-dot{width:6px;height:6px;border-radius:50%;background:var(--bd-h);flex-shrink:0;transition:background var(--dur-fast)}
+.nav-item.active .nav-dot{background:var(--act-p)}
+
+/* Main content */
+.main{
+  margin-left:248px;
+  flex:1;
+  min-height:100vh;
+}
+.topbar{
+  position:sticky;top:0;z-index:90;
+  background:var(--elevated);
+  border-bottom:1px solid var(--bd);
+  padding:0 32px;
+  height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+  backdrop-filter:blur(8px);
+}
+.topbar-title{font-size:14px;font-weight:500;color:var(--txt-2)}
+.mode-controls{display:flex;align-items:center;gap:12px}
+.mode-group{display:flex;align-items:center;gap:8px}
+.mode-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--txt-muted)}
+.segmented{
+  display:flex;border:1px solid var(--bd);border-radius:var(--r-md);
+  overflow:hidden;background:var(--canvas);
+}
+.seg-btn{
+  padding:5px 12px;font-size:12px;font-weight:500;
+  background:transparent;border:none;
+  color:var(--txt-2);cursor:pointer;
+  transition:background-color var(--dur-fast),color var(--dur-fast);
+}
+.seg-btn:not(:last-child){border-right:1px solid var(--bd)}
+.seg-btn.active{background:var(--act-p);color:var(--act-p-txt)}
+.seg-btn:not(.active):hover{background:var(--act-ghost-h);color:var(--txt-1)}
+
+.content{padding:40px 32px 80px}
+
+/* ════════════════════════════════════════════════
+   COMPONENT PAGE LAYOUT
+════════════════════════════════════════════════ */
+.comp-page{display:none}
+.comp-page.active{display:block}
+
+.page-hero{margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--bd)}
+.page-title{
+  font-family:var(--font-display);
+  font-size:36px;font-weight:300;
+  color:var(--txt-1);letter-spacing:-0.02em;line-height:1.1;
+  margin-bottom:8px;
+}
+.page-title em{font-style:italic;color:var(--act-p)}
+.page-desc{font-size:15px;color:var(--txt-2);line-height:1.6;max-width:600px}
+.page-meta{
+  display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;
+}
+.meta-tag{
+  font-family:var(--font-mono);font-size:11px;
+  background:var(--bg-2);border:1px solid var(--bd);
+  color:var(--txt-2);padding:3px 8px;border-radius:var(--r-sm);
+}
+.meta-tag.import{color:var(--act-link);border-color:var(--act-p-subtle);background:var(--act-p-subtle)}
+
+/* Sections */
+.section{margin-bottom:48px}
+.section-title{
+  font-size:13px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;
+  color:var(--txt-muted);margin-bottom:20px;
+  display:flex;align-items:center;gap:12px;
+}
+.section-title::after{content:'';flex:1;height:1px;background:var(--bd)}
+
+/* Demo box */
+.demo-box{
+  border:1px solid var(--bd);border-radius:var(--r-xl);
+  overflow:hidden;background:var(--canvas);
+}
+.demo-preview{
+  padding:40px 32px;
+  background:var(--canvas);
+  min-height:120px;
+  display:flex;align-items:center;justify-content:center;
+  flex-wrap:wrap;gap:12px;
+}
+.demo-preview.align-start{align-items:flex-start;justify-content:flex-start}
+.demo-preview.col{flex-direction:column;align-items:flex-start}
+.demo-preview.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.demo-preview.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:start}
+.demo-tabs{
+  border-top:1px solid var(--bd);
+  display:flex;gap:0;background:var(--sunken);
+}
+.demo-tab{
+  padding:8px 16px;font-size:12px;font-weight:500;
+  background:transparent;border:none;
+  color:var(--txt-muted);cursor:pointer;
+  border-bottom:2px solid transparent;
+  transition:color var(--dur-fast),border-color var(--dur-fast);
+}
+.demo-tab.active{color:var(--txt-1);border-bottom-color:var(--act-p);background:var(--canvas)}
+.demo-tab:hover:not(.active){color:var(--txt-2)}
+.demo-content{display:none;padding:20px 24px;background:var(--sunken)}
+.demo-content.active{display:block}
+.demo-content pre{
+  font-family:var(--font-mono);font-size:12px;line-height:1.7;
+  color:var(--txt-2);white-space:pre;overflow-x:auto;
+}
+.demo-content pre .kw{color:var(--act-link)}
+.demo-content pre .str{color:var(--ok-fg)}
+.demo-content pre .cmt{color:var(--txt-muted);font-style:italic}
+.demo-content pre .tag{color:var(--err-fg)}
+.demo-content pre .attr{color:var(--warn-fg)}
+.demo-content pre .val{color:var(--ok-fg)}
+
+/* Props table */
+.props-table{width:100%;border-collapse:collapse;font-size:13px}
+.props-table th{
+  text-align:left;padding:8px 12px;
+  font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;
+  color:var(--txt-muted);background:var(--sunken);
+  border-bottom:1px solid var(--bd);
+}
+.props-table td{
+  padding:10px 12px;border-bottom:1px solid var(--bd);
+  vertical-align:top;color:var(--txt-2);
+}
+.props-table tr:last-child td{border-bottom:none}
+.props-table tr:hover td{background:var(--bg-2)}
+.prop-name{font-family:var(--font-mono);font-size:12px;color:var(--txt-1);font-weight:500}
+.prop-type{font-family:var(--font-mono);font-size:11px;color:var(--act-link)}
+.prop-default{font-family:var(--font-mono);font-size:11px;color:var(--txt-muted)}
+.prop-desc{font-size:13px;color:var(--txt-2);line-height:1.5}
+.prop-required{
+  display:inline-block;font-size:10px;font-weight:600;
+  background:var(--err-bg);color:var(--err-fg);
+  border:1px solid var(--err-bd);border-radius:var(--r-sm);
+  padding:1px 5px;margin-left:4px;vertical-align:middle;
+}
+
+/* ════════════════════════════════════════════════
+   COMPONENT IMPLEMENTATIONS
+════════════════════════════════════════════════ */
+
+/* Button */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  font-family:var(--font-sans);font-weight:500;cursor:pointer;border:none;
+  border-radius:var(--r-md);white-space:nowrap;
+  transition:background-color var(--dur-fast) var(--ease-out),
+             color var(--dur-fast),border-color var(--dur-fast),
+             box-shadow var(--dur-fast);
+}
+.btn:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+.btn:disabled{pointer-events:none;opacity:.6}
+.btn-sm{height:32px;padding:0 12px;font-size:12px}
+.btn-md{height:36px;padding:0 16px;font-size:14px}
+.btn-lg{height:40px;padding:0 32px;font-size:16px}
+.btn-icon{height:36px;width:36px;padding:0}
+.btn-primary{background:var(--act-p);color:var(--act-p-txt);box-shadow:var(--sh-ctrl)}
+.btn-primary:hover{background:var(--act-p-h)}
+.btn-primary:active{background:var(--act-p-a)}
+.btn-secondary{background:var(--act-s);color:var(--txt-1)}
+.btn-secondary:hover{background:var(--act-s-h)}
+.btn-destructive{background:var(--act-d);color:var(--txt-destr)}
+.btn-destructive:hover{background:var(--act-d-h)}
+.btn-destructive:active{background:var(--act-d-a)}
+.btn-outline{background:transparent;color:var(--txt-1);border:1px solid var(--bd)}
+.btn-outline:hover{background:var(--act-ghost-h);border-color:var(--bd-h)}
+.btn-ghost{background:transparent;color:var(--txt-1)}
+.btn-ghost:hover{background:var(--act-ghost-h)}
+.btn-link{background:transparent;color:var(--act-link);text-decoration:underline;text-underline-offset:4px}
+
+/* Input / Textarea */
+.input,.textarea{
+  width:100%;border:1px solid var(--bd);border-radius:var(--r-md);
+  background:var(--canvas);color:var(--txt-1);
+  font-family:var(--font-sans);font-size:14px;
+  transition:border-color var(--dur-fast),box-shadow var(--dur-fast);
+}
+.input{height:36px;padding:0 12px}
+.textarea{min-height:80px;padding:8px 12px;resize:vertical}
+.input::placeholder,.textarea::placeholder{color:var(--txt-ph)}
+.input:hover,.textarea:hover{border-color:var(--bd-h)}
+.input:focus,.textarea:focus{outline:none;border-color:var(--bd-focus);box-shadow:var(--focus-ring)}
+.input:disabled{background:var(--bg-dis);color:var(--txt-dis);cursor:not-allowed}
+.input.error{border-color:var(--bd-err)}
+
+/* Label */
+.label{font-size:14px;font-weight:500;color:var(--txt-2);display:block;margin-bottom:6px}
+
+/* Form group */
+.form-group{display:flex;flex-direction:column;gap:6px;width:100%}
+.form-message{font-size:12px;color:var(--err-fg)}
+.form-desc{font-size:12px;color:var(--txt-muted)}
+
+/* Card */
+.card{
+  background:var(--elevated);border:1px solid var(--bd);
+  border-radius:var(--r-lg);box-shadow:var(--sh-card);overflow:hidden;
+}
+.card-header{padding:24px 24px 0}
+.card-content{padding:16px 24px 24px}
+.card-footer{padding:12px 24px 20px;border-top:1px solid var(--bd);display:flex;gap:8px}
+.card-title{font-size:18px;font-weight:600;color:var(--txt-1);margin-bottom:4px}
+.card-desc{font-size:14px;color:var(--txt-2)}
+
+/* Badge */
+.badge{
+  display:inline-flex;align-items:center;border-radius:var(--r-pill);
+  padding:2px 10px;font-size:12px;font-weight:500;line-height:1;
+}
+.badge-default{background:var(--bg-2);color:var(--txt-1)}
+.badge-secondary{background:var(--bg-2);color:var(--txt-2)}
+.badge-destructive{background:var(--err-bg);color:var(--err-fg);border:1px solid var(--err-bd)}
+.badge-success{background:var(--ok-bg);color:var(--ok-fg);border:1px solid var(--ok-bd)}
+.badge-warning{background:var(--warn-bg);color:var(--warn-fg);border:1px solid var(--warn-bd)}
+.badge-info{background:var(--info-bg);color:var(--info-fg);border:1px solid var(--info-bd)}
+.badge-outline{background:transparent;border:1px solid var(--bd);color:var(--txt-1)}
+
+/* Alert */
+.alert{display:flex;gap:12px;padding:16px;border-radius:var(--r-lg);border:1px solid}
+.alert svg{flex-shrink:0;margin-top:1px}
+.alert-default{background:var(--canvas);border-color:var(--bd);color:var(--txt-1)}
+.alert-error{background:var(--err-bg);border-color:var(--err-bd);color:var(--err-fg)}
+.alert-success{background:var(--ok-bg);border-color:var(--ok-bd);color:var(--ok-fg)}
+.alert-warning{background:var(--warn-bg);border-color:var(--warn-bd);color:var(--warn-fg)}
+.alert-info{background:var(--info-bg);border-color:var(--info-bd);color:var(--info-fg)}
+.alert-title{font-weight:600;font-size:14px;margin-bottom:2px}
+.alert-body{font-size:13px;opacity:.9}
+
+/* Avatar */
+.avatar{
+  display:inline-flex;align-items:center;justify-content:center;
+  border-radius:var(--r-pill);background:var(--bg-3);
+  border:2px solid var(--bd);color:var(--txt-2);font-weight:500;overflow:hidden;
+}
+.av-sm{width:32px;height:32px;font-size:12px}
+.av-md{width:40px;height:40px;font-size:14px}
+.av-lg{width:48px;height:48px;font-size:16px}
+.av-primary{background:var(--act-p);color:var(--act-p-txt);border-color:transparent}
+
+/* Checkbox */
+.checkbox{
+  width:16px;height:16px;flex-shrink:0;border-radius:4px;
+  border:1px solid var(--bd);background:var(--canvas);
+  cursor:pointer;appearance:none;
+  display:grid;place-content:center;
+  transition:background var(--dur-fast),border-color var(--dur-fast);
+}
+.checkbox:checked{background:var(--act-p);border-color:var(--act-p)}
+.checkbox:checked::after{
+  content:'';width:8px;height:8px;background:var(--act-p-txt);
+  clip-path:polygon(14% 44%,0 65%,50% 100%,100% 16%,80% 0%,43% 62%);
+}
+.checkbox:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+.check-wrap{display:flex;align-items:center;gap:8px;cursor:pointer}
+.check-label{font-size:14px;color:var(--txt-1)}
+
+/* Radio */
+.radio{
+  width:16px;height:16px;flex-shrink:0;border-radius:50%;
+  border:1px solid var(--bd);background:var(--canvas);
+  cursor:pointer;appearance:none;
+  display:grid;place-content:center;
+  transition:border-color var(--dur-fast);
+}
+.radio:checked{border-color:var(--act-p)}
+.radio:checked::after{content:'';width:8px;height:8px;border-radius:50%;background:var(--act-p)}
+.radio:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+
+/* Switch */
+.switch{position:relative;width:40px;height:20px;flex-shrink:0}
+.switch input{position:absolute;opacity:0;pointer-events:none}
+.sw-track{
+  position:absolute;inset:0;border-radius:var(--r-pill);
+  background:var(--bg-3);cursor:pointer;
+  transition:background var(--dur-fast);
+}
+.switch input:checked+.sw-track{background:var(--act-p)}
+.sw-thumb{
+  position:absolute;top:2px;left:2px;
+  width:16px;height:16px;border-radius:50%;background:#fff;
+  box-shadow:var(--sh-ctrl);pointer-events:none;
+  transition:transform var(--dur-fast);
+}
+.switch input:checked~.sw-thumb{transform:translateX(20px)}
+.sw-wrap{display:flex;align-items:center;gap:8px}
+
+/* Select */
+.select{
+  width:100%;height:36px;padding:0 32px 0 12px;
+  border:1px solid var(--bd);border-radius:var(--r-md);
+  background:var(--canvas);color:var(--txt-1);
+  font-family:var(--font-sans);font-size:14px;cursor:pointer;
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;
+  transition:border-color var(--dur-fast),box-shadow var(--dur-fast);
+}
+.select:focus{outline:none;border-color:var(--bd-focus);box-shadow:var(--focus-ring)}
+.select:hover{border-color:var(--bd-h)}
+
+/* Progress */
+.progress-track{width:100%;height:8px;border-radius:var(--r-pill);background:var(--bg-3);overflow:hidden}
+.progress-bar{height:100%;background:var(--act-p);border-radius:var(--r-pill);transition:width var(--dur-slow)}
+
+/* Slider */
+.slider{
+  width:100%;height:4px;border-radius:var(--r-pill);
+  background:var(--bg-3);appearance:none;cursor:pointer;
+}
+.slider::-webkit-slider-thumb{
+  appearance:none;width:16px;height:16px;border-radius:50%;
+  background:#fff;border:2px solid var(--act-p);box-shadow:var(--sh-ctrl);
+}
+.slider:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+
+/* Tabs */
+.tabs-list{display:flex;border-bottom:1px solid var(--bd);gap:0}
+.tab-trigger{
+  padding:8px 16px;font-size:14px;font-weight:500;
+  color:var(--txt-2);background:transparent;border:none;cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+  transition:color var(--dur-fast),border-color var(--dur-fast),background var(--dur-fast);
+}
+.tab-trigger:hover{color:var(--txt-1);background:var(--act-ghost-h)}
+.tab-trigger.active{color:var(--txt-1);border-bottom-color:var(--act-p);font-weight:600}
+.tab-panel{padding:16px 0;display:none}
+.tab-panel.active{display:block}
+.tab-content-text{font-size:14px;color:var(--txt-2);line-height:1.6}
+
+/* Accordion */
+.acc-item{border-bottom:1px solid var(--bd)}
+.acc-trigger{
+  width:100%;display:flex;align-items:center;justify-content:space-between;
+  padding:14px 0;font-size:14px;font-weight:500;color:var(--txt-1);
+  background:transparent;border:none;cursor:pointer;text-align:left;
+  transition:color var(--dur-fast);
+}
+.acc-trigger:hover{color:var(--act-p)}
+.acc-icon{width:16px;height:16px;color:var(--icon-muted);transition:transform var(--dur-normal)}
+.acc-trigger.open .acc-icon{transform:rotate(180deg)}
+.acc-body{
+  max-height:0;overflow:hidden;
+  transition:max-height var(--dur-normal) var(--ease-in-out);
+}
+.acc-body.open{max-height:200px}
+.acc-body-inner{padding:0 0 14px;font-size:14px;color:var(--txt-2);line-height:1.6}
+
+/* Toggle */
+.toggle{
+  display:inline-flex;align-items:center;justify-content:center;
+  height:36px;padding:0 12px;border-radius:var(--r-md);
+  background:transparent;border:none;cursor:pointer;
+  font-size:14px;font-weight:500;color:var(--txt-2);
+  transition:background var(--dur-fast),color var(--dur-fast);
+}
+.toggle:hover{background:var(--act-ghost-h);color:var(--txt-1)}
+.toggle.on{background:var(--act-s);color:var(--txt-1)}
+.toggle-outline{border:1px solid var(--bd)}
+
+/* Table */
+.table{width:100%;border-collapse:collapse;font-size:14px}
+.table th{
+  padding:10px 16px;text-align:left;
+  font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;
+  color:var(--txt-2);background:var(--bg-2);
+  border-bottom:1px solid var(--bd);
+}
+.table td{
+  padding:12px 16px;color:var(--txt-1);
+  border-bottom:1px solid var(--bd);
+}
+.table tr:last-child td{border-bottom:none}
+.table tr:hover td{background:var(--bg-2)}
+
+/* Skeleton */
+.skeleton{
+  border-radius:var(--r-md);background:var(--bg-2);
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* Separator */
+.sep{background:var(--bd)}
+.sep.h{height:1px;width:100%}
+.sep.v{width:1px;height:100%;min-height:24px;display:inline-block}
+
+/* Breadcrumb */
+.breadcrumb{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.bc-item{font-size:14px;color:var(--txt-muted);cursor:pointer;transition:color var(--dur-fast)}
+.bc-item:hover{color:var(--txt-1)}
+.bc-current{font-size:14px;color:var(--txt-1);font-weight:500}
+.bc-sep{color:var(--icon-muted)}
+
+/* Pagination */
+.pagination{display:flex;gap:4px;align-items:center}
+.page-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  height:36px;min-width:36px;padding:0 8px;border-radius:var(--r-md);
+  border:1px solid var(--bd);background:var(--canvas);
+  font-size:14px;color:var(--txt-1);cursor:pointer;
+  transition:background var(--dur-fast),color var(--dur-fast);
+}
+.page-btn:hover{background:var(--act-ghost-h)}
+.page-btn.active{background:var(--act-p);color:var(--act-p-txt);border-color:var(--act-p);pointer-events:none}
+.page-btn:disabled{opacity:.4;pointer-events:none}
+
+/* Calendar */
+.calendar{display:inline-block;padding:12px;background:var(--canvas)}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cal-nav{
+  width:28px;height:28px;border-radius:var(--r-md);
+  border:1px solid var(--bd);background:transparent;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--icon);
+  transition:background var(--dur-fast);
+}
+.cal-nav:hover{background:var(--act-ghost-h)}
+.cal-month{font-size:14px;font-weight:500;color:var(--txt-1)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,36px);gap:2px}
+.cal-day-name{
+  width:36px;height:28px;display:flex;align-items:center;justify-content:center;
+  font-size:12px;color:var(--txt-muted);font-weight:500;
+}
+.cal-day{
+  width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:var(--txt-1);border-radius:var(--r-md);cursor:pointer;
+  transition:background var(--dur-fast);
+}
+.cal-day:hover{background:var(--act-ghost-h)}
+.cal-day.today{background:var(--bg-2);font-weight:600}
+.cal-day.selected{background:var(--act-p);color:var(--act-p-txt)}
+.cal-day.range{background:var(--act-p-subtle)}
+.cal-day.outside{color:var(--txt-muted);opacity:.5}
+
+/* OTP Input */
+.otp-group{display:flex}
+.otp-slot{
+  width:40px;height:40px;display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--bd);border-left:none;
+  font-size:16px;font-weight:600;color:var(--txt-1);
+  background:var(--canvas);transition:border-color var(--dur-fast);
+}
+.otp-slot:first-child{border-left:1px solid var(--bd);border-radius:var(--r-md) 0 0 var(--r-md)}
+.otp-slot:last-child{border-radius:0 var(--r-md) var(--r-md) 0}
+.otp-slot.active{border-color:var(--bd-focus);box-shadow:0 0 0 1px var(--bd-focus)}
+.otp-slot.filled{color:var(--txt-1)}
+.otp-sep{display:flex;align-items:center;padding:0 6px;color:var(--icon-muted)}
+
+/* Scroll area demo */
+.scroll-demo{height:160px;overflow:auto;border:1px solid var(--bd);border-radius:var(--r-lg);scrollbar-width:thin;scrollbar-color:var(--bd-h) transparent}
+.scroll-item{padding:12px 16px;border-bottom:1px solid var(--bd);font-size:14px;color:var(--txt-2)}
+.scroll-item:last-child{border-bottom:none}
+
+/* Tooltip demo */
+.tooltip-demo{position:relative;display:inline-block}
+.tooltip-tip{
+  position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
+  background:var(--txt-1);color:var(--canvas);
+  font-size:12px;padding:5px 10px;border-radius:var(--r-sm);white-space:nowrap;
+  pointer-events:none;opacity:0;transition:opacity var(--dur-fast);
+  box-shadow:var(--sh-sm);
+}
+.tooltip-tip::after{
+  content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
+  border:4px solid transparent;border-top-color:var(--txt-1);
+}
+.tooltip-demo:hover .tooltip-tip{opacity:1}
+
+/* Popover demo */
+.popover-wrap{position:relative;display:inline-block}
+.popover-panel{
+  position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
+  background:var(--elevated);border:1px solid var(--bd);border-radius:var(--r-xl);
+  box-shadow:var(--sh-pop);padding:16px;min-width:200px;z-index:10;
+  display:none;
+}
+.popover-panel.open{display:block}
+
+/* Hover card */
+.hovercard-wrap{position:relative;display:inline-block}
+.hovercard-panel{
+  position:absolute;top:calc(100% + 8px);left:0;
+  background:var(--elevated);border:1px solid var(--bd);border-radius:var(--r-xl);
+  box-shadow:var(--sh-pop);padding:16px;min-width:240px;z-index:10;
+  display:none;
+}
+.hovercard-wrap:hover .hovercard-panel{display:block}
+
+/* Dialog / Sheet / Drawer overlay */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);
+  z-index:200;display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity var(--dur-normal);
+}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{
+  background:var(--overlay);border:1px solid var(--bd);border-radius:var(--r-xl);
+  box-shadow:var(--sh-ovl);padding:24px;width:480px;max-width:90vw;
+  position:relative;transform:scale(.95) translateY(8px);
+  transition:transform var(--dur-normal) var(--ease-out);
+}
+.modal-overlay.open .modal-box{transform:scale(1) translateY(0)}
+.modal-close{
+  position:absolute;top:12px;right:12px;
+  width:28px;height:28px;border-radius:var(--r-sm);border:none;
+  background:transparent;color:var(--icon-muted);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background var(--dur-fast),color var(--dur-fast);
+}
+.modal-close:hover{background:var(--act-ghost-h);color:var(--txt-1)}
+.modal-title{font-size:18px;font-weight:600;color:var(--txt-1);margin-bottom:6px}
+.modal-desc{font-size:14px;color:var(--txt-2);margin-bottom:20px}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--bd)}
+
+/* Sheet */
+.sheet-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);
+  z-index:200;opacity:0;pointer-events:none;transition:opacity var(--dur-normal);
+}
+.sheet-overlay.open{opacity:1;pointer-events:all}
+.sheet-panel{
+  position:fixed;top:0;right:0;bottom:0;width:380px;max-width:90vw;
+  background:var(--overlay);border-left:1px solid var(--bd);
+  box-shadow:var(--sh-ovl);padding:24px;
+  transform:translateX(100%);transition:transform var(--dur-normal) var(--ease-in-out);
+  z-index:201;overflow-y:auto;
+}
+.sheet-overlay.open .sheet-panel{transform:translateX(0)}
+
+/* Drawer */
+.drawer-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);
+  z-index:200;opacity:0;pointer-events:none;transition:opacity var(--dur-normal);
+}
+.drawer-overlay.open{opacity:1;pointer-events:all}
+.drawer-panel{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--overlay);border-top:1px solid var(--bd);border-radius:var(--r-xl) var(--r-xl) 0 0;
+  box-shadow:var(--sh-ovl);padding:16px 24px 32px;
+  transform:translateY(100%);transition:transform var(--dur-normal) var(--ease-in-out);
+  z-index:201;
+}
+.drawer-overlay.open .drawer-panel{transform:translateY(0)}
+.drawer-handle{
+  width:48px;height:4px;border-radius:var(--r-pill);
+  background:var(--bd-h);margin:0 auto 20px;
+}
+
+/* Toast */
+.toast-area{position:fixed;bottom:16px;right:16px;z-index:300;display:flex;flex-direction:column;gap:8px;min-width:320px;pointer-events:none}
+.toast-item{
+  background:var(--overlay);border:1px solid var(--bd);border-radius:var(--r-lg);
+  box-shadow:var(--sh-ovl);padding:12px 16px;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  pointer-events:all;
+  animation:slideIn .2s var(--ease-out);
+}
+@keyframes slideIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+.toast-body{flex:1}
+.toast-title{font-size:14px;font-weight:500;color:var(--txt-1);margin-bottom:2px}
+.toast-desc{font-size:13px;color:var(--txt-2)}
+.toast-close-btn{
+  width:20px;height:20px;border:none;background:transparent;
+  color:var(--icon-muted);cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:var(--r-sm);transition:background var(--dur-fast),color var(--dur-fast);
+}
+.toast-close-btn:hover{background:var(--act-ghost-h);color:var(--txt-1)}
+
+/* Command palette demo */
+.command-box{
+  border:1px solid var(--bd);border-radius:var(--r-xl);overflow:hidden;
+  background:var(--elevated);box-shadow:var(--sh-pop);max-width:440px;width:100%;
+}
+.command-input-wrap{
+  display:flex;align-items:center;gap:8px;
+  padding:0 12px;border-bottom:1px solid var(--bd);
+}
+.command-input{
+  flex:1;height:44px;border:none;background:transparent;
+  font-size:14px;color:var(--txt-1);font-family:var(--font-sans);
+  outline:none;
+}
+.command-input::placeholder{color:var(--txt-ph)}
+.command-list{max-height:240px;overflow-y:auto}
+.command-group-label{
+  padding:8px 12px 4px;font-size:11px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.08em;color:var(--txt-muted);
+}
+.command-item{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;font-size:14px;color:var(--txt-1);
+  cursor:pointer;transition:background var(--dur-fast);
+}
+.command-item:hover,.command-item.selected{background:var(--act-ghost-h)}
+.command-shortcut{margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--txt-muted)}
+
+/* Navigation Menu demo */
+.nav-menu{display:flex;gap:2px;align-items:center}
+.nav-menu-item{
+  display:flex;align-items:center;gap:4px;
+  padding:6px 12px;border-radius:var(--r-md);
+  font-size:14px;font-weight:500;color:var(--txt-1);cursor:pointer;
+  border:none;background:transparent;
+  transition:background var(--dur-fast);
+}
+.nav-menu-item:hover{background:var(--act-ghost-h)}
+.nav-menu-item.active{background:var(--act-ghost-a)}
+
+/* Resizable demo */
+.resizable-demo{
+  display:flex;border:1px solid var(--bd);border-radius:var(--r-lg);overflow:hidden;
+  height:120px;
+}
+.resize-pane{flex:1;padding:16px;font-size:14px;color:var(--txt-2);display:flex;align-items:center}
+.resize-handle{
+  width:4px;background:var(--bd);cursor:col-resize;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:background var(--dur-fast);
+}
+.resize-handle:hover{background:var(--bd-h)}
+.resize-handle::after{
+  content:'⠿';font-size:12px;color:var(--icon-muted);transform:rotate(90deg);
+}
+
+/* Collapsible demo */
+.collapsible-trigger{
+  width:100%;display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;border:1px solid var(--bd);border-radius:var(--r-lg);
+  background:var(--canvas);font-size:14px;font-weight:500;color:var(--txt-1);
+  cursor:pointer;transition:background var(--dur-fast);
+}
+.collapsible-trigger:hover{background:var(--act-ghost-h)}
+.collapsible-content{
+  margin-top:4px;padding:12px 16px;border:1px solid var(--bd);border-radius:var(--r-lg);
+  background:var(--canvas);font-size:14px;color:var(--txt-2);
+  display:none;
+}
+.collapsible-content.open{display:block}
+
+/* Context menu demo */
+.ctx-area{
+  padding:24px;border:2px dashed var(--bd);border-radius:var(--r-lg);
+  text-align:center;font-size:14px;color:var(--txt-muted);cursor:context-menu;
+  user-select:none;transition:border-color var(--dur-fast),background var(--dur-fast);
+}
+.ctx-area:hover{border-color:var(--bd-h);background:var(--bg-2)}
+.ctx-menu{
+  position:fixed;
+  background:var(--elevated);border:1px solid var(--bd);border-radius:var(--r-xl);
+  box-shadow:var(--sh-pop);padding:4px;min-width:160px;z-index:500;
+  display:none;
+}
+.ctx-menu.open{display:block}
+.ctx-menu-item{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 10px;border-radius:var(--r-sm);
+  font-size:14px;color:var(--txt-1);cursor:pointer;
+  transition:background var(--dur-fast);
+}
+.ctx-menu-item:hover{background:var(--act-ghost-h)}
+.ctx-menu-item.destr{color:var(--err-fg)}
+.ctx-menu-item.destr:hover{background:var(--err-bg)}
+.ctx-sep{height:1px;background:var(--bd);margin:4px 0}
+
+/* Carousel demo */
+.carousel{overflow:hidden;border-radius:var(--r-lg)}
+.carousel-track{
+  display:flex;transition:transform var(--dur-slow) var(--ease-in-out);
+}
+.carousel-slide{
+  flex:0 0 100%;
+  height:140px;display:flex;align-items:center;justify-content:center;
+  font-size:20px;font-weight:600;color:var(--act-p-txt);border-radius:var(--r-lg);
+}
+.carousel-controls{display:flex;gap:8px;justify-content:center;margin-top:12px}
+.carousel-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--bd-h);border:none;cursor:pointer;
+  transition:background var(--dur-fast),transform var(--dur-fast);
+}
+.carousel-dot.active{background:var(--act-p);transform:scale(1.3)}
+.carousel-nav{display:flex;justify-content:space-between;margin-top:8px}
+.carousel-btn{
+  height:32px;padding:0 12px;background:var(--canvas);border:1px solid var(--bd);
+  border-radius:var(--r-md);font-size:13px;color:var(--txt-1);cursor:pointer;
+  transition:background var(--dur-fast);
+}
+.carousel-btn:hover{background:var(--act-ghost-h)}
+.carousel-btn:disabled{opacity:.4;pointer-events:none}
+
+/* Menubar demo */
+.menubar{
+  display:flex;gap:2px;padding:4px;
+  border:1px solid var(--bd);border-radius:var(--r-md);background:var(--canvas);
+  width:fit-content;
+}
+.menubar-trigger{
+  padding:5px 12px;border-radius:var(--r-sm);font-size:14px;
+  background:transparent;border:none;cursor:pointer;color:var(--txt-1);
+  transition:background var(--dur-fast);
+}
+.menubar-trigger:hover,.menubar-trigger.open{background:var(--act-ghost-h)}
+
+/* Input OTP interactive */
+.otp-interactive{display:flex;gap:4px;align-items:center}
+.otp-input{
+  width:44px;height:44px;text-align:center;
+  border:1px solid var(--bd);border-radius:var(--r-md);
+  background:var(--canvas);color:var(--txt-1);
+  font-size:18px;font-weight:600;font-family:var(--font-sans);
+  transition:border-color var(--dur-fast),box-shadow var(--dur-fast);
+}
+.otp-input:focus{outline:none;border-color:var(--bd-focus);box-shadow:var(--focus-ring)}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bd-h);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--bd-h)}
+
+/* Utility */
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.col-stack{display:flex;flex-direction:column;gap:8px;width:100%}
+.w-full{width:100%}
+.w-64{width:256px}
+.gap-12{gap:12px}
+.gap-16{gap:16px}
+.mt-8{margin-top:8px}
+.mt-12{margin-top:12px}
+.mt-16{margin-top:16px}
+.text-sm{font-size:14px}
+.text-xs{font-size:12px}
+.text-muted{color:var(--txt-muted)}
+.font-mono{font-family:var(--font-mono)}
+.inline-code{
+  font-family:var(--font-mono);font-size:12px;
+  background:var(--bg-2);border:1px solid var(--bd);
+  padding:2px 6px;border-radius:var(--r-sm);color:var(--txt-1);
+}
+
+/* ════════════════════════════════════════════════
+   HOMEPAGE
+════════════════════════════════════════════════ */
+.home-hero{
+  padding:64px 0 48px;
+  border-bottom:1px solid var(--bd);
+  margin-bottom:48px;
+}
+.home-eyebrow{
+  font-family:var(--font-mono);font-size:12px;font-weight:500;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--act-p);margin-bottom:16px;
+}
+.home-title{
+  font-family:var(--font-display);
+  font-size:56px;font-weight:300;line-height:1.05;
+  letter-spacing:-0.03em;color:var(--txt-1);
+  margin-bottom:16px;
+}
+.home-title em{font-style:italic;color:var(--act-p)}
+.home-subtitle{font-size:17px;color:var(--txt-2);line-height:1.6;max-width:560px}
+.home-stats{
+  display:flex;gap:40px;margin-top:40px;padding-top:40px;border-top:1px solid var(--bd);
+}
+.stat-num{
+  font-family:var(--font-display);font-size:40px;font-weight:300;
+  color:var(--txt-1);letter-spacing:-0.02em;line-height:1;
+}
+.stat-label{font-size:13px;color:var(--txt-muted);margin-top:4px}
+.comp-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;
+}
+.comp-card{
+  padding:16px;border:1px solid var(--bd);border-radius:var(--r-lg);
+  background:var(--elevated);cursor:pointer;
+  transition:border-color var(--dur-fast),box-shadow var(--dur-fast),background var(--dur-fast);
+}
+.comp-card:hover{border-color:var(--act-p);box-shadow:var(--sh-sm);background:var(--canvas)}
+.comp-card-name{font-size:14px;font-weight:600;color:var(--txt-1);margin-bottom:4px}
+.comp-card-desc{font-size:12px;color:var(--txt-muted);line-height:1.4}
+.comp-card-tag{
+  display:inline-block;margin-top:8px;
+  font-family:var(--font-mono);font-size:10px;
+  background:var(--bg-2);border:1px solid var(--bd);
+  color:var(--txt-muted);padding:2px 6px;border-radius:var(--r-sm);
+}
+
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .main{margin-left:0}
+  .topbar{padding:0 16px}
+  .content{padding:24px 16px 60px}
+  .home-title{font-size:36px}
+  .home-stats{gap:24px}
+  .stat-num{font-size:28px}
+}
+</style>
+</head>
+<body>
+
+<!-- ════ TOAST AREA ════ -->
+<div class="toast-area" id="toastArea"></div>
+
+<!-- ════ CONTEXT MENU ════ -->
+<div class="ctx-menu" id="ctxMenu">
+  <div class="ctx-menu-item" onclick="closeCtx()">✏️ Edit</div>
+  <div class="ctx-menu-item" onclick="closeCtx()">📋 Copy</div>
+  <div class="ctx-menu-item" onclick="closeCtx()">📌 Pin</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-menu-item destr" onclick="closeCtx()">🗑 Delete</div>
+</div>
+
+<!-- ════ OVERLAYS ════ -->
+<div class="modal-overlay" id="dialogOverlay" onclick="closeOverlay('dialogOverlay')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeOverlay('dialogOverlay')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-title">Delete project</div>
+    <div class="modal-desc">This action cannot be undone. This will permanently delete the project and all associated data.</div>
+    <div class="form-group">
+      <label class="label">Type the project name to confirm</label>
+      <input class="input" placeholder="my-project" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-md btn-outline" onclick="closeOverlay('dialogOverlay')">Cancel</button>
+      <button class="btn btn-md btn-destructive">Delete project</button>
+    </div>
+  </div>
+</div>
+
+<div class="sheet-overlay" id="sheetOverlay" onclick="closeOverlay('sheetOverlay')">
+  <div class="sheet-panel" onclick="event.stopPropagation()">
+    <div class="modal-title" style="margin-bottom:4px">Edit profile</div>
+    <div class="modal-desc">Make changes to your profile here. Click save when done.</div>
+    <div class="col-stack mt-16">
+      <div class="form-group"><label class="label">Name</label><input class="input" value="Alice Martin" /></div>
+      <div class="form-group"><label class="label">Email</label><input class="input" value="alice@example.com" /></div>
+      <div class="form-group"><label class="label">Bio</label><textarea class="textarea" style="height:80px">Design systems engineer.</textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-md btn-outline" onclick="closeOverlay('sheetOverlay')">Cancel</button>
+      <button class="btn btn-md btn-primary" onclick="showToast('Profile saved','Your changes have been saved.')">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeOverlay('drawerOverlay')">
+  <div class="drawer-panel" onclick="event.stopPropagation()">
+    <div class="drawer-handle"></div>
+    <div class="modal-title">New task</div>
+    <div class="modal-desc" style="margin-bottom:16px">Add a task to your project backlog.</div>
+    <div class="col-stack">
+      <div class="form-group"><label class="label">Task name</label><input class="input" placeholder="Fix navigation bug" /></div>
+      <div class="form-group">
+        <label class="label">Priority</label>
+        <select class="select"><option>High</option><option>Medium</option><option>Low</option></select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-md btn-outline" onclick="closeOverlay('drawerOverlay')">Cancel</button>
+      <button class="btn btn-md btn-primary" onclick="closeOverlay('drawerOverlay');showToast('Task created','Added to backlog.')">Add task</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SIDEBAR ════ -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-brand">Design System</div>
+    <div class="sidebar-version">v1.2.0 · shadcn/ui</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">Overview</div>
+    <button class="nav-item active" onclick="showPage('home')"><span class="nav-dot"></span>Introduction</button>
+
+    <div class="nav-group-label">Layout & Utility</div>
+    <button class="nav-item" onclick="showPage('separator')"><span class="nav-dot"></span>Separator</button>
+    <button class="nav-item" onclick="showPage('scroll-area')"><span class="nav-dot"></span>Scroll Area</button>
+    <button class="nav-item" onclick="showPage('resizable')"><span class="nav-dot"></span>Resizable</button>
+    <button class="nav-item" onclick="showPage('skeleton')"><span class="nav-dot"></span>Skeleton</button>
+
+    <div class="nav-group-label">Inputs</div>
+    <button class="nav-item" onclick="showPage('button')"><span class="nav-dot"></span>Button</button>
+    <button class="nav-item" onclick="showPage('input')"><span class="nav-dot"></span>Input</button>
+    <button class="nav-item" onclick="showPage('textarea')"><span class="nav-dot"></span>Textarea</button>
+    <button class="nav-item" onclick="showPage('select')"><span class="nav-dot"></span>Select</button>
+    <button class="nav-item" onclick="showPage('checkbox')"><span class="nav-dot"></span>Checkbox</button>
+    <button class="nav-item" onclick="showPage('radio-group')"><span class="nav-dot"></span>Radio Group</button>
+    <button class="nav-item" onclick="showPage('switch')"><span class="nav-dot"></span>Switch</button>
+    <button class="nav-item" onclick="showPage('slider')"><span class="nav-dot"></span>Slider</button>
+    <button class="nav-item" onclick="showPage('toggle')"><span class="nav-dot"></span>Toggle</button>
+    <button class="nav-item" onclick="showPage('toggle-group')"><span class="nav-dot"></span>Toggle Group</button>
+    <button class="nav-item" onclick="showPage('input-otp')"><span class="nav-dot"></span>Input OTP</button>
+
+    <div class="nav-group-label">Display</div>
+    <button class="nav-item" onclick="showPage('label')"><span class="nav-dot"></span>Label</button>
+    <button class="nav-item" onclick="showPage('badge')"><span class="nav-dot"></span>Badge</button>
+    <button class="nav-item" onclick="showPage('avatar')"><span class="nav-dot"></span>Avatar</button>
+    <button class="nav-item" onclick="showPage('card')"><span class="nav-dot"></span>Card</button>
+    <button class="nav-item" onclick="showPage('alert')"><span class="nav-dot"></span>Alert</button>
+    <button class="nav-item" onclick="showPage('progress')"><span class="nav-dot"></span>Progress</button>
+    <button class="nav-item" onclick="showPage('calendar')"><span class="nav-dot"></span>Calendar</button>
+    <button class="nav-item" onclick="showPage('carousel')"><span class="nav-dot"></span>Carousel</button>
+    <button class="nav-item" onclick="showPage('table')"><span class="nav-dot"></span>Table</button>
+
+    <div class="nav-group-label">Navigation</div>
+    <button class="nav-item" onclick="showPage('breadcrumb')"><span class="nav-dot"></span>Breadcrumb</button>
+    <button class="nav-item" onclick="showPage('pagination')"><span class="nav-dot"></span>Pagination</button>
+    <button class="nav-item" onclick="showPage('tabs')"><span class="nav-dot"></span>Tabs</button>
+    <button class="nav-item" onclick="showPage('navigation-menu')"><span class="nav-dot"></span>Navigation Menu</button>
+    <button class="nav-item" onclick="showPage('menubar')"><span class="nav-dot"></span>Menubar</button>
+
+    <div class="nav-group-label">Disclosure</div>
+    <button class="nav-item" onclick="showPage('accordion')"><span class="nav-dot"></span>Accordion</button>
+    <button class="nav-item" onclick="showPage('collapsible')"><span class="nav-dot"></span>Collapsible</button>
+
+    <div class="nav-group-label">Overlays</div>
+    <button class="nav-item" onclick="showPage('dialog')"><span class="nav-dot"></span>Dialog</button>
+    <button class="nav-item" onclick="showPage('sheet')"><span class="nav-dot"></span>Sheet</button>
+    <button class="nav-item" onclick="showPage('drawer')"><span class="nav-dot"></span>Drawer</button>
+    <button class="nav-item" onclick="showPage('popover')"><span class="nav-dot"></span>Popover</button>
+    <button class="nav-item" onclick="showPage('tooltip')"><span class="nav-dot"></span>Tooltip</button>
+    <button class="nav-item" onclick="showPage('hover-card')"><span class="nav-dot"></span>Hover Card</button>
+    <button class="nav-item" onclick="showPage('dropdown-menu')"><span class="nav-dot"></span>Dropdown Menu</button>
+    <button class="nav-item" onclick="showPage('context-menu')"><span class="nav-dot"></span>Context Menu</button>
+    <button class="nav-item" onclick="showPage('command')"><span class="nav-dot"></span>Command</button>
+
+    <div class="nav-group-label">Feedback</div>
+    <button class="nav-item" onclick="showPage('toast')"><span class="nav-dot"></span>Toast</button>
+
+    <div class="nav-group-label">Form</div>
+    <button class="nav-item" onclick="showPage('form')"><span class="nav-dot"></span>Form</button>
+  </nav>
+</aside>
+
+<!-- ════ MAIN ════ -->
+<main class="main">
+  <div class="topbar">
+    <span class="topbar-title" id="topbarTitle">Introduction</span>
+    <div class="mode-controls">
+      <div class="mode-group">
+        <span class="mode-label">Appearance</span>
+        <div class="segmented">
+          <button class="seg-btn active" onclick="setMode('appearance','light')">Light</button>
+          <button class="seg-btn" onclick="setMode('appearance','dark')">Dark</button>
+        </div>
+      </div>
+      <div class="mode-group">
+        <span class="mode-label">Brand</span>
+        <div class="segmented">
+          <button class="seg-btn active" onclick="setMode('brand','default')">Default</button>
+          <button class="seg-btn" onclick="setMode('brand','brand')">Brand</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+  <!-- ════════ HOME ════════ -->
+  <div class="comp-page active" id="page-home">
+    <div class="home-hero">
+      <div class="home-eyebrow">shadcn/ui · Token-driven · v1.2.0</div>
+      <h1 class="home-title">Design System<br><em>Component Library</em></h1>
+      <p class="home-subtitle">A complete, production-ready component library built on shadcn/ui conventions, fully wired to the DS v1.2 token architecture. Every color, spacing, radius, and shadow traces through the semantic token chain.</p>
+      <div class="home-stats">
+        <div><div class="stat-num">42</div><div class="stat-label">Components</div></div>
+        <div><div class="stat-num">754</div><div class="stat-label">Token variables</div></div>
+        <div><div class="stat-num">4</div><div class="stat-label">Theme modes</div></div>
+        <div><div class="stat-num">100%</div><div class="stat-label">Token coverage</div></div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">All Components</div>
+      <div class="comp-grid">
+        <div class="comp-card" onclick="showPage('accordion')"><div class="comp-card-name">Accordion</div><div class="comp-card-desc">Vertically stacked collapsible sections</div><div class="comp-card-tag">@radix-ui/accordion</div></div>
+        <div class="comp-card" onclick="showPage('alert')"><div class="comp-card-name">Alert</div><div class="comp-card-desc">Status messages: error, success, warning, info</div><div class="comp-card-tag">native</div></div>
+        <div class="comp-card" onclick="showPage('avatar')"><div class="comp-card-name">Avatar</div><div class="comp-card-desc">User profile image with fallback initials</div><div class="comp-card-tag">native</div></div>
+        <div class="comp-card" onclick="showPage('badge')"><div class="comp-card-name">Badge</div><div class="comp-card-desc">Small status and label indicators</div><div class="comp-card-tag">native</div></div>
+        <div class="comp-card" onclick="showPage('breadcrumb')"><div class="comp-card-name">Breadcrumb</div><div class="comp-card-desc">Hierarchical navigation trail</div><div class="comp-card-tag">native</div></div>
+        <div class="comp-card" onclick="showPage('button')"><div class="comp-card-name">Button</div><div class="comp-card-desc">Primary interaction element, 6 variants</div><div class="comp-card-tag">@radix-ui/slot</div></div>
+        <div class="comp-card" onclick="showPage('calendar')"><div class="comp-card-name">Calendar</div><div class="comp-card-desc">Date picker and range selection</div><div class="comp-card-tag">react-day-picker</div></div>
+        <div class="comp-card" onclick="showPage('card')"><div class="comp-card-name">Card</div><div class="comp-card-desc">Content container with header/footer</div><div class="comp-card-tag">native</div></div>
+        <div class="comp-card" onclick="showPage('carousel')"><div class="comp-card-name">Carousel</div><div class="comp-card-desc">Slide-based content viewer</div><div class="comp-card-tag">embla-carousel</div></div>
+        <div class="comp-card" onclick="showPage('checkbox')"><div class="comp-card-name">Checkbox</div><div class="comp-card-desc">Binary selection control</div><div class="comp-card-tag">@radix-ui/checkbox</div></div>
+        <div class="comp-card" onclick="showPage('collapsible')"><div class="comp-card-name">Collapsible</div><div class="comp-card-desc">Toggle-able content section</div><div class="comp-card-tag">@radix-ui/collapsible</div></div>
+        <div class="comp-card" onclick="showPage('command')"><div class="comp-card-name">Command</div><div class="comp-card-desc">Keyboard-first command palette</div><div class="comp-card-tag">cmdk</div></div>
+        <div class="comp-card" onclick="showPage('context-menu')"><div class="comp-card-name">Context Menu</div><div class="comp-card-desc">Right-click triggered menu</div><div class="comp-card-tag">@radix-ui/context-menu</div></div>
+        <div class="comp-card" onclick="showPage('dialog')"><div class="comp-card-name">Dialog</div><div class="comp-card-desc">Modal overlay for focused tasks</div><div class="comp-card-tag">@radix-ui/dialog</div></div>
+        <div class="comp-card" onclick="showPage('drawer')"><div class="comp-card-name">Drawer</div><div class="comp-card-desc">Bottom sheet for mobile-friendly actions</div><div class="comp-card-tag">vaul</div></div>
+        <div class="comp-card" onclick="showPage('dropdown-menu')"><div class="comp-card-name">Dropdown Menu</div><div class="comp-card-desc">Triggered floating action list</div><div class="comp-card-tag">@radix-ui/dropdown-menu</div></div>
+        <div class="comp-card" onclick="showPage('form')"><div class="comp-card-name">Form</div><div class="comp-card-desc">React Hook Form integration with validation</div><div class="comp-card-tag">react-hook-form</div></div>
+        <div class="comp-card" onclick="showPage('hover-card')"><div class="comp-card-name">Hover Card</div><div class="comp-card-desc">Rich preview on hover</div><div class="comp-card-tag">@radix-ui/hover-card</div></div>
+        <div class="comp-card" onclick="showPage('input')"><div class="comp-card-name">Input</div><div class="comp-card-desc">Text entry field with states</div><div class="comp-card-tag">native</div></div>
+        <div class="comp-card" onclick="showPage('input-otp')"><div class="comp-card-name">Input OTP</div><div class="comp-card-desc">One-time password slot input</div><div class="comp-card-tag">input-otp</div></div>
+        <div class="comp-card" onclick="showPage('label')"><div class="comp-card-name">Label</div><div class="comp-card-desc">Accessible form field label</div><div class="comp-card-tag">@radix-ui/label</div></div>
+        <div class="comp-card" onclick="showPage('menubar')"><div class="comp-card-name">Menubar</div><div class="comp-card-desc">Application-style horizontal menu</div><div class="comp-card-tag">@radix-ui/menubar</div></div>
+        <div class="comp-card" onclick="showPage('navigation-menu')"><div class="comp-card-name">Navigation Menu</div><div class="comp-card-desc">Site navigation with dropdown panels</div><div class="comp-card-tag">@radix-ui/navigation-menu</div></div>
+        <div class="comp-card" onclick="showPage('pagination')"><div class="comp-card-name">Pagination</div><div class="comp-card-desc">Page navigation controls</div><div class="comp-card-tag">native</div></div>
+        <div class="comp-card" onclick="showPage('popover')"><div class="comp-card-name">Popover</div><div class="comp-card-desc">Click-triggered floating panel</div><div class="comp-card-tag">@radix-ui/popover</div></div>
+        <div class="comp-card" onclick="showPage('progress')"><div class="comp-card-name">Progress</div><div class="comp-card-desc">Linear task completion indicator</div><div class="comp-card-tag">@radix-ui/progress</div></div>
+        <div class="comp-card" onclick="showPage('radio-group')"><div class="comp-card-name">Radio Group</div><div class="comp-card-desc">Single selection from a list</div><div class="comp-card-tag">@radix-ui/radio-group</div></div>
+        <div class="comp-card" onclick="showPage('resizable')"><div class="comp-card-name">Resizable</div><div class="comp-card-desc">Drag-to-resize panel layout</div><div class="comp-card-tag">react-resizable-panels</div></div>
+        <div class="comp-card" onclick="showPage('scroll-area')"><div class="comp-card-name">Scroll Area</div><div class="comp-card-desc">Custom-styled scrollable container</div><div class="comp-card-tag">@radix-ui/scroll-area</div></div>
+        <div class="comp-card" onclick="showPage('select')"><div class="comp-card-name">Select</div><div class="comp-card-desc">Dropdown option picker</div><div class="comp-card-tag">@radix-ui/select</div></div>
+        <div class="comp-card" onclick="showPage('separator')"><div class="comp-card-name">Separator</div><div class="comp-card-desc">Visual divider, horizontal or vertical</div><div class="comp-card-tag">@radix-ui/separator</div></div>
+        <div class="comp-card" onclick="showPage('sheet')"><div class="comp-card-name">Sheet</div><div class="comp-card-desc">Slide-over panel from any edge</div><div class="comp-card-tag">vaul</div></div>
+        <div class="comp-card" onclick="showPage('skeleton')"><div class="comp-card-name">Skeleton</div><div class="comp-card-desc">Loading placeholder animation</div><div class="comp-card-tag">native</div></div>
+        <div class="comp-card" onclick="showPage('slider')"><div class="comp-card-name">Slider</div><div class="comp-card-desc">Range input with draggable thumb</div><div class="comp-card-tag">@radix-ui/slider</div></div>
+        <div class="comp-card" onclick="showPage('switch')"><div class="comp-card-name">Switch</div><div class="comp-card-desc">Binary on/off toggle</div><div class="comp-card-tag">@radix-ui/switch</div></div>
+        <div class="comp-card" onclick="showPage('table')"><div class="comp-card-name">Table</div><div class="comp-card-desc">Data grid with sortable columns</div><div class="comp-card-tag">native</div></div>
+        <div class="comp-card" onclick="showPage('tabs')"><div class="comp-card-name">Tabs</div><div class="comp-card-desc">Tabbed content navigation</div><div class="comp-card-tag">@radix-ui/tabs</div></div>
+        <div class="comp-card" onclick="showPage('textarea')"><div class="comp-card-name">Textarea</div><div class="comp-card-desc">Multi-line text entry</div><div class="comp-card-tag">native</div></div>
+        <div class="comp-card" onclick="showPage('toast')"><div class="comp-card-name">Toast</div><div class="comp-card-desc">Ephemeral notification messages</div><div class="comp-card-tag">@radix-ui/toast</div></div>
+        <div class="comp-card" onclick="showPage('toggle')"><div class="comp-card-name">Toggle</div><div class="comp-card-desc">Two-state pressed button</div><div class="comp-card-tag">@radix-ui/toggle</div></div>
+        <div class="comp-card" onclick="showPage('toggle-group')"><div class="comp-card-name">Toggle Group</div><div class="comp-card-desc">Single or multi-select toggle set</div><div class="comp-card-tag">@radix-ui/toggle-group</div></div>
+        <div class="comp-card" onclick="showPage('tooltip')"><div class="comp-card-name">Tooltip</div><div class="comp-card-desc">Hover-triggered label</div><div class="comp-card-tag">@radix-ui/tooltip</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ BUTTON ════════ -->
+  <div class="comp-page" id="page-button">
+    <div class="page-hero">
+      <h1 class="page-title">Button</h1>
+      <p class="page-desc">Triggers an action or event. Six semantic variants map directly to token roles in the action layer. Sizes scale with the density system.</p>
+      <div class="page-meta">
+        <span class="meta-tag import">import { Button } from "@/components/ui"</span>
+        <span class="meta-tag">@radix-ui/react-slot</span>
+        <span class="meta-tag">cva</span>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">Variants</div>
+      <div class="demo-box">
+        <div class="demo-preview">
+          <button class="btn btn-md btn-primary">Primary</button>
+          <button class="btn btn-md btn-secondary">Secondary</button>
+          <button class="btn btn-md btn-destructive">Destructive</button>
+          <button class="btn btn-md btn-outline">Outline</button>
+          <button class="btn btn-md btn-ghost">Ghost</button>
+          <button class="btn btn-md btn-link">Link</button>
+        </div>
+        <div class="demo-tabs">
+          <button class="demo-tab active" onclick="switchTab(this,'btn-v1')">Preview</button>
+          <button class="demo-tab" onclick="switchTab(this,'btn-v2')">Code</button>
+        </div>
+        <div class="demo-content active" id="btn-v1"><p class="text-sm text-muted">All 6 variants shown above. Toggle appearance/brand in the topbar to see token changes propagate.</p></div>
+        <div class="demo-content" id="btn-v2"><pre><span class="kw">import</span> { Button } <span class="kw">from</span> <span class="str">"@/components/ui"</span>
+
+<span class="tag">&lt;Button</span> <span class="attr">variant</span>=<span class="val">"primary"</span><span class="tag">&gt;</span>Primary<span class="tag">&lt;/Button&gt;</span>
+<span class="tag">&lt;Button</span> <span class="attr">variant</span>=<span class="val">"secondary"</span><span class="tag">&gt;</span>Secondary<span class="tag">&lt;/Button&gt;</span>
+<span class="tag">&lt;Button</span> <span class="attr">variant</span>=<span class="val">"destructive"</span><span class="tag">&gt;</span>Destructive<span class="tag">&lt;/Button&gt;</span>
+<span class="tag">&lt;Button</span> <span class="attr">variant</span>=<span class="val">"outline"</span><span class="tag">&gt;</span>Outline<span class="tag">&lt;/Button&gt;</span>
+<span class="tag">&lt;Button</span> <span class="attr">variant</span>=<span class="val">"ghost"</span><span class="tag">&gt;</span>Ghost<span class="tag">&lt;/Button&gt;</span>
+<span class="tag">&lt;Button</span> <span class="attr">variant</span>=<span class="val">"link"</span><span class="tag">&gt;</span>Link<span class="tag">&lt;/Button&gt;</span></pre></div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">Sizes</div>
+      <div class="demo-box">
+        <div class="demo-preview">
+          <button class="btn btn-sm btn-primary">Small</button>
+          <button class="btn btn-md btn-primary">Medium</button>
+          <button class="btn btn-lg btn-primary">Large</button>
+          <button class="btn btn-icon btn-outline">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">States</div>
+      <div class="demo-box">
+        <div class="demo-preview">
+          <button class="btn btn-md btn-primary" disabled>Primary disabled</button>
+          <button class="btn btn-md btn-outline" disabled>Outline disabled</button>
+          <button class="btn btn-md btn-destructive" disabled>Destructive disabled</button>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">Props</div>
+      <div class="demo-box">
+        <table class="props-table">
+          <tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr>
+          <tr><td><span class="prop-name">variant</span></td><td><span class="prop-type">"primary" | "secondary" | "destructive" | "outline" | "ghost" | "link"</span></td><td><span class="prop-default">"primary"</span></td><td class="prop-desc">Visual style variant. Maps to action token layer.</td></tr>
+          <tr><td><span class="prop-name">size</span></td><td><span class="prop-type">"sm" | "md" | "lg" | "icon"</span></td><td><span class="prop-default">"md"</span></td><td class="prop-desc">Controls height, padding, and font-size via density tokens.</td></tr>
+          <tr><td><span class="prop-name">asChild</span></td><td><span class="prop-type">boolean</span></td><td><span class="prop-default">false</span></td><td class="prop-desc">Renders as child element (Radix Slot). Use for router links.</td></tr>
+          <tr><td><span class="prop-name">disabled</span></td><td><span class="prop-type">boolean</span></td><td><span class="prop-default">false</span></td><td class="prop-desc">Disables the button. Uses <code class="inline-code">color/action/primary/bg-disabled</code> token.</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">Token Mapping</div>
+      <div class="demo-box">
+        <table class="props-table">
+          <tr><th>Variant</th><th>Background token</th><th>Text token</th></tr>
+          <tr><td><span class="prop-name">primary</span></td><td><span class="prop-type">color/action/primary/bg</span></td><td><span class="prop-type">color/text/on-accent</span></td></tr>
+          <tr><td><span class="prop-name">secondary</span></td><td><span class="prop-type">color/action/secondary/bg</span></td><td><span class="prop-type">color/text/primary</span></td></tr>
+          <tr><td><span class="prop-name">destructive</span></td><td><span class="prop-type">color/action/destructive/bg</span></td><td><span class="prop-type">color/text/on-destructive</span></td></tr>
+          <tr><td><span class="prop-name">outline / ghost</span></td><td><span class="prop-type">transparent → color/action/ghost/bg-hover</span></td><td><span class="prop-type">color/text/primary</span></td></tr>
+          <tr><td><span class="prop-name">link</span></td><td><span class="prop-type">transparent</span></td><td><span class="prop-type">color/action/link/text</span></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ INPUT ════════ -->
+  <div class="comp-page" id="page-input">
+    <div class="page-hero">
+      <h1 class="page-title">Input</h1>
+      <p class="page-desc">Single-line text entry. Handles default, hover, focus, error, and disabled states. Size scales with the density system.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Input } from "@/components/ui"</span></div>
+    </div>
+    <div class="section"><div class="section-title">States</div>
+      <div class="demo-box"><div class="demo-preview col" style="max-width:360px">
+        <input class="input" placeholder="Default placeholder" />
+        <input class="input" value="Filled value" />
+        <input class="input error" value="invalid-input" />
+        <input class="input" placeholder="Disabled" disabled />
+      </div>
+      <div class="demo-tabs"><button class="demo-tab active" onclick="switchTab(this,'inp-1')">Preview</button><button class="demo-tab" onclick="switchTab(this,'inp-2')">Code</button></div>
+      <div class="demo-content active" id="inp-1"><p class="text-sm text-muted">Default · filled · error · disabled states.</p></div>
+      <div class="demo-content" id="inp-2"><pre><span class="tag">&lt;Input</span> <span class="attr">placeholder</span>=<span class="val">"Enter value"</span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;Input</span> <span class="attr">error</span> <span class="attr">value</span>=<span class="val">"bad value"</span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;Input</span> <span class="attr">disabled</span> <span class="attr">placeholder</span>=<span class="val">"Disabled"</span> <span class="tag">/&gt;</span></pre></div>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">With Label</div>
+      <div class="demo-box"><div class="demo-preview col" style="max-width:360px">
+        <div class="form-group"><label class="label">Email address</label><input class="input" type="email" placeholder="alice@example.com" /><span class="form-desc">We'll never share your email.</span></div>
+        <div class="form-group"><label class="label">Username</label><input class="input error" value="taken_user" /><span class="form-message">This username is already taken.</span></div>
+      </div></div>
+    </div>
+    <div class="section"><div class="section-title">Props</div>
+      <div class="demo-box"><table class="props-table">
+        <tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr>
+        <tr><td><span class="prop-name">size</span></td><td><span class="prop-type">"sm" | "md" | "lg"</span></td><td><span class="prop-default">"md"</span></td><td class="prop-desc">Height and padding, driven by density control tokens.</td></tr>
+        <tr><td><span class="prop-name">error</span></td><td><span class="prop-type">boolean</span></td><td><span class="prop-default">false</span></td><td class="prop-desc">Applies <code class="inline-code">color/border/error</code> token to the border.</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- ════════ TEXTAREA ════════ -->
+  <div class="comp-page" id="page-textarea">
+    <div class="page-hero">
+      <h1 class="page-title">Textarea</h1>
+      <p class="page-desc">Multi-line text entry with resizable handle. Same token coverage as Input.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Textarea } from "@/components/ui"</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview col" style="max-width:400px">
+        <div class="form-group"><label class="label">Description</label><textarea class="textarea" placeholder="Describe your project..."></textarea></div>
+        <div class="form-group"><label class="label">Error state</label><textarea class="textarea" style="border-color:var(--bd-err)">Some invalid content here</textarea><span class="form-message">Content must be less than 280 characters.</span></div>
+        <textarea class="textarea" placeholder="Disabled" disabled></textarea>
+      </div></div>
+    </div>
+    <div class="section"><div class="section-title">Props</div>
+      <div class="demo-box"><table class="props-table">
+        <tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr>
+        <tr><td><span class="prop-name">error</span></td><td><span class="prop-type">boolean</span></td><td><span class="prop-default">false</span></td><td class="prop-desc">Applies error border token.</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- ════════ SELECT ════════ -->
+  <div class="comp-page" id="page-select">
+    <div class="page-hero">
+      <h1 class="page-title">Select</h1>
+      <p class="page-desc">Accessible dropdown picker built on Radix Select. The trigger, content, items, and separator are all individually token-wired.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-select</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview">
+        <div class="form-group" style="width:240px"><label class="label">Framework</label>
+          <select class="select"><option>Next.js</option><option>Remix</option><option>Astro</option><option>Vite</option></select>
+        </div>
+        <div class="form-group" style="width:200px"><label class="label">Status</label>
+          <select class="select" disabled><option>Disabled</option></select>
+        </div>
+      </div></div>
+    </div>
+    <div class="section"><div class="section-title">Props</div>
+      <div class="demo-box"><table class="props-table">
+        <tr><th>Component</th><th>Key props</th><th>Description</th></tr>
+        <tr><td><span class="prop-name">SelectTrigger</span></td><td><span class="prop-type">className</span></td><td class="prop-desc">The visible trigger button. Uses <code class="inline-code">color/surface/canvas</code> and <code class="inline-code">color/border/default</code>.</td></tr>
+        <tr><td><span class="prop-name">SelectContent</span></td><td><span class="prop-type">position</span></td><td class="prop-desc">Floating panel. Uses <code class="inline-code">color/surface/popover</code> and <code class="inline-code">shadow/popover</code>.</td></tr>
+        <tr><td><span class="prop-name">SelectItem</span></td><td><span class="prop-type">value</span><span class="prop-required">required</span></td><td class="prop-desc">Each option. Hover uses <code class="inline-code">color/action/ghost/bg-hover</code>.</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- ════════ CHECKBOX ════════ -->
+  <div class="comp-page" id="page-checkbox">
+    <div class="page-hero">
+      <h1 class="page-title">Checkbox</h1>
+      <p class="page-desc">Binary selection. Checked state uses <code class="inline-code">color/action/primary/bg</code>. Supports indeterminate state.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Checkbox } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-checkbox</span></div>
+    </div>
+    <div class="section"><div class="section-title">States</div>
+      <div class="demo-box"><div class="demo-preview col">
+        <label class="check-wrap"><input type="checkbox" class="checkbox" /><span class="check-label">Unchecked</span></label>
+        <label class="check-wrap"><input type="checkbox" class="checkbox" checked /><span class="check-label">Checked</span></label>
+        <label class="check-wrap"><input type="checkbox" class="checkbox" disabled /><span class="check-label" style="color:var(--txt-dis)">Disabled</span></label>
+        <label class="check-wrap"><input type="checkbox" class="checkbox" checked disabled /><span class="check-label" style="color:var(--txt-dis)">Checked disabled</span></label>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ RADIO GROUP ════════ -->
+  <div class="comp-page" id="page-radio-group">
+    <div class="page-hero">
+      <h1 class="page-title">Radio Group</h1>
+      <p class="page-desc">Single selection from a mutually exclusive set of options.</p>
+      <div class="page-meta"><span class="meta-tag import">import { RadioGroup, RadioGroupItem } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-radio-group</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview col">
+        <label class="check-wrap"><input type="radio" name="plan" class="radio" /><span class="check-label">Free — 3 projects, 1 seat</span></label>
+        <label class="check-wrap"><input type="radio" name="plan" class="radio" checked /><span class="check-label">Pro — unlimited projects, 5 seats</span></label>
+        <label class="check-wrap"><input type="radio" name="plan" class="radio" /><span class="check-label">Enterprise — custom</span></label>
+        <label class="check-wrap"><input type="radio" name="plan" class="radio" disabled /><span class="check-label" style="color:var(--txt-dis)">Unavailable option</span></label>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ SWITCH ════════ -->
+  <div class="comp-page" id="page-switch">
+    <div class="page-hero">
+      <h1 class="page-title">Switch</h1>
+      <p class="page-desc">Binary on/off toggle. The thumb is intentionally white in all modes — the colored track carries the state signal.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Switch } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-switch</span></div>
+    </div>
+    <div class="section"><div class="section-title">States</div>
+      <div class="demo-box"><div class="demo-preview col">
+        <div class="sw-wrap">
+          <label class="switch"><input type="checkbox" /><div class="sw-track"></div><div class="sw-thumb"></div></label>
+          <span class="text-sm">Off</span>
+        </div>
+        <div class="sw-wrap">
+          <label class="switch"><input type="checkbox" checked /><div class="sw-track"></div><div class="sw-thumb"></div></label>
+          <span class="text-sm">On — uses <code class="inline-code">color/action/primary/bg</code></span>
+        </div>
+        <div class="sw-wrap">
+          <label class="switch"><input type="checkbox" disabled /><div class="sw-track"></div><div class="sw-thumb"></div></label>
+          <span class="text-sm" style="color:var(--txt-dis)">Disabled</span>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ SLIDER ════════ -->
+  <div class="comp-page" id="page-slider">
+    <div class="page-hero">
+      <h1 class="page-title">Slider</h1>
+      <p class="page-desc">Draggable range input. The filled track uses <code class="inline-code">color/action/primary/bg</code>; the unfilled track uses <code class="inline-code">color/bg/tertiary</code>.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Slider } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-slider</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview col" style="max-width:400px;gap:24px">
+        <div><label class="label" style="margin-bottom:12px">Volume — 40%</label><input class="slider" type="range" value="40" /></div>
+        <div><label class="label" style="margin-bottom:12px">Brightness — 75%</label><input class="slider" type="range" value="75" /></div>
+        <div><label class="label" style="margin-bottom:12px;color:var(--txt-dis)">Disabled</label><input class="slider" type="range" value="30" disabled style="opacity:.4;pointer-events:none" /></div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ TOGGLE ════════ -->
+  <div class="comp-page" id="page-toggle">
+    <div class="page-hero">
+      <h1 class="page-title">Toggle</h1>
+      <p class="page-desc">Two-state pressed button. Active state uses <code class="inline-code">color/action/secondary/bg</code>.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Toggle } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-toggle</span></div>
+    </div>
+    <div class="section"><div class="section-title">Variants</div>
+      <div class="demo-box"><div class="demo-preview">
+        <button class="toggle" onclick="this.classList.toggle('on')">Default</button>
+        <button class="toggle on" onclick="this.classList.toggle('on')">Pressed</button>
+        <button class="toggle toggle-outline" onclick="this.classList.toggle('on')">Outline</button>
+        <button class="toggle toggle-outline on" onclick="this.classList.toggle('on')">Outline pressed</button>
+      </div></div>
+    </div>
+    <div class="section"><div class="section-title">Toolbar example</div>
+      <div class="demo-box"><div class="demo-preview">
+        <div class="row">
+          <button class="toggle toggle-outline on" title="Bold"><b>B</b></button>
+          <button class="toggle toggle-outline" title="Italic"><i>I</i></button>
+          <button class="toggle toggle-outline" title="Underline"><u>U</u></button>
+          <div style="width:1px;height:24px;background:var(--bd);margin:0 4px"></div>
+          <button class="toggle toggle-outline on" title="Left align">⬛</button>
+          <button class="toggle toggle-outline" title="Center">⬛</button>
+          <button class="toggle toggle-outline" title="Right">⬛</button>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ TOGGLE GROUP ════════ -->
+  <div class="comp-page" id="page-toggle-group">
+    <div class="page-hero">
+      <h1 class="page-title">Toggle Group</h1>
+      <p class="page-desc">A set of two-state buttons where one or more can be active. Supports single and multiple selection.</p>
+      <div class="page-meta"><span class="meta-tag import">import { ToggleGroup, ToggleGroupItem } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-toggle-group</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview col">
+        <div><label class="label" style="margin-bottom:8px">Single selection</label>
+          <div class="row">
+            <button class="toggle toggle-outline on" onclick="activateOne(this)">Monthly</button>
+            <button class="toggle toggle-outline" onclick="activateOne(this)">Yearly</button>
+          </div>
+        </div>
+        <div><label class="label" style="margin-bottom:8px">Multiple selection (text formatting)</label>
+          <div class="row">
+            <button class="toggle toggle-outline on" onclick="this.classList.toggle('on')"><b>B</b></button>
+            <button class="toggle toggle-outline" onclick="this.classList.toggle('on')"><i>I</i></button>
+            <button class="toggle toggle-outline" onclick="this.classList.toggle('on')"><u>U</u></button>
+            <button class="toggle toggle-outline" onclick="this.classList.toggle('on')"><s>S</s></button>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ INPUT OTP ════════ -->
+  <div class="comp-page" id="page-input-otp">
+    <div class="page-hero">
+      <h1 class="page-title">Input OTP</h1>
+      <p class="page-desc">Segmented input for one-time passwords. Each slot is individually styled using border tokens. Active slot shows focus ring.</p>
+      <div class="page-meta"><span class="meta-tag import">import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "@/components/ui"</span><span class="meta-tag">input-otp</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview col">
+        <div><label class="label" style="margin-bottom:12px">6-digit code</label>
+          <div class="otp-interactive">
+            <input class="otp-input" maxlength="1" oninput="otpNext(this)" />
+            <input class="otp-input" maxlength="1" oninput="otpNext(this)" />
+            <input class="otp-input" maxlength="1" oninput="otpNext(this)" />
+            <span class="otp-sep">—</span>
+            <input class="otp-input" maxlength="1" oninput="otpNext(this)" />
+            <input class="otp-input" maxlength="1" oninput="otpNext(this)" />
+            <input class="otp-input" maxlength="1" oninput="otpNext(this)" />
+          </div>
+        </div>
+        <div><label class="label" style="margin-bottom:12px">4-digit PIN (filled)</label>
+          <div class="otp-group">
+            <div class="otp-slot filled">4</div>
+            <div class="otp-slot filled">2</div>
+            <div class="otp-slot active" style="border-color:var(--bd-focus)"></div>
+            <div class="otp-slot"></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ LABEL ════════ -->
+  <div class="comp-page" id="page-label">
+    <div class="page-hero">
+      <h1 class="page-title">Label</h1>
+      <p class="page-desc">Accessible form label. Uses <code class="inline-code">color/text/secondary</code> to visually de-emphasize relative to the field value. Disabled state inherits from the peer input.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Label } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-label</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview col" style="max-width:320px">
+        <div class="form-group"><label class="label">Email address</label><input class="input" type="email" placeholder="you@example.com" /></div>
+        <div class="form-group"><label class="label">Password <span style="color:var(--err-fg);font-size:12px">*</span></label><input class="input" type="password" placeholder="••••••••" /></div>
+        <div class="form-group"><label class="label" style="color:var(--txt-dis)">Locked field</label><input class="input" placeholder="Not editable" disabled /></div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ BADGE ════════ -->
+  <div class="comp-page" id="page-badge">
+    <div class="page-hero">
+      <h1 class="page-title">Badge</h1>
+      <p class="page-desc">Compact status label. All 7 variants map directly to the status token layer. The outline variant uses border tokens only.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Badge } from "@/components/ui"</span></div>
+    </div>
+    <div class="section"><div class="section-title">All Variants</div>
+      <div class="demo-box"><div class="demo-preview">
+        <span class="badge badge-default">Default</span>
+        <span class="badge badge-secondary">Secondary</span>
+        <span class="badge badge-destructive">Destructive</span>
+        <span class="badge badge-success">Success</span>
+        <span class="badge badge-warning">Warning</span>
+        <span class="badge badge-info">Info</span>
+        <span class="badge badge-outline">Outline</span>
+      </div></div>
+    </div>
+    <div class="section"><div class="section-title">In context</div>
+      <div class="demo-box"><div class="demo-preview">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:14px;color:var(--txt-1)">Deployment status</span>
+          <span class="badge badge-success">Live</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:14px;color:var(--txt-1)">Build pipeline</span>
+          <span class="badge badge-warning">Running</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:14px;color:var(--txt-1)">Service health</span>
+          <span class="badge badge-destructive">Degraded</span>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ AVATAR ════════ -->
+  <div class="comp-page" id="page-avatar">
+    <div class="page-hero">
+      <h1 class="page-title">Avatar</h1>
+      <p class="page-desc">User representation. Renders an image if provided; falls back to initials. Background uses <code class="inline-code">color/bg/tertiary</code>.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Avatar } from "@/components/ui"</span></div>
+    </div>
+    <div class="section"><div class="section-title">Sizes</div>
+      <div class="demo-box"><div class="demo-preview">
+        <div class="avatar av-sm">JD</div>
+        <div class="avatar av-md">AM</div>
+        <div class="avatar av-lg">SK</div>
+      </div></div>
+    </div>
+    <div class="section"><div class="section-title">With accent background</div>
+      <div class="demo-box"><div class="demo-preview">
+        <div class="avatar av-md av-primary">MR</div>
+        <div class="avatar av-md" style="background:var(--ok-bg);color:var(--ok-fg);border-color:var(--ok-bd)">ZK</div>
+        <div class="avatar av-md" style="background:var(--err-bg);color:var(--err-fg);border-color:var(--err-bd)">DL</div>
+      </div></div>
+    </div>
+    <div class="section"><div class="section-title">Avatar group (stacked)</div>
+      <div class="demo-box"><div class="demo-preview">
+        <div style="display:flex">
+          <div class="avatar av-md" style="z-index:4;margin-right:-8px">JD</div>
+          <div class="avatar av-md" style="z-index:3;margin-right:-8px">AM</div>
+          <div class="avatar av-md" style="z-index:2;margin-right:-8px">SK</div>
+          <div class="avatar av-md" style="z-index:1;background:var(--bg-2);color:var(--txt-2);font-size:12px">+4</div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ CARD ════════ -->
+  <div class="comp-page" id="page-card">
+    <div class="page-hero">
+      <h1 class="page-title">Card</h1>
+      <p class="page-desc">Surface container for related content. Uses <code class="inline-code">color/surface/elevated</code> with <code class="inline-code">shadow/card</code>. Composed of header, content, and footer sub-components.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui"</span></div>
+    </div>
+    <div class="section"><div class="section-title">Anatomy</div>
+      <div class="demo-box"><div class="demo-preview grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Create project</div><div class="card-desc">Deploy your new project in one click.</div></div>
+          <div class="card-content">
+            <div class="form-group"><label class="label">Project name</label><input class="input" placeholder="my-project" /></div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-md btn-primary" style="flex:1">Deploy</button>
+            <button class="btn btn-md btn-outline">Cancel</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div class="card-title">Team</div>
+              <span class="badge badge-default">3 members</span>
+            </div>
+            <div class="card-desc">Manage access and roles.</div>
+          </div>
+          <div class="card-content">
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:8px"><div class="avatar av-sm">AM</div><span class="text-sm">Alice Martin</span></div><span class="badge badge-secondary">Admin</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:8px"><div class="avatar av-sm">JD</div><span class="text-sm">John Doe</span></div><span class="badge badge-secondary">Editor</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:8px"><div class="avatar av-sm">SK</div><span class="text-sm">Sara Kim</span></div><span class="badge badge-outline">Viewer</span></div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+    <div class="section"><div class="section-title">Props</div>
+      <div class="demo-box"><table class="props-table">
+        <tr><th>Component</th><th>Description</th></tr>
+        <tr><td><span class="prop-name">Card</span></td><td class="prop-desc">Root container. <code class="inline-code">color/surface/elevated</code> + <code class="inline-code">shadow/card</code>.</td></tr>
+        <tr><td><span class="prop-name">CardHeader</span></td><td class="prop-desc">Top section with title and description. Padding from <code class="inline-code">spacing/container/padding-horizontal</code>.</td></tr>
+        <tr><td><span class="prop-name">CardTitle</span></td><td class="prop-desc">Primary heading. <code class="inline-code">typography/heading/h4</code> weight.</td></tr>
+        <tr><td><span class="prop-name">CardDescription</span></td><td class="prop-desc">Supporting text. <code class="inline-code">color/text/secondary</code>.</td></tr>
+        <tr><td><span class="prop-name">CardContent</span></td><td class="prop-desc">Main body area.</td></tr>
+        <tr><td><span class="prop-name">CardFooter</span></td><td class="prop-desc">Bottom actions. Has top border using <code class="inline-code">color/border/default</code>.</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- ════════ ALERT ════════ -->
+  <div class="comp-page" id="page-alert">
+    <div class="page-hero">
+      <h1 class="page-title">Alert</h1>
+      <p class="page-desc">Non-dismissible status message. Each variant maps directly to a status token group: <code class="inline-code">color/status/{variant}/fg|bg|border</code>.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Alert, AlertTitle, AlertDescription } from "@/components/ui"</span></div>
+    </div>
+    <div class="section"><div class="section-title">All Variants</div>
+      <div class="demo-box"><div class="demo-preview col">
+        <div class="alert alert-default"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><div><div class="alert-title">Default</div><div class="alert-body">Use components from the CLI for fast scaffolding.</div></div></div>
+        <div class="alert alert-info"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><div><div class="alert-title">Info</div><div class="alert-body">Your trial expires in 7 days. Upgrade to keep access.</div></div></div>
+        <div class="alert alert-success"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><div><div class="alert-title">Success</div><div class="alert-body">Deployment completed. Your app is live.</div></div></div>
+        <div class="alert alert-warning"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><div><div class="alert-title">Warning</div><div class="alert-body">High memory usage detected. Consider scaling your instance.</div></div></div>
+        <div class="alert alert-error"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><div><div class="alert-title">Error</div><div class="alert-body">Build failed on step 3. Check logs for details.</div></div></div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ PROGRESS ════════ -->
+  <div class="comp-page" id="page-progress">
+    <div class="page-hero">
+      <h1 class="page-title">Progress</h1>
+      <p class="page-desc">Linear task completion indicator. Uses <code class="inline-code">color/action/primary/bg</code> for the filled bar and <code class="inline-code">color/bg/tertiary</code> for the track.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Progress } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-progress</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview col" style="max-width:480px;gap:20px">
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="text-sm">Upload progress</span><span class="text-sm" style="font-weight:500">68%</span></div><div class="progress-track"><div class="progress-bar" style="width:68%"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="text-sm">Processing</span><span class="text-sm" style="font-weight:500">33%</span></div><div class="progress-track"><div class="progress-bar" style="width:33%"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="text-sm">Complete</span><span class="text-sm" style="font-weight:500">100%</span></div><div class="progress-track"><div class="progress-bar" style="width:100%;background:var(--ok-fg)"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span class="text-sm">Indeterminate</span></div><div class="progress-track" style="overflow:hidden;position:relative"><div class="progress-bar" style="width:40%;animation:indeterminate 1.4s ease-in-out infinite"></div></div></div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ CALENDAR ════════ -->
+  <div class="comp-page" id="page-calendar">
+    <div class="page-hero">
+      <h1 class="page-title">Calendar</h1>
+      <p class="page-desc">Full date picker with range selection. Range highlight uses <code class="inline-code">color/action/primary/bg-subtle</code> — a v1.2 fix that replaced the hardcoded rgba value.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Calendar } from "@/components/ui"</span><span class="meta-tag">react-day-picker</span></div>
+    </div>
+    <div class="section"><div class="section-title">Date Picker</div>
+      <div class="demo-box"><div class="demo-preview">
+        <div class="calendar">
+          <div class="cal-header">
+            <button class="cal-nav" onclick="calNav(-1)">‹</button>
+            <span class="cal-month" id="calMonth"></span>
+            <button class="cal-nav" onclick="calNav(1)">›</button>
+          </div>
+          <div class="cal-grid">
+            <div class="cal-day-name">Su</div><div class="cal-day-name">Mo</div><div class="cal-day-name">Tu</div><div class="cal-day-name">We</div><div class="cal-day-name">Th</div><div class="cal-day-name">Fr</div><div class="cal-day-name">Sa</div>
+          </div>
+          <div class="cal-grid" id="calDays"></div>
+        </div>
+      </div></div>
+    </div>
+    <div class="section"><div class="section-title">Token Note</div>
+      <div class="demo-box"><div class="demo-content active" style="display:block"><pre><span class="cmt">// v1.2 fix — range highlight now uses semantic token instead of hardcoded rgba</span>
+<span class="cmt">// Before: background: rgba(59, 130, 246, 0.1)  ← primitive leak</span>
+<span class="cmt">// After:  background: var(--color-action-primary-bg-subtle)  ← semantic token</span>
+
+day_range_middle: <span class="str">"aria-selected:bg-action-primary-subtle"</span></pre></div></div>
+    </div>
+  </div>
+
+  <!-- ════════ CAROUSEL ════════ -->
+  <div class="comp-page" id="page-carousel">
+    <div class="page-hero">
+      <h1 class="page-title">Carousel</h1>
+      <p class="page-desc">Slide-based content viewer powered by Embla. Prev/next controls use the outline button token set.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui"</span><span class="meta-tag">embla-carousel-react</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview col" style="max-width:440px">
+        <div class="carousel" id="carouselEl">
+          <div class="carousel-track" id="carouselTrack">
+            <div class="carousel-slide" style="background:var(--act-p)">Slide 1</div>
+            <div class="carousel-slide" style="background:var(--act-d)">Slide 2</div>
+            <div class="carousel-slide" style="background:var(--ok-fg)">Slide 3</div>
+            <div class="carousel-slide" style="background:var(--warn-fg)">Slide 4</div>
+          </div>
+        </div>
+        <div class="carousel-nav">
+          <button class="carousel-btn" id="carPrev" onclick="carNav(-1)">← Previous</button>
+          <div class="carousel-controls" id="carDots"></div>
+          <button class="carousel-btn" id="carNext" onclick="carNav(1)">Next →</button>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ TABLE ════════ -->
+  <div class="comp-page" id="page-table">
+    <div class="page-hero">
+      <h1 class="page-title">Table</h1>
+      <p class="page-desc">Data grid. Header uses <code class="inline-code">color/bg/secondary</code>. Row hover uses the same token. Selected rows use <code class="inline-code">color/action/primary/bg-subtle</code>.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui"</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box" style="overflow:hidden">
+        <table class="table">
+          <thead><tr><th>Name</th><th>Status</th><th>Role</th><th>Last active</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td>Alice Martin</td><td><span class="badge badge-success">Active</span></td><td>Admin</td><td>2 min ago</td><td><button class="btn btn-sm btn-ghost">Edit</button></td></tr>
+            <tr><td>John Doe</td><td><span class="badge badge-default">Away</span></td><td>Editor</td><td>1 hour ago</td><td><button class="btn btn-sm btn-ghost">Edit</button></td></tr>
+            <tr><td>Sara Kim</td><td><span class="badge badge-warning">Busy</span></td><td>Viewer</td><td>3 hours ago</td><td><button class="btn btn-sm btn-ghost">Edit</button></td></tr>
+            <tr><td>Mike Ross</td><td><span class="badge badge-destructive">Offline</span></td><td>Viewer</td><td>2 days ago</td><td><button class="btn btn-sm btn-destructive">Remove</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ BREADCRUMB ════════ -->
+  <div class="comp-page" id="page-breadcrumb">
+    <div class="page-hero">
+      <h1 class="page-title">Breadcrumb</h1>
+      <p class="page-desc">Hierarchical navigation trail. Ancestor links use <code class="inline-code">color/text/muted</code>; current page uses <code class="inline-code">color/text/primary</code>.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui"</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview col">
+        <div class="breadcrumb"><span class="bc-item">Home</span><span class="bc-sep">›</span><span class="bc-item">Components</span><span class="bc-sep">›</span><span class="bc-current">Breadcrumb</span></div>
+        <div class="breadcrumb"><span class="bc-item">Dashboard</span><span class="bc-sep">/</span><span class="bc-item">Settings</span><span class="bc-sep">/</span><span class="bc-item">Team</span><span class="bc-sep">/</span><span class="bc-current">Permissions</span></div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ PAGINATION ════════ -->
+  <div class="comp-page" id="page-pagination">
+    <div class="page-hero">
+      <h1 class="page-title">Pagination</h1>
+      <p class="page-desc">Page navigation controls. Active page uses <code class="inline-code">color/action/primary/bg</code>; inactive pages use outlined button tokens.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext, PaginationEllipsis } from "@/components/ui"</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview col">
+        <div class="pagination">
+          <button class="page-btn" disabled>← Previous</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <button class="page-btn" style="pointer-events:none;border:none;background:transparent;color:var(--txt-muted)">…</button>
+          <button class="page-btn">10</button>
+          <button class="page-btn">Next →</button>
+        </div>
+        <div class="pagination">
+          <button class="page-btn">← Previous</button>
+          <button class="page-btn">4</button>
+          <button class="page-btn">5</button>
+          <button class="page-btn active">6</button>
+          <button class="page-btn">7</button>
+          <button class="page-btn">8</button>
+          <button class="page-btn">Next →</button>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ TABS ════════ -->
+  <div class="comp-page" id="page-tabs">
+    <div class="page-hero">
+      <h1 class="page-title">Tabs</h1>
+      <p class="page-desc">Tabbed content navigation. Active tab indicator uses <code class="inline-code">color/action/primary/bg</code>. Inactive labels use <code class="inline-code">color/text/secondary</code>.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-tabs</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview col" style="align-items:stretch">
+        <div class="tabs-list">
+          <button class="tab-trigger active" onclick="switchCompTab(this,'tab-ov')">Overview</button>
+          <button class="tab-trigger" onclick="switchCompTab(this,'tab-an')">Analytics</button>
+          <button class="tab-trigger" onclick="switchCompTab(this,'tab-re')">Reports</button>
+          <button class="tab-trigger" onclick="switchCompTab(this,'tab-se')">Settings</button>
+        </div>
+        <div class="tab-panel active" id="tab-ov"><p class="tab-content-text">Overview of your workspace activity and recent changes. Shows key metrics and team updates at a glance.</p></div>
+        <div class="tab-panel" id="tab-an"><p class="tab-content-text">Detailed analytics including page views, user engagement, retention curves, and conversion funnels.</p></div>
+        <div class="tab-panel" id="tab-re"><p class="tab-content-text">Downloadable reports by date range. Export as CSV or PDF.</p></div>
+        <div class="tab-panel" id="tab-se"><p class="tab-content-text">Workspace preferences, integrations, notification rules, and team permissions.</p></div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ NAVIGATION MENU ════════ -->
+  <div class="comp-page" id="page-navigation-menu">
+    <div class="page-hero">
+      <h1 class="page-title">Navigation Menu</h1>
+      <p class="page-desc">Site navigation with animated viewport dropdowns. Active state uses <code class="inline-code">color/action/ghost/bg-active</code>.</p>
+      <div class="page-meta"><span class="meta-tag import">import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger, NavigationMenuContent, NavigationMenuLink } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-navigation-menu</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview">
+        <div class="nav-menu">
+          <button class="nav-menu-item">Products ▾</button>
+          <button class="nav-menu-item active">Solutions ▾</button>
+          <button class="nav-menu-item">Docs</button>
+          <button class="nav-menu-item">Pricing</button>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ MENUBAR ════════ -->
+  <div class="comp-page" id="page-menubar">
+    <div class="page-hero">
+      <h1 class="page-title">Menubar</h1>
+      <p class="page-desc">Application-style horizontal menu bar. Each trigger opens a dropdown using <code class="inline-code">color/surface/popover</code> and <code class="inline-code">shadow/popover</code>.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem, MenubarSeparator } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-menubar</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview">
+        <div class="menubar">
+          <button class="menubar-trigger">File</button>
+          <button class="menubar-trigger">Edit</button>
+          <button class="menubar-trigger">View</button>
+          <button class="menubar-trigger">Window</button>
+          <button class="menubar-trigger">Help</button>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ ACCORDION ════════ -->
+  <div class="comp-page" id="page-accordion">
+    <div class="page-hero">
+      <h1 class="page-title">Accordion</h1>
+      <p class="page-desc">Vertically stacked collapsible sections. Item borders use <code class="inline-code">color/border/default</code>. Trigger hover uses <code class="inline-code">color/action/ghost/bg-hover</code>.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-accordion</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview col" style="align-items:stretch;max-width:480px">
+        <div class="acc-item">
+          <button class="acc-trigger open" onclick="toggleAcc(this)">
+            Is it accessible?
+            <svg class="acc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="acc-body open"><div class="acc-body-inner">Yes. It adheres to the WAI-ARIA design pattern, uses keyboard navigation, and focus management out of the box.</div></div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            Is it styled?
+            <svg class="acc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="acc-body"><div class="acc-body-inner">Yes. All token references are semantic — toggle the brand/dark modes above to see the changes propagate.</div></div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-trigger" onclick="toggleAcc(this)">
+            Is it animated?
+            <svg class="acc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="acc-body"><div class="acc-body-inner">Yes. Open/close animation uses max-height transition driven by the <code class="inline-code">motion/transition/normal</code> token.</div></div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ COLLAPSIBLE ════════ -->
+  <div class="comp-page" id="page-collapsible">
+    <div class="page-hero">
+      <h1 class="page-title">Collapsible</h1>
+      <p class="page-desc">Toggle-able single content section. Lower-level primitive than Accordion — use when you need full layout control over the trigger and content.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-collapsible</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview col" style="max-width:400px;align-items:stretch">
+        <button class="collapsible-trigger" onclick="toggleColl(this)">
+          <span>Show repository info</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="collIcon"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="collapsible-content" id="collContent">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;justify-content:space-between"><span class="text-muted text-sm">Stars</span><span class="text-sm">12.4k</span></div>
+            <div style="display:flex;justify-content:space-between"><span class="text-muted text-sm">Forks</span><span class="text-sm">2.1k</span></div>
+            <div style="display:flex;justify-content:space-between"><span class="text-muted text-sm">Open issues</span><span class="text-sm">43</span></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ DIALOG ════════ -->
+  <div class="comp-page" id="page-dialog">
+    <div class="page-hero">
+      <h1 class="page-title">Dialog</h1>
+      <p class="page-desc">Modal overlay. Content uses <code class="inline-code">color/surface/overlay</code> and <code class="inline-code">shadow/overlay</code>. Backdrop is at z-index <code class="inline-code">z/overlay</code>.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-dialog</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview">
+        <button class="btn btn-md btn-outline" onclick="openOverlay('dialogOverlay')">Open Dialog</button>
+        <button class="btn btn-md btn-destructive" onclick="openOverlay('dialogOverlay')">Delete item</button>
+      </div></div>
+    </div>
+    <div class="section"><div class="section-title">Props</div>
+      <div class="demo-box"><table class="props-table">
+        <tr><th>Component</th><th>Description</th></tr>
+        <tr><td><span class="prop-name">DialogContent</span></td><td class="prop-desc">Modal box. Automatically includes close button. <code class="inline-code">color/surface/overlay</code> + <code class="inline-code">shadow/overlay</code>.</td></tr>
+        <tr><td><span class="prop-name">DialogHeader</span></td><td class="prop-desc">Title + description wrapper. Adds bottom margin.</td></tr>
+        <tr><td><span class="prop-name">DialogFooter</span></td><td class="prop-desc">Action buttons. Adds top border and padding.</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- ════════ SHEET ════════ -->
+  <div class="comp-page" id="page-sheet">
+    <div class="page-hero">
+      <h1 class="page-title">Sheet</h1>
+      <p class="page-desc">Slide-over panel from any edge. Uses the same surface and shadow tokens as Dialog. Default side is <code class="inline-code">right</code>.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from "@/components/ui"</span><span class="meta-tag">vaul</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview">
+        <button class="btn btn-md btn-outline" onclick="openOverlay('sheetOverlay')">Open Sheet (right)</button>
+      </div></div>
+    </div>
+    <div class="section"><div class="section-title">Props</div>
+      <div class="demo-box"><table class="props-table">
+        <tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr>
+        <tr><td><span class="prop-name">side</span></td><td><span class="prop-type">"top" | "right" | "bottom" | "left"</span></td><td><span class="prop-default">"right"</span></td><td class="prop-desc">Which edge to slide from.</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- ════════ DRAWER ════════ -->
+  <div class="comp-page" id="page-drawer">
+    <div class="page-hero">
+      <h1 class="page-title">Drawer</h1>
+      <p class="page-desc">Bottom sheet optimized for mobile. The drag handle uses <code class="inline-code">color/border/hover</code>. Swipe-to-dismiss is built in via Vaul.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter } from "@/components/ui"</span><span class="meta-tag">vaul</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview">
+        <button class="btn btn-md btn-outline" onclick="openOverlay('drawerOverlay')">Open Drawer</button>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ POPOVER ════════ -->
+  <div class="comp-page" id="page-popover">
+    <div class="page-hero">
+      <h1 class="page-title">Popover</h1>
+      <p class="page-desc">Click-triggered floating panel. Uses <code class="inline-code">color/surface/popover</code> and <code class="inline-code">shadow/popover</code>. Positioned automatically via Floating UI.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-popover</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview">
+        <div class="popover-wrap">
+          <button class="btn btn-md btn-outline" onclick="document.querySelector('.popover-panel').classList.toggle('open')">Open Popover</button>
+          <div class="popover-panel">
+            <div style="font-size:14px;font-weight:600;color:var(--txt-1);margin-bottom:4px">Dimensions</div>
+            <div style="font-size:13px;color:var(--txt-2);margin-bottom:12px">Set the component dimensions.</div>
+            <div class="form-group" style="margin-bottom:8px"><label class="label" style="font-size:12px">Width</label><input class="input" value="400" style="height:32px;font-size:13px" /></div>
+            <div class="form-group"><label class="label" style="font-size:12px">Height</label><input class="input" value="200" style="height:32px;font-size:13px" /></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ TOOLTIP ════════ -->
+  <div class="comp-page" id="page-tooltip">
+    <div class="page-hero">
+      <h1 class="page-title">Tooltip</h1>
+      <p class="page-desc">Brief label shown on hover. Uses the inverse surface (<code class="inline-code">color/bg/inverse</code>) so it stands apart from any background.</p>
+      <div class="page-meta"><span class="meta-tag import">import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-tooltip</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview" style="gap:24px;padding:60px 32px">
+        <div class="tooltip-demo"><button class="btn btn-md btn-outline">Hover me<div class="tooltip-tip">This is a tooltip</div></button></div>
+        <div class="tooltip-demo"><button class="btn btn-md btn-primary">Save changes<div class="tooltip-tip">Ctrl+S</div></button></div>
+        <div class="tooltip-demo">
+          <button class="btn btn-icon btn-ghost" style="color:var(--icon)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </button>
+          <div class="tooltip-tip">More information</div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ HOVER CARD ════════ -->
+  <div class="comp-page" id="page-hover-card">
+    <div class="page-hero">
+      <h1 class="page-title">Hover Card</h1>
+      <p class="page-desc">Rich preview panel shown on hover. Larger than Tooltip — suitable for user profiles, link previews, or detailed summaries.</p>
+      <div class="page-meta"><span class="meta-tag import">import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-hover-card</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview" style="padding:60px 32px">
+        <div class="hovercard-wrap">
+          <a href="#" style="font-size:14px;color:var(--act-link);text-decoration:underline;text-underline-offset:4px">@alice_martin</a>
+          <div class="hovercard-panel">
+            <div style="display:flex;gap:12px;align-items:flex-start">
+              <div class="avatar av-md">AM</div>
+              <div>
+                <div style="font-size:14px;font-weight:600;color:var(--txt-1)">Alice Martin</div>
+                <div style="font-size:13px;color:var(--txt-muted);margin-bottom:8px">@alice_martin</div>
+                <div style="font-size:13px;color:var(--txt-2)">Design systems engineer. Building accessible, token-driven component libraries.</div>
+                <div style="display:flex;gap:16px;margin-top:10px">
+                  <span style="font-size:12px;color:var(--txt-muted)"><strong style="color:var(--txt-1)">240</strong> Following</span>
+                  <span style="font-size:12px;color:var(--txt-muted)"><strong style="color:var(--txt-1)">1.2k</strong> Followers</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ DROPDOWN MENU ════════ -->
+  <div class="comp-page" id="page-dropdown-menu">
+    <div class="page-hero">
+      <h1 class="page-title">Dropdown Menu</h1>
+      <p class="page-desc">Triggered floating action list. Supports checkboxes, radio items, sub-menus, labels, separators, and keyboard shortcuts.</p>
+      <div class="page-meta"><span class="meta-tag import">import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuShortcut } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-dropdown-menu</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview">
+        <div class="popover-wrap">
+          <button class="btn btn-md btn-outline" onclick="document.getElementById('ddMenu').classList.toggle('open')">Open Menu ▾</button>
+          <div class="popover-panel" id="ddMenu" style="min-width:180px;padding:4px">
+            <div class="ctx-menu-item">👤 Profile</div>
+            <div class="ctx-menu-item">⚙️ Settings <span style="margin-left:auto;font-size:11px;color:var(--txt-muted)">⌘S</span></div>
+            <div class="ctx-menu-item">💳 Billing</div>
+            <div class="ctx-sep"></div>
+            <div class="ctx-menu-item">👥 Team</div>
+            <div class="ctx-sep"></div>
+            <div class="ctx-menu-item destr">🚪 Log out <span style="margin-left:auto;font-size:11px">⌘Q</span></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ CONTEXT MENU ════════ -->
+  <div class="comp-page" id="page-context-menu">
+    <div class="page-hero">
+      <h1 class="page-title">Context Menu</h1>
+      <p class="page-desc">Right-click triggered menu. Same token set as Dropdown Menu. Destructive items use <code class="inline-code">color/status/error/fg</code>.</p>
+      <div class="page-meta"><span class="meta-tag import">import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-context-menu</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo — right-click the area below</div>
+      <div class="demo-box"><div class="demo-preview">
+        <div class="ctx-area" oncontextmenu="openCtx(event)">Right-click anywhere in this area to open the context menu</div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ COMMAND ════════ -->
+  <div class="comp-page" id="page-command">
+    <div class="page-hero">
+      <h1 class="page-title">Command</h1>
+      <p class="page-desc">Keyboard-first command palette powered by cmdk. Input uses transparent background inside the bordered wrapper. Items use ghost hover tokens.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Command, CommandInput, CommandList, CommandGroup, CommandItem, CommandShortcut, CommandEmpty } from "@/components/ui"</span><span class="meta-tag">cmdk</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview">
+        <div class="command-box">
+          <div class="command-input-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--icon-muted)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input class="command-input" placeholder="Type a command or search..." id="cmdInput" oninput="filterCmd(this.value)" />
+          </div>
+          <div class="command-list" id="cmdList">
+            <div class="command-group-label">Suggestions</div>
+            <div class="command-item" data-cmd="Calendar"><span>📅</span>Calendar<span class="command-shortcut">⌘C</span></div>
+            <div class="command-item selected" data-cmd="Search Emoji"><span>😀</span>Search Emoji</div>
+            <div class="command-item" data-cmd="Launch"><span>🚀</span>Launch<span class="command-shortcut">⌘L</span></div>
+            <div class="command-group-label">Settings</div>
+            <div class="command-item" data-cmd="Profile"><span>👤</span>Profile<span class="command-shortcut">⌘P</span></div>
+            <div class="command-item" data-cmd="Billing"><span>💳</span>Billing</div>
+            <div class="command-item" data-cmd="Settings"><span>⚙️</span>Settings<span class="command-shortcut">⌘,</span></div>
+            <div class="command-group-label">Theme</div>
+            <div class="command-item" data-cmd="Light Mode"><span>☀️</span>Light Mode</div>
+            <div class="command-item" data-cmd="Dark Mode"><span>🌙</span>Dark Mode</div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ TOAST ════════ -->
+  <div class="comp-page" id="page-toast">
+    <div class="page-hero">
+      <h1 class="page-title">Toast</h1>
+      <p class="page-desc">Ephemeral notification messages. Uses <code class="inline-code">color/surface/overlay</code>, <code class="inline-code">shadow/overlay</code>, and z-index <code class="inline-code">z/toast</code>. Includes the <code class="inline-code">useToast</code> hook.</p>
+      <div class="page-meta"><span class="meta-tag import">import { useToast } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-toast</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview">
+        <button class="btn btn-md btn-outline" onclick="showToast('Default toast','Your action was completed successfully.')">Show toast</button>
+        <button class="btn btn-md btn-primary" onclick="showToast('Saved','Changes saved to the cloud.')">Show with action</button>
+        <button class="btn btn-md btn-destructive" onclick="showToast('Error','Failed to save. Please try again.','error')">Error toast</button>
+      </div></div>
+    </div>
+    <div class="section"><div class="section-title">Usage</div>
+      <div class="demo-box"><div class="demo-content active" style="display:block"><pre><span class="kw">import</span> { useToast } <span class="kw">from</span> <span class="str">"@/components/ui"</span>
+
+<span class="kw">function</span> <span class="tag">MyComponent</span>() {
+  <span class="kw">const</span> { toast } = <span class="tag">useToast</span>()
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;Button</span> <span class="attr">onClick</span>={() => <span class="tag">toast</span>({
+      <span class="attr">title</span>: <span class="str">"Scheduled"</span>,
+      <span class="attr">description</span>: <span class="str">"Your post is live."</span>,
+    })}>
+      Show toast
+    <span class="tag">&lt;/Button&gt;</span>
+  )
+}</pre></div></div>
+    </div>
+  </div>
+
+  <!-- ════════ FORM ════════ -->
+  <div class="comp-page" id="page-form">
+    <div class="page-hero">
+      <h1 class="page-title">Form</h1>
+      <p class="page-desc">React Hook Form integration with accessible error messages. <code class="inline-code">FormLabel</code> turns red on error using <code class="inline-code">color/status/error/fg</code>. <code class="inline-code">FormMessage</code> shows validation output.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui"</span><span class="meta-tag">react-hook-form</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview col" style="max-width:400px;align-items:stretch">
+        <div class="form-group">
+          <label class="label">Username <span style="color:var(--err-fg)">*</span></label>
+          <input class="input" placeholder="Enter username" />
+          <span class="form-desc">Only letters, numbers, and underscores.</span>
+        </div>
+        <div class="form-group">
+          <label class="label" style="color:var(--err-fg)">Email <span>*</span></label>
+          <input class="input error" value="not-an-email" />
+          <span class="form-message">Please enter a valid email address.</span>
+        </div>
+        <div class="form-group">
+          <label class="label">Bio</label>
+          <textarea class="textarea" placeholder="Tell us about yourself..."></textarea>
+          <span class="form-desc">Max 160 characters.</span>
+        </div>
+        <button class="btn btn-md btn-primary">Submit</button>
+      </div></div>
+    </div>
+    <div class="section"><div class="section-title">Usage</div>
+      <div class="demo-box"><div class="demo-content active" style="display:block"><pre><span class="kw">import</span> { useForm } <span class="kw">from</span> <span class="str">"react-hook-form"</span>
+<span class="kw">import</span> { Form, FormField, FormItem, FormLabel,
+         FormControl, FormMessage } <span class="kw">from</span> <span class="str">"@/components/ui"</span>
+
+<span class="kw">function</span> <span class="tag">ProfileForm</span>() {
+  <span class="kw">const</span> form = <span class="tag">useForm</span>({ <span class="attr">defaultValues</span>: { username: <span class="str">""</span> } })
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;Form</span> {...<span class="attr">form</span>}<span class="tag">&gt;</span>
+      <span class="tag">&lt;FormField</span> <span class="attr">name</span>=<span class="str">"username"</span> <span class="attr">render</span>={({ field }) => (
+        <span class="tag">&lt;FormItem&gt;</span>
+          <span class="tag">&lt;FormLabel&gt;</span>Username<span class="tag">&lt;/FormLabel&gt;</span>
+          <span class="tag">&lt;FormControl&gt;</span>
+            <span class="tag">&lt;Input</span> <span class="attr">placeholder</span>=<span class="str">"shadcn"</span> {...<span class="attr">field</span>} <span class="tag">/&gt;</span>
+          <span class="tag">&lt;/FormControl&gt;</span>
+          <span class="tag">&lt;FormMessage /&gt;</span>
+        <span class="tag">&lt;/FormItem&gt;</span>
+      )} <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/Form&gt;</span>
+  )
+}</pre></div></div>
+    </div>
+  </div>
+
+  <!-- ════════ SEPARATOR ════════ -->
+  <div class="comp-page" id="page-separator">
+    <div class="page-hero">
+      <h1 class="page-title">Separator</h1>
+      <p class="page-desc">Visual divider. Uses <code class="inline-code">color/border/default</code>. Supports horizontal and vertical orientation.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Separator } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-separator</span></div>
+    </div>
+    <div class="section"><div class="section-title">Horizontal</div>
+      <div class="demo-box"><div class="demo-preview col" style="align-items:stretch;max-width:400px">
+        <div class="text-sm">Above the separator</div>
+        <div class="sep h"></div>
+        <div class="text-sm">Below the separator</div>
+        <div class="sep h"></div>
+        <div class="text-sm">And another section below</div>
+      </div></div>
+    </div>
+    <div class="section"><div class="section-title">Vertical</div>
+      <div class="demo-box"><div class="demo-preview" style="height:60px">
+        <span class="text-sm">Blog</span>
+        <div class="sep v"></div>
+        <span class="text-sm">Docs</span>
+        <div class="sep v"></div>
+        <span class="text-sm">Source</span>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ SCROLL AREA ════════ -->
+  <div class="comp-page" id="page-scroll-area">
+    <div class="page-hero">
+      <h1 class="page-title">Scroll Area</h1>
+      <p class="page-desc">Custom-styled scrollable container with consistent thumb styling across browsers. Thumb uses <code class="inline-code">color/border/hover</code>.</p>
+      <div class="page-meta"><span class="meta-tag import">import { ScrollArea } from "@/components/ui"</span><span class="meta-tag">@radix-ui/react-scroll-area</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview">
+        <div class="scroll-demo" style="width:320px">
+          ${Array.from({length:12},(_,i)=>`<div class="scroll-item">Item ${i+1} — scrollable list content</div>`).join('')}
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ SKELETON ════════ -->
+  <div class="comp-page" id="page-skeleton">
+    <div class="page-hero">
+      <h1 class="page-title">Skeleton</h1>
+      <p class="page-desc">Animated loading placeholder. Uses <code class="inline-code">color/bg/secondary</code> with a pulse animation driven by the <code class="inline-code">_duration/deliberate</code> token.</p>
+      <div class="page-meta"><span class="meta-tag import">import { Skeleton } from "@/components/ui"</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview col" style="max-width:360px;align-items:stretch">
+        <div style="display:flex;gap:12px;align-items:center">
+          <div class="skeleton" style="width:40px;height:40px;border-radius:9999px;flex-shrink:0"></div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+            <div class="skeleton" style="height:14px;width:60%"></div>
+            <div class="skeleton" style="height:12px;width:40%"></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+          <div class="skeleton" style="height:12px;width:100%"></div>
+          <div class="skeleton" style="height:12px;width:90%"></div>
+          <div class="skeleton" style="height:12px;width:75%"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+          <div class="skeleton" style="height:80px;border-radius:8px"></div>
+          <div class="skeleton" style="height:80px;border-radius:8px"></div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ════════ RESIZABLE ════════ -->
+  <div class="comp-page" id="page-resizable">
+    <div class="page-hero">
+      <h1 class="page-title">Resizable</h1>
+      <p class="page-desc">Drag-to-resize panel layout. The handle uses <code class="inline-code">color/border/default</code> and highlights to <code class="inline-code">color/border/hover</code> on hover.</p>
+      <div class="page-meta"><span class="meta-tag import">import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui"</span><span class="meta-tag">react-resizable-panels</span></div>
+    </div>
+    <div class="section"><div class="section-title">Demo</div>
+      <div class="demo-box"><div class="demo-preview" style="padding:24px;display:block">
+        <div class="resizable-demo" id="resizableDemo">
+          <div class="resize-pane" id="rLeft" style="flex:1">Left panel</div>
+          <div class="resize-handle" id="rHandle" onmousedown="startResize(event)"></div>
+          <div class="resize-pane" id="rRight" style="flex:1">Right panel</div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  </div><!-- end content -->
+</main>
+
+<style>
+@keyframes indeterminate{0%{transform:translateX(-100%)}100%{transform:translateX(350%)}}
+</style>
+
+<script>
+// ── Mode switcher ──
+const activeMode = {appearance:'light',brand:'default'};
+function setMode(axis,value){
+  activeMode[axis]=value;
+  if(axis==='appearance') document.body.setAttribute('data-appearance',value);
+  if(axis==='brand') value==='brand'?document.body.setAttribute('data-brand','brand'):document.body.removeAttribute('data-brand');
+  // Update segmented controls
+  const groups = document.querySelectorAll('.segmented');
+  const g = axis==='appearance'?groups[0]:groups[1];
+  g.querySelectorAll('.seg-btn').forEach((b,i)=>b.classList.toggle('active',(i===0&&(value==='light'||value==='default'))||(i===1&&(value==='dark'||value==='brand'))));
+}
+
+// ── Page navigation ──
+const pageNames={
+  'home':'Introduction','button':'Button','input':'Input','textarea':'Textarea',
+  'select':'Select','checkbox':'Checkbox','radio-group':'Radio Group','switch':'Switch',
+  'slider':'Slider','toggle':'Toggle','toggle-group':'Toggle Group','input-otp':'Input OTP',
+  'label':'Label','badge':'Badge','avatar':'Avatar','card':'Card','alert':'Alert',
+  'progress':'Progress','calendar':'Calendar','carousel':'Carousel','table':'Table',
+  'breadcrumb':'Breadcrumb','pagination':'Pagination','tabs':'Tabs',
+  'navigation-menu':'Navigation Menu','menubar':'Menubar','accordion':'Accordion',
+  'collapsible':'Collapsible','dialog':'Dialog','sheet':'Sheet','drawer':'Drawer',
+  'popover':'Popover','tooltip':'Tooltip','hover-card':'Hover Card',
+  'dropdown-menu':'Dropdown Menu','context-menu':'Context Menu','command':'Command',
+  'toast':'Toast','form':'Form','separator':'Separator','scroll-area':'Scroll Area',
+  'skeleton':'Skeleton','resizable':'Resizable'
+};
+function showPage(id){
+  document.querySelectorAll('.comp-page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const page=document.getElementById('page-'+id);
+  if(page) page.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>{if(n.getAttribute('onclick')?.includes("'"+id+"'"))n.classList.add('active')});
+  document.getElementById('topbarTitle').textContent=pageNames[id]||id;
+  window.scrollTo(0,0);
+}
+
+// ── Demo tab switcher ──
+function switchTab(btn,contentId){
+  const box=btn.closest('.demo-box');
+  box.querySelectorAll('.demo-tab').forEach(t=>t.classList.remove('active'));
+  box.querySelectorAll('.demo-content').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(contentId)?.classList.add('active');
+}
+
+// ── Component tab switcher ──
+function switchCompTab(btn,id){
+  btn.closest('.tabs-list').querySelectorAll('.tab-trigger').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id)?.classList.add('active');
+}
+
+// ── Overlays ──
+function openOverlay(id){document.getElementById(id).classList.add('open')}
+function closeOverlay(id){document.getElementById(id).classList.remove('open')}
+
+// ── Toast ──
+function showToast(title,desc,type=''){
+  const area=document.getElementById('toastArea');
+  const t=document.createElement('div');
+  t.className='toast-item';
+  if(type==='error') t.style.borderColor='var(--err-bd)',t.style.background='var(--err-bg)';
+  t.innerHTML=`<div class="toast-body"><div class="toast-title">${title}</div><div class="toast-desc">${desc}</div></div><button class="toast-close-btn" onclick="this.closest('.toast-item').remove()">✕</button>`;
+  area.appendChild(t);
+  setTimeout(()=>t.remove(),4000);
+}
+
+// ── Context menu ──
+function openCtx(e){
+  e.preventDefault();
+  const m=document.getElementById('ctxMenu');
+  m.style.left=e.clientX+'px';m.style.top=e.clientY+'px';m.classList.add('open');
+  setTimeout(()=>document.addEventListener('click',closeCtxOnce,{once:true}),0);
+}
+function closeCtx(){document.getElementById('ctxMenu').classList.remove('open')}
+function closeCtxOnce(){closeCtx()}
+
+// ── Accordion ──
+function toggleAcc(btn){
+  btn.classList.toggle('open');
+  const body=btn.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+// ── Collapsible ──
+function toggleColl(btn){
+  const content=document.getElementById('collContent');
+  const icon=document.getElementById('collIcon');
+  const open=content.classList.toggle('open');
+  icon.style.transform=open?'rotate(180deg)':'';
+}
+
+// ── Toggle group single select ──
+function activateOne(btn){
+  btn.closest('.row').querySelectorAll('.toggle').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+// ── OTP input ──
+function otpNext(input){
+  if(input.value&&input.nextElementSibling&&input.nextElementSibling.classList?.contains('otp-input'))
+    input.nextElementSibling.focus();
+}
+
+// ── Calendar ──
+let calDate=new Date();
+function calNav(dir){calDate=new Date(calDate.getFullYear(),calDate.getMonth()+dir,1);renderCal()}
+function renderCal(){
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const el=document.getElementById('calMonth');
+  const grid=document.getElementById('calDays');
+  if(!el||!grid) return;
+  el.textContent=months[calDate.getMonth()]+' '+calDate.getFullYear();
+  const first=new Date(calDate.getFullYear(),calDate.getMonth(),1).getDay();
+  const days=new Date(calDate.getFullYear(),calDate.getMonth()+1,0).getDate();
+  const today=new Date();
+  let html='';
+  for(let i=0;i<first;i++) html+=`<div class="cal-day outside">${new Date(calDate.getFullYear(),calDate.getMonth(),-(first-i-1)).getDate()}</div>`;
+  for(let d=1;d<=days;d++){
+    const isToday=d===today.getDate()&&calDate.getMonth()===today.getMonth()&&calDate.getFullYear()===today.getFullYear();
+    html+=`<div class="cal-day${isToday?' today':''}" onclick="selectDay(this)">${d}</div>`;
+  }
+  grid.innerHTML=html;
+}
+function selectDay(el){
+  document.querySelectorAll('.cal-day.selected').forEach(d=>d.classList.remove('selected'));
+  el.classList.add('selected');
+}
+renderCal();
+
+// ── Carousel ──
+let carIdx=0;const carSlides=4;
+function carNav(dir){
+  carIdx=Math.max(0,Math.min(carSlides-1,carIdx+dir));
+  document.getElementById('carouselTrack').style.transform=`translateX(-${carIdx*100}%)`;
+  document.getElementById('carPrev').disabled=carIdx===0;
+  document.getElementById('carNext').disabled=carIdx===carSlides-1;
+  document.querySelectorAll('.carousel-dot').forEach((d,i)=>d.classList.toggle('active',i===carIdx));
+}
+function initCarousel(){
+  const dots=document.getElementById('carDots');
+  if(!dots) return;
+  for(let i=0;i<carSlides;i++){const d=document.createElement('button');d.className='carousel-dot'+(i===0?' active':'');d.onclick=()=>{carIdx=i;carNav(0)};dots.appendChild(d)}
+  document.getElementById('carPrev').disabled=true;
+}
+initCarousel();
+
+// ── Command palette filter ──
+function filterCmd(v){
+  document.querySelectorAll('.command-item').forEach(item=>{
+    item.style.display=item.dataset.cmd?.toLowerCase().includes(v.toLowerCase())?'flex':'none';
+  });
+}
+
+// ── Resizable panels ──
+let resizing=false,resizeStartX=0,resizeStartLeft=0;
+function startResize(e){
+  resizing=true;resizeStartX=e.clientX;
+  const demo=document.getElementById('resizableDemo');
+  resizeStartLeft=document.getElementById('rLeft').offsetWidth/demo.offsetWidth;
+  document.addEventListener('mousemove',doResize);
+  document.addEventListener('mouseup',()=>{resizing=false;document.removeEventListener('mousemove',doResize)},{once:true});
+}
+function doResize(e){
+  if(!resizing)return;
+  const demo=document.getElementById('resizableDemo');
+  const dx=e.clientX-resizeStartX;
+  const newFrac=Math.max(.1,Math.min(.9,resizeStartLeft+dx/demo.offsetWidth));
+  document.getElementById('rLeft').style.flex=`0 0 ${newFrac*100}%`;
+  document.getElementById('rRight').style.flex=`0 0 ${(1-newFrac)*100}%`;
+}
+</script>
+</body>
+</html>

@@ -4,12 +4,18 @@
 
 ## What this document describes
 
-The canonical source of truth is the **reference design system**:
+The canonical source of truth is the **reference design system**, which lives in this
+same repository so the docs and the implementation cannot drift apart:
 
 ```
 ds-shadcn/src/styles/tokens.css     ← all CSS custom properties
 ds-shadcn/tailwind.config.ts        ← Tailwind mapping
+ds-shadcn/showcase.html             ← visual reference
+docs/TOKENS.md                      ← this file
 ```
+
+Paths are relative to the repo root. If you change a token, update this file in the
+same commit.
 
 Every token listed here exists there, across all four mode combinations
 (light/dark × default/brand, plus the density axis).
