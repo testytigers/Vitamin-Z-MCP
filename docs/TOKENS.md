@@ -2,6 +2,27 @@
 
 > **For agents:** Always use semantic tokens (e.g., `text-text-primary`) in Tailwind classes. Never hardcode colors like `text-slate-900` or hex values. The token architecture ensures automatic light/dark mode and brand switching.
 
+## What this document describes
+
+The canonical source of truth is the **reference design system**:
+
+```
+ds-shadcn/src/styles/tokens.css     ← all CSS custom properties
+ds-shadcn/tailwind.config.ts        ← Tailwind mapping
+```
+
+Every token listed here exists there, across all four mode combinations
+(light/dark × default/brand, plus the density axis).
+
+**Consuming apps may ship a subset or re-brand.** A token existing in this document
+does not guarantee it exists in a given app. Known deviations are flagged inline with
+an "App note". The current app, `coliix`, uses a **green** accent instead of the
+reference blue/slate, and omits the brand axis, `font-serif`, and the composite
+`--font-*` shorthands.
+
+When an app's token file and this document disagree, the app's file wins **for that
+app** — but the disagreement is a bug worth closing in one direction or the other.
+
 ---
 
 ## Architecture
@@ -54,7 +75,15 @@ Tailwind utilities (text-text-primary, bg-bg-secondary, rounded-control)
 
 ### Action Colors
 
-**Brand accent = green** ramp: `50 #ecf6f2 · 100 #cfe7df · 200 #a6d2c4 · 300 #72b8a3 (dark-mode accent) · 400 #3d9580 · 500 #156a52 (primary button · icon-interactive · border-focus) · 600 #004030 (hover) · 700 #003526 (active) · 800 #002a1e · 900 #001d15`. `subtle`/`tint` are `rgba(21,106,82,0.12)` / `rgba(21,106,82,0.07)`. Never hardcode — always use the `action-primary` / `icon-interactive` / `border-focus` tokens below.
+The accent is **app-configurable**. Whatever its hue, always go through the
+`action-primary` / `icon-interactive` / `border-focus` tokens below — never hardcode.
+
+| Implementation | Default accent | Brand-mode accent | Focus ring |
+|---|---|---|---|
+| Reference DS (`ds-shadcn`) | `slate-900` | `blue-600` | `blue-500` |
+| App: `coliix` | `brand-500 #156a52` (green) | — (no brand axis) | `brand-500` |
+
+**`coliix` green ramp:** `50 #ecf6f2 · 100 #cfe7df · 200 #a6d2c4 · 300 #72b8a3 (dark-mode accent) · 400 #3d9580 · 500 #156a52 (primary button · icon-interactive · border-focus) · 600 #004030 (hover) · 700 #003526 (active) · 800 #002a1e · 900 #001d15`. `subtle`/`tint` are `rgba(21,106,82,0.12)` / `rgba(21,106,82,0.07)`.
 
 | Tailwind class                  | Use case                         |
 |---------------------------------|----------------------------------|
@@ -141,19 +170,23 @@ so charts re-theme with the rest of the system and stay legible in dark mode.
 **Three or more series** — use the categorical ramp **in order, without skipping**.
 Order is fixed so the same category keeps its colour across every chart in the app:
 
-| Tailwind class  | Light     | Dark      |
-|-----------------|-----------|-----------|
-| `chart-cat-1`   | `#3d9580` | `#5fbfa5` |
-| `chart-cat-2`   | `#2563eb` | `#60a5fa` |
-| `chart-cat-3`   | `#f97316` | `#fb923c` |
-| `chart-cat-4`   | `#7c3aed` | `#a78bfa` |
-| `chart-cat-5`   | `#db2777` | `#f472b6` |
-| `chart-cat-6`   | `#0891b2` | `#22d3ee` |
-| `chart-cat-7`   | `#ca8a04` | `#facc15` |
-| `chart-cat-8`   | `#64748b` | `#94a3b8` |
+| Tailwind class  | Light     | Dark      | Hue    |
+|-----------------|-----------|-----------|--------|
+| `chart-cat-1`   | `#2563eb` | `#60a5fa` | blue   |
+| `chart-cat-2`   | `#f97316` | `#fb923c` | orange |
+| `chart-cat-3`   | `#16a34a` | `#4ade80` | green  |
+| `chart-cat-4`   | `#a855f7` | `#c084fc` | purple |
+| `chart-cat-5`   | `#db2777` | `#f9a8d4` | pink   |
+| `chart-cat-6`   | `#0891b2` | `#67e8f9` | cyan   |
+| `chart-cat-7`   | `#ca8a04` | `#facc15` | yellow |
+| `chart-cat-8`   | `#0d9488` | `#5eead4` | teal   |
+
+Identical across `data-brand` modes — categorical colour is about telling series
+apart, not about brand. Only light/dark varies.
 
 **Ordered / magnitude data** (heat maps, choropleths, density) — use the sequential
-ramp, low → high. It is brand-derived, so it reads as "more green = more":
+ramp, low → high. It **inverts in dark mode** (`#dbeafe → #1e3a8a` light, `#1e3a8a →
+#dbeafe` dark) so "more" always means "more visible" against the canvas:
 
 `chart-seq-1` → `chart-seq-2` → `chart-seq-3` → `chart-seq-4` → `chart-seq-5`
 
@@ -171,11 +204,13 @@ ramp, low → high. It is brand-derived, so it reads as "more green = more":
 ## 2. Typography Tokens
 
 ### Font Families (Tailwind)
-- `font-sans` → Inter (loaded via `next/font/google` as `--font-body`)
-- `font-heading` → Inter (same face as body; weight carries the hierarchy)
-- `font-mono` → JetBrains Mono (loaded via `next/font/google` as `--font-mono`), falls back to `ui-monospace` / `SFMono-Regular`. Use for reference codes, SKUs, tracking numbers — anything where digits must align in a column.
+- `font-sans` → Inter / system-ui
+- `font-heading` → same face as body; weight carries the hierarchy
+- `font-mono` → JetBrains Mono, falling back to `ui-monospace` / `SFMono-Regular`. Use for reference codes, SKUs, tracking numbers — anything where digits must align in a column.
+- `font-serif` → Merriweather / Georgia (defined in the reference DS; rarely used in dashboards)
 
-> There is no `font-serif`. Do not use it; it resolves to the browser default, not a DS token.
+> App note: `coliix` loads Inter and JetBrains Mono via `next/font/google` and does not
+> define `font-serif`. Verify the app's Tailwind config before using a family.
 
 ### Font Sizes (Tailwind)
 | Class     | Value  | Use case                    |
@@ -196,10 +231,25 @@ ramp, low → high. It is brand-derived, so it reads as "more green = more":
 - `font-semibold` (600) → headings, card titles
 - `font-bold` (700) → page titles, display
 
-### Composite Typography — use these utility pairs, not CSS variables
+### Composite Typography (CSS variables)
 
-There are no `--font-heading-h1`-style composite variables in the build. Compose
-with Tailwind utilities instead:
+The reference DS defines composite shorthands. They are CSS variables, not Tailwind
+classes — use via the `font` shorthand in CSS, or `style={{ font: "var(--font-heading-h1)" }}`:
+
+```css
+--font-heading-h1  → bold 30px/tight sans
+--font-heading-h2  → semibold 24px/snug sans
+--font-heading-h3  → semibold 20px/snug sans
+--font-heading-h4  → semibold 18px/normal sans
+--font-body-md     → regular 16px/normal sans
+--font-body-sm     → regular 14px/normal sans
+--font-label-md    → medium 14px/none sans
+--font-label-sm    → medium 12px/none sans
+--font-code-md     → regular 14px/normal mono
+```
+
+In practice most dashboard code composes with Tailwind utilities instead, which is
+equally valid and easier to scan:
 
 | Role       | Utilities                                          |
 |------------|----------------------------------------------------|
@@ -211,6 +261,9 @@ with Tailwind utilities instead:
 | Caption    | `text-xs text-text-muted`                          |
 | Metric     | `text-2xl font-bold text-text-primary`             |
 | Code / ref | `font-mono text-xs`                                |
+
+> Note: `coliix` does **not** define these composite variables — it uses the utility
+> table only. Don't reference `--font-*` shorthands in app code without checking.
 
 ---
 
@@ -303,8 +356,11 @@ Also use as padding: `p-stack-md`, `py-stack-lg`, etc.
 | `ease-spring`    | cubic-bezier(0.175,0.885,0.32,1.275) | Playful entrance |
 
 > These override Tailwind's built-in `ease-*` classes so they resolve to DS motion
-> tokens. `ease-ease-out` / `ease-ease-in-out` still work as deprecated aliases;
-> `ease-ease-in` never existed — use `ease-in`.
+> tokens. The curves are identical to Tailwind's defaults, so nothing moves
+> differently — the tokens just become the single source. `ease-ease-out`,
+> `ease-ease-in` and `ease-ease-in-out` remain as **deprecated aliases** (the old
+> stuttered names, produced when the config keys carried their own `ease-` prefix).
+> Use the short forms in new code.
 
 ---
 
@@ -334,6 +390,13 @@ Applied automatically by Button/Input/Select variants. Use as CSS variables if b
 <div data-appearance="dark">...</div>
 ```
 
+### Brand mode
+```html
+<html data-brand="brand">...</html>
+```
+Blue-accented variant. Implemented in the reference DS as `[data-brand="brand"]`
+(light) and `[data-appearance="dark"][data-brand="brand"]` (dark).
+
 ### Compact density
 ```html
 <html data-density="compact">...</html>
@@ -341,26 +404,19 @@ Applied automatically by Button/Input/Select variants. Use as CSS variables if b
 Shrinks spacing (`stack-*`, `inline-*`, `comp-*`, `cont-*`) and control heights only.
 Colours, radii and type sizes are unchanged.
 
-### There is no brand mode
+> **Agent rule:** Place `data-appearance`, `data-brand` and `data-density` on `<html>`
+> or the root layout wrapper. Never override individual token values inline — switch
+> the mode attribute instead.
 
-`data-brand` is **not implemented** and must never be used. Earlier drafts of this doc
-described a `data-brand="brand"` blue-accent axis; no such block exists in
-`globals.css`, so the attribute silently does nothing. The green brand ramp is the
-only accent. `coliix/CLAUDE.md` also explicitly forbids it.
-
-> **Agent rule:** Place `data-appearance` and `data-density` on `<html>` or the root
-> layout wrapper. Never override individual token values inline — switch the mode
-> attribute instead.
-
-### Implementation status
+### Implementation status — reference DS (`ds-shadcn/src/styles/tokens.css`)
 
 | Axis | Attribute | Status |
 |---|---|---|
-| Appearance | `data-appearance="light"` | ✅ default (also on `:root`) |
+| Appearance | `data-appearance="light"` | ✅ base (also on `:root`) |
 | Appearance | `data-appearance="dark"` | ✅ implemented |
+| Brand | `data-brand="brand"` | ✅ implemented (light + dark) |
 | Density | `data-density="compact"` | ✅ implemented |
-| Brand | `data-brand="*"` | ❌ does not exist — do not use |
 
-Note: the app's root `<html>` currently sets no `data-appearance` attribute. Light
-tokens are also declared on `:root`, so light is the effective default; add
-`data-appearance="dark"` to switch.
+**Consuming apps may implement a subset.** `coliix`, for example, ships light + dark
++ compact with a green accent and deliberately omits the brand axis — its `CLAUDE.md`
+forbids `data-brand`. Check the app's own token file before assuming an axis is live.
