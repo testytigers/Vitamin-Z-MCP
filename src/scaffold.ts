@@ -30,8 +30,9 @@ export interface SectionBlock {
   ui: string[];
   icons: string[];
   needCn: boolean;
-  helpers: string[]; // top-level declarations the JSX depends on
-  jsx: string;       // indented for placement inside the page wrapper
+  helpers: string[];        // top-level declarations the JSX depends on
+  jsx: string;              // indented for placement inside the page wrapper
+  extraImports?: string[];  // verbatim import lines (e.g. recharts)
 }
 
 /** Marker comments — used to find/remove sections when editing. */
@@ -176,15 +177,23 @@ function genTabs(): SectionBlock {
 
 function genCharts(ctx: SectionCtx): SectionBlock {
   const cols = ctx.chartTitles.length > 1 ? "lg:grid-cols-2 " : "";
+  const sampleData = `const chartData = [
+  { name: "Jan", a: 0, b: 0 },
+  { name: "Feb", a: 0, b: 0 },
+  { name: "Mar", a: 0, b: 0 },
+];`;
   return {
     ui: ["Card", "CardHeader", "CardTitle", "CardContent"],
     icons: [],
     needCn: false,
-    helpers: [CHART_CARD_HELPER],
+    helpers: [sampleData, CHART_CARD_HELPER],
+    extraImports: [
+      `import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";`,
+    ],
     jsx:
 `      {/* Charts row */}
       <div className="grid grid-cols-1 ${cols}gap-stack-xl">
-${ctx.chartTitles.map((t) => `        <ChartCard title=${JSON.stringify(t)} />`).join("\n")}
+${ctx.chartTitles.map((t) => `        <ChartCard title=${JSON.stringify(t)} data={chartData} series={["a", "b"]} />`).join("\n")}
       </div>`,
   };
 }
@@ -336,7 +345,7 @@ export const UI_MODULES: Record<string, string[]> = {
   "dropdown-menu": ["DropdownMenu", "DropdownMenuTrigger", "DropdownMenuContent", "DropdownMenuItem", "DropdownMenuSeparator"],
 };
 
-export function emitImports(ui: Set<string>, icons: Set<string>, needCn: boolean): string[] {
+export function emitImports(ui: Set<string>, icons: Set<string>, needCn: boolean, extra: string[] = []): string[] {
   const lines: string[] = [];
   for (const [mod, names] of Object.entries(UI_MODULES)) {
     const used = names.filter((n) => ui.has(n));
@@ -344,6 +353,7 @@ export function emitImports(ui: Set<string>, icons: Set<string>, needCn: boolean
   }
   if (needCn) lines.push(`import { cn } from "@/lib/utils";`);
   if (icons.size) lines.push(`import { ${[...icons].sort().join(", ")} } from "lucide-react";`);
+  for (const line of extra) if (!lines.includes(line)) lines.push(line);
   return lines;
 }
 
@@ -381,6 +391,7 @@ export function buildPage(opts: BuildOptions): {
   let needCn = false;
   const helpers: string[] = [];
   const body: string[] = [];
+  const extraImports: string[] = [];
 
   for (const s of sections) {
     const block = genSection(s, ctx);
@@ -388,10 +399,11 @@ export function buildPage(opts: BuildOptions): {
     block.icons.forEach((i) => icons.add(i));
     needCn = needCn || block.needCn;
     for (const h of block.helpers) if (!helpers.includes(h)) helpers.push(h);
+    for (const imp of block.extraImports ?? []) if (!extraImports.includes(imp)) extraImports.push(imp);
     body.push(block.jsx);
   }
 
-  const importLines = emitImports(ui, icons, needCn);
+  const importLines = emitImports(ui, icons, needCn, extraImports);
   const componentName = pascal(title) + "Page";
   const route = kebab(title);
 
@@ -446,17 +458,50 @@ const STAT_CARD_HELPER = `function StatCard({ label, value, trend, up }: { label
   );
 }`;
 
-const CHART_CARD_HELPER = `function ChartCard({ title }: { title: string }) {
+const CHART_CARD_HELPER = `function ChartCard({ title, data, series }: {
+  title: string;
+  data: Array<Record<string, string | number>>;
+  series: string[];
+}) {
+  // DS chart tokens — series colours come from the categorical ramp, in order.
+  // Never hardcode hex here; these re-theme with the system and invert in dark mode.
+  const seriesColors = [
+    "var(--color-chart-cat-1)", "var(--color-chart-cat-2)",
+    "var(--color-chart-cat-3)", "var(--color-chart-cat-4)",
+    "var(--color-chart-cat-5)", "var(--color-chart-cat-6)",
+    "var(--color-chart-cat-7)", "var(--color-chart-cat-8)",
+  ];
   return (
     <Card className="flex flex-col">
       <CardHeader className="flex-row items-center justify-between py-4">
         <CardTitle className="text-base">{title}</CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 min-h-72 flex items-center justify-center">
-        {/* TODO: insert Recharts chart here */}
-        <div className="w-full h-64 rounded-card bg-bg-secondary flex items-center justify-center text-sm text-text-muted">
-          Chart placeholder
-        </div>
+      <CardContent className="flex-1 min-h-72">
+        <ResponsiveContainer width="100%" height={288}>
+          <LineChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
+            <CartesianGrid stroke="var(--color-chart-grid)" strokeDasharray="3 3" vertical={false} />
+            <XAxis dataKey="name" stroke="var(--color-chart-axis)" tickLine={false} axisLine={false} fontSize={12} />
+            <YAxis stroke="var(--color-chart-axis)" tickLine={false} axisLine={false} fontSize={12} />
+            <Tooltip
+              contentStyle={{
+                background: "var(--color-surface-popover)",
+                border: "1px solid var(--color-border-default)",
+                borderRadius: "var(--radius-card)",
+                fontSize: 12,
+              }}
+            />
+            {series.map((key, i) => (
+              <Line
+                key={key}
+                type="monotone"
+                dataKey={key}
+                stroke={seriesColors[i % seriesColors.length]}
+                strokeWidth={2}
+                dot={false}
+              />
+            ))}
+          </LineChart>
+        </ResponsiveContainer>
       </CardContent>
     </Card>
   );

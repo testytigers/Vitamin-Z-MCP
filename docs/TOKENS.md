@@ -159,7 +159,7 @@ The accent is **app-configurable**. Whatever its hue, always go through the
 | `text-icon-disabled`   | Disabled icon                       |
 | `text-icon-on-accent`  | Icon on an accent background        |
 
-### Chart / Data-Viz Colors
+## 2. Chart / Data-Viz Tokens
 
 Charts are the one place raw hex is tempting — don't. Every series colour is a token,
 so charts re-theme with the rest of the system and stay legible in dark mode.
@@ -207,7 +207,7 @@ ramp, low → high. It **inverts in dark mode** (`#dbeafe → #1e3a8a` light, `#
 
 ---
 
-## 2. Typography Tokens
+## 3. Typography Tokens
 
 ### Font Families (Tailwind)
 - `font-sans` → Inter / system-ui
@@ -273,7 +273,7 @@ equally valid and easier to scan:
 
 ---
 
-## 3. Spacing Tokens
+## 4. Spacing Tokens
 
 All spacing tokens are responsive to `data-density`. Use these instead of hardcoded `p-4`, `gap-2`.
 
@@ -306,7 +306,7 @@ Also use as padding: `p-stack-md`, `py-stack-lg`, etc.
 
 ---
 
-## 4. Radius Tokens
+## 5. Radius Tokens
 
 | Tailwind class     | Value  | Use case                         |
 |--------------------|--------|----------------------------------|
@@ -317,7 +317,7 @@ Also use as padding: `p-stack-md`, `py-stack-lg`, etc.
 
 ---
 
-## 5. Shadow Tokens
+## 6. Shadow Tokens
 
 | Tailwind class   | Use case                            |
 |------------------|-------------------------------------|
@@ -329,7 +329,7 @@ Also use as padding: `p-stack-md`, `py-stack-lg`, etc.
 
 ---
 
-## 6. Z-Index Tokens
+## 7. Z-Index Tokens
 
 | Tailwind class  | Value | Use case                  |
 |-----------------|-------|---------------------------|
@@ -343,7 +343,7 @@ Also use as padding: `p-stack-md`, `py-stack-lg`, etc.
 
 ---
 
-## 7. Motion Tokens
+## 8. Motion Tokens
 
 ### Duration (Tailwind `duration-*`)
 | Class              | Value  | Use case                       |
@@ -370,7 +370,7 @@ Also use as padding: `p-stack-md`, `py-stack-lg`, etc.
 
 ---
 
-## 8. Control Size Tokens
+## 9. Control Size Tokens
 
 Applied automatically by Button/Input/Select variants. Use as CSS variables if building custom controls.
 
@@ -382,7 +382,7 @@ Applied automatically by Button/Input/Select variants. Use as CSS variables if b
 
 ---
 
-## 9. Mode Switching Reference
+## 10. Mode Switching Reference
 
 ### Light mode (default — no attribute needed)
 ```html

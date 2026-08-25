@@ -339,15 +339,22 @@ Every generated component should satisfy:
 
 ## File & Import Conventions
 
+The design system lives in this repository:
+
 ```
-ds-v2/src/
-├── components/
-│   └── ui/                  ← All shadcn components (never modify directly)
-├── lib/
-│   └── utils.ts             ← cn() helper (clsx + tailwind-merge)
-└── styles/
-    └── tokens.css           ← All CSS custom properties (source of truth)
+ds-shadcn/
+├── src/
+│   ├── components/
+│   │   ├── ui/              ← All shadcn components (never modify directly)
+│   │   └── layout/          ← AppShell, Header, Sidebar
+│   └── styles/
+│       └── tokens.css       ← All CSS custom properties (source of truth)
+├── tailwind.config.ts       ← Tailwind mapping for every token
+└── showcase.html            ← visual reference
 ```
+
+In a consuming app, import via the app's own aliases — `@/components/ui/*` and
+`@/lib/utils` for the `cn()` helper (clsx + tailwind-merge).
 
 ```tsx
 // The cn() helper — always use it to merge class names

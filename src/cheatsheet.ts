@@ -28,7 +28,16 @@ hover:bg-slate-100 → hover:bg-action-ghost-hover
 border-slate-100 → border-border-subtle     border-slate-200 → border-border-default
 green-* → status-success-{fg|bg|border}     red-* → status-error-{fg|bg|border}
 yellow-* → status-warning-*                 blue-* → status-info-*
-orange-* → text-status-attention-fg         #004030 → bg-action-primary
+orange-* → text-status-attention-fg         any accent hex → bg-action-primary
+
+## Charts — never raw hex
+1–2 series:  chart-primary · chart-secondary · chart-accent (attention) · chart-muted (track)
+3+ series:   chart-cat-1 … chart-cat-8 — USE IN ORDER, never skip, so a category
+             keeps its colour across every chart in the app
+Magnitude:   chart-seq-1 … chart-seq-5 (low → high; inverts in dark automatically)
+Structure:   chart-grid (grid lines) · chart-axis (axis + ticks)
+In Recharts pass the CSS var: stroke="var(--color-chart-cat-1)"
+Call get_tokens({category:"chart"}) for the full table.
 
 ## Text hierarchy
 H1 page title:  text-3xl font-bold text-text-primary

@@ -237,21 +237,22 @@ server.registerTool("get_pattern", {
 // ──────────────────────────────────────────────────────────────────
 const TOKEN_CATEGORIES = {
     colors: "1. Color Tokens",
-    typography: "2. Typography Tokens",
-    spacing: "3. Spacing Tokens",
-    radius: "4. Radius Tokens",
-    shadow: "5. Shadow Tokens",
-    "z-index": "6. Z-Index Tokens",
-    motion: "7. Motion Tokens",
-    controls: "8. Control Size Tokens",
-    modes: "9. Mode Switching Reference",
+    chart: "2. Chart / Data-Viz Tokens",
+    typography: "3. Typography Tokens",
+    spacing: "4. Spacing Tokens",
+    radius: "5. Radius Tokens",
+    shadow: "6. Shadow Tokens",
+    "z-index": "7. Z-Index Tokens",
+    motion: "8. Motion Tokens",
+    controls: "9. Control Size Tokens",
+    modes: "10. Mode Switching Reference",
 };
 server.registerTool("get_tokens", {
     title: "Get design tokens by category",
-    description: "Returns the token reference table for one category: colors, typography, spacing, radius, shadow, z-index, motion, controls, modes.",
+    description: "Returns the token reference table for one category: colors, chart (data-viz series palettes), typography, spacing, radius, shadow, z-index, motion, controls, modes.",
     inputSchema: {
-        category: z.enum(["colors", "typography", "spacing", "radius", "shadow", "z-index", "motion", "controls", "modes"])
-            .describe("Token category"),
+        category: z.enum(["colors", "chart", "typography", "spacing", "radius", "shadow", "z-index", "motion", "controls", "modes"])
+            .describe("Token category. Use 'chart' for any graph/series/data-viz colour."),
     },
 }, async ({ category }) => {
     const hit = findByHeading("TOKENS.md", TOKEN_CATEGORIES[category]);

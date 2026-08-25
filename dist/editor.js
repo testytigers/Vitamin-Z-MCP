@@ -106,7 +106,7 @@ function pruneOrphans(code) {
     return out;
 }
 /** Merge needed UI/icon imports into existing import lines. */
-function mergeImports(code, ui, icons, needCn) {
+function mergeImports(code, ui, icons, needCn, extra = []) {
     let out = code;
     // group ui names by module
     const byModule = new Map();
@@ -153,6 +153,15 @@ function mergeImports(code, ui, icons, needCn) {
     if (needCn && !out.includes(`from "@/lib/utils"`)) {
         const { ls, idx } = lastImportIdx();
         ls.splice(idx + 1, 0, `import { cn } from "@/lib/utils";`);
+        out = ls.join("\n");
+    }
+    // verbatim import lines (e.g. recharts) — skip if that module is already imported
+    for (const line of extra) {
+        const mod = /from\s+"([^"]+)"/.exec(line)?.[1];
+        if (mod && new RegExp(`from\\s+"${mod.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"`).test(out))
+            continue;
+        const { ls, idx } = lastImportIdx();
+        ls.splice(idx + 1, 0, line);
         out = ls.join("\n");
     }
     return out;
@@ -215,7 +224,7 @@ export function applyOps(code, ops, ctx) {
         }
         lines.splice(insertAt, 0, "", ...block.jsx.split("\n"));
         out = lines.join("\n");
-        out = mergeImports(out, block.ui, block.icons, block.needCn);
+        out = mergeImports(out, block.ui, block.icons, block.needCn, block.extraImports ?? []);
         out = mergeHelpers(out, block.helpers);
         applied.push(`added ${section}`);
     }

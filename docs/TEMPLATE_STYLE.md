@@ -13,39 +13,40 @@ The template defines a **3-zone layout** with an exact color contract:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│ ZONE 1 — HEADER   bg-gray-950 (dark)   text-white       │
-│ h-14, full width, shrink-0                              │
+│ ZONE 1 — HEADER   bg-surface-elevated (white)           │
+│ h-14, full width, shrink-0, border-b                    │
 ├──────────────┬──────────────────────────────────────────┤
-│ ZONE 2       │ ZONE 3 — MAIN   bg-gray-50 (light gray) │
+│ ZONE 2       │ ZONE 3 — MAIN   bg-surface-sunken (gray) │
 │ SIDEBAR      │ overflow-y-auto, p-8                     │
-│ bg-white     │                                          │
-│ w-64, white  │   Cards: bg-white, border-gray-200       │
-│ border-r     │   Accent: indigo-600                     │
+│ bg-surface-  │                                          │
+│ elevated     │   Cards: bg-surface-elevated,            │
+│ w-64, border-r│         border-border-default           │
 └──────────────┴──────────────────────────────────────────┘
 ```
 
-**Never invert these zones.** The header is always dark. The sidebar is always white. The main is always gray. The accent is always indigo (brand blue).
+**Never invert these zones.** Header and sidebar sit on the same white plane
+(`bg-surface-elevated`), separated from the grey canvas (`bg-surface-sunken`) by
+`border-border-default`. The accent comes from `action-primary`, never a raw hue.
+
+> **Changed 2026-08-24:** the header was previously a dark inverse bar
+> (`bg-bg-inverse` + `text-text-on-inverse`). It is now white, matching the shipping
+> app and `cheatsheet.ts`. If you find dark-topbar markup, it predates this change.
 
 ---
 
-## Zone 1 — Header (Dark Top Bar)
-
-### Original HTML
-```html
-<header class="flex items-center justify-between px-6 py-3 border-b border-gray-800 bg-gray-950 text-white">
-```
+## Zone 1 — Header (White Top Bar)
 
 ### DS Token Translation
 ```tsx
-<header className="flex items-center justify-between px-6 py-3 h-14 shrink-0 bg-bg-inverse text-text-on-inverse border-b border-border-default z-sticky">
+<header className="flex items-center justify-between px-6 py-3 h-14 shrink-0 bg-surface-elevated text-text-primary border-b border-border-default z-sticky">
 ```
 
-| Original class      | DS token class            | Why                              |
-|---------------------|---------------------------|----------------------------------|
-| `bg-gray-950`       | `bg-bg-inverse`           | Darkest inverse surface          |
-| `text-white`        | `text-text-on-inverse`    | Text on inverse bg               |
-| `border-gray-800`   | `border-border-default`   | Auto adapts                      |
-| `px-6 py-3`         | `px-6` + `h-14`           | Fixed height 56px                |
+| Raw class you might reach for | DS token class          | Why                              |
+|-------------------------------|-------------------------|----------------------------------|
+| `bg-white`                    | `bg-surface-elevated`   | Same plane as sidebar and cards  |
+| `text-gray-900`               | `text-text-primary`     | Primary label colour             |
+| `border-gray-200`             | `border-border-default` | Auto adapts light/dark           |
+| `px-6 py-3`                   | `px-6` + `h-14`         | Fixed height 56px                |
 
 ### Header — Logo
 ```html
@@ -60,7 +61,7 @@ The template defines a **3-zone layout** with an exact color contract:
 <div class="... hover:bg-gray-800 px-3 py-1.5 rounded-md ...">Workspace Name</div>
 ```
 ```tsx
-<button className="flex items-center gap-inline-xs text-sm font-medium text-text-on-inverse/80 hover:text-text-on-inverse hover:bg-white/10 px-3 py-1.5 rounded-control transition-colors duration-fast">
+<button className="flex items-center gap-inline-xs text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-action-ghost-hover px-3 py-1.5 rounded-control transition-colors duration-fast">
 ```
 
 ### Header — Search Input
@@ -68,7 +69,7 @@ The template defines a **3-zone layout** with an exact color contract:
 <input class="h-9 w-64 rounded-md border border-gray-700 bg-gray-900 px-8 text-sm text-gray-200 placeholder-gray-500 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"/>
 ```
 ```tsx
-<input className="h-9 w-64 rounded-control border border-white/20 bg-white/10 px-8 text-sm text-text-on-inverse placeholder:text-text-on-inverse/40 focus:outline-none focus:ring-1 focus:ring-white/40 focus:border-white/40 transition-colors duration-fast" />
+<input className="h-9 w-64 rounded-control border border-border-default bg-surface-sunken px-8 text-sm text-text-primary placeholder:text-text-placeholder focus:outline-none focus:ring-1 focus:ring-border-focus focus:border-border-focus transition-colors duration-fast" />
 ```
 
 ### Header — Icon Buttons
@@ -76,7 +77,7 @@ The template defines a **3-zone layout** with an exact color contract:
 <button class="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md">
 ```
 ```tsx
-<button className="p-2 text-text-on-inverse/60 hover:text-text-on-inverse hover:bg-white/10 rounded-control transition-colors duration-fast">
+<button className="p-2 text-icon-default hover:text-text-primary hover:bg-action-ghost-hover rounded-control transition-colors duration-fast">
 ```
 
 ### Header — Avatar
@@ -84,8 +85,8 @@ The template defines a **3-zone layout** with an exact color contract:
 <div class="h-8 w-8 bg-gray-800 border border-gray-700 rounded-full ...">
 ```
 ```tsx
-<Avatar className="w-8 h-8 border border-white/30 bg-white/10">
-  <AvatarFallback className="text-text-on-inverse text-xs font-medium bg-transparent">
+<Avatar className="w-8 h-8 border border-border-default bg-surface-sunken">
+  <AvatarFallback className="text-text-primary text-xs font-medium bg-transparent">
 ```
 
 ---
@@ -334,13 +335,13 @@ This keeps indigo for: primary buttons, active nav (`bg-action-primary-subtle`),
   className="flex flex-col h-screen overflow-hidden bg-surface-sunken text-text-primary font-sans"
 >
 
-  {/* Header — DARK, full width */}
-  <header className="flex items-center justify-between px-5 h-14 shrink-0 bg-bg-inverse text-text-on-inverse border-b border-white/10 z-sticky w-full">
+  {/* Header — WHITE, full width */}
+  <header className="flex items-center justify-between px-5 h-14 shrink-0 bg-surface-elevated text-text-primary border-b border-border-default z-sticky w-full">
     {/* LEFT: logo mark + wordmark + city/workspace selector */}
     <div className="flex items-center gap-3">
       <Link href="/">
-        <div className="w-8 h-8 rounded-md bg-action-primary flex items-center justify-center text-white font-bold text-sm">C</div>
-        <span className="text-base font-semibold text-white">AppName</span>
+        <div className="w-8 h-8 rounded-control bg-action-primary flex items-center justify-center text-text-on-accent font-bold text-sm">C</div>
+        <span className="text-base font-semibold text-text-primary">AppName</span>
       </Link>
       {/* workspace/city dropdown here */}
     </div>
@@ -376,8 +377,9 @@ Before submitting any dashboard code, verify every point:
 
 - [ ] Root has `data-appearance="light" data-brand="brand"` **plus the 7 neutral token overrides** (see Brand-Mode Override section above)
 - [ ] Header is **full width** (rendered before the sidebar in flex-col, or `w-full`)
-- [ ] Header background is `bg-bg-inverse` (dark slate/blue-900 in brand mode)
-- [ ] Header text is `text-text-on-inverse` (white)
+- [ ] Header background is `bg-surface-elevated` (white, same plane as sidebar)
+- [ ] Header has `border-b border-border-default` separating it from the canvas
+- [ ] Header text is `text-text-primary`; icons `text-icon-default`
 - [ ] **Logo mark + wordmark are in the header** (left side) — NOT in the sidebar
 - [ ] Sidebar starts directly with nav sections — no logo inside the sidebar
 - [ ] Sidebar background is `bg-white` (literal, not token, to avoid brand tint)
