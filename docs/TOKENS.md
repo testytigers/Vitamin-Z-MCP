@@ -1,6 +1,6 @@
 # Design System v1.2 — Token Reference
 
-> **For agents:** Always use semantic tokens (e.g., `text-text-primary`) in Tailwind classes. Never hardcode colors like `text-slate-900` or hex values. The token architecture ensures automatic light/dark mode and brand switching.
+> **For agents:** Always use semantic tokens (e.g., `text-primary`) in Tailwind classes. Never hardcode colors like `text-slate-900` or hex values. The token architecture ensures automatic light/dark mode and brand switching.
 
 ## What this document describes
 
@@ -38,10 +38,27 @@ Primitives (_color-slate-900)
     ↓
 Semantic tokens (--color-text-primary → var(--_color-slate-900))
     ↓
-Component tokens (--button-radius → var(--radius-control))
-    ↓
-Tailwind utilities (text-text-primary, bg-bg-secondary, rounded-control)
+Tailwind utilities (text-primary, bg-elevated, border-subtle, rounded-control)
 ```
+
+**Class naming.** Colours are registered under Tailwind's property-specific keys
+(`textColor`, `backgroundColor`, `borderColor`, `ringColor`, `divideColor`) rather
+than the generic `colors` key. That is what keeps the class names single-barrelled:
+
+| Registered as | Key | Class |
+|---|---|---|
+| `--color-text-primary` | `textColor.primary` | `text-primary` |
+| `--color-surface-elevated` | `backgroundColor.elevated` | `bg-elevated` |
+| `--color-border-subtle` | `borderColor.subtle` | `border-subtle` |
+
+Putting these in `colors` instead would make Tailwind prepend the utility to a name
+that already contains it — `text-text-primary`, `bg-bg-secondary`,
+`border-border-default`. Tokens that stay in `colors` are the ones whose names don't
+begin with a property word (`action-*`, `status-*`, `icon-*`, `chart-*`), so they read
+correctly with any prefix: `bg-action-primary`, `text-status-error-fg`.
+
+> A consequence worth knowing: a text colour can no longer be used as a background
+> (`bg-text-primary` doesn't exist). That's intentional.
 
 **Mode axes** — applied via data attributes on a root element:
 - `data-appearance="light"` (default) | `data-appearance="dark"`
@@ -56,11 +73,11 @@ Tailwind utilities (text-text-primary, bg-bg-secondary, rounded-control)
 
 | Tailwind class        | CSS Variable                  | Light value    | Dark value      |
 |-----------------------|-------------------------------|----------------|-----------------|
-| `bg-surface-canvas`   | `--color-surface-canvas`      | #ffffff        | #020617         |
-| `bg-surface-elevated` | `--color-surface-elevated`    | #ffffff        | #0f172a         |
-| `bg-surface-overlay`  | `--color-surface-overlay`     | #ffffff        | #1e293b         |
-| `bg-surface-sunken`   | `--color-surface-sunken`      | #f8fafc        | #020617         |
-| `bg-surface-popover`  | `--color-surface-popover`     | #ffffff        | #1e293b         |
+| `bg-canvas`   | `--color-surface-canvas`      | #ffffff        | #020617         |
+| `bg-elevated` | `--color-surface-elevated`    | #ffffff        | #0f172a         |
+| `bg-overlay`  | `--color-surface-overlay`     | #ffffff        | #1e293b         |
+| `bg-sunken`   | `--color-surface-sunken`      | #f8fafc        | #020617         |
+| `bg-popover`  | `--color-surface-popover`     | #ffffff        | #1e293b         |
 
 **Usage guide:**
 - `canvas` — page/app background
@@ -71,13 +88,16 @@ Tailwind utilities (text-text-primary, bg-bg-secondary, rounded-control)
 
 ### Background (tonal fills)
 
-| Tailwind class    | Description                  |
-|-------------------|------------------------------|
-| `bg-bg-primary`   | Main content background      |
-| `bg-bg-secondary` | Subtle fill (table rows, headers) |
-| `bg-bg-tertiary`  | Stronger tonal fill          |
-| `bg-bg-disabled`  | Disabled state background    |
-| `bg-bg-inverse`   | Inverse (dark in light mode) |
+Same `bg-*` namespace as the surfaces above — surfaces describe **layering**, these
+describe **tonal weight**. `bg-primary` no longer exists; it was identical to
+`bg-canvas`, so it was removed rather than kept as a second name for one value.
+
+| Tailwind class | Description                       |
+|----------------|-----------------------------------|
+| `bg-secondary` | Subtle fill (table rows, headers) |
+| `bg-tertiary`  | Stronger tonal fill               |
+| `bg-disabled`  | Disabled state background         |
+| `bg-inverse`   | Inverse (dark in light mode)      |
 
 ### Action Colors
 
@@ -112,25 +132,25 @@ The accent is **app-configurable**. Whatever its hue, always go through the
 
 | Tailwind class          | Approx. value | Use case                              |
 |-------------------------|---------------|---------------------------------------|
-| `text-text-primary`     | slate-900     | Headings, strong labels               |
-| `text-text-strong`      | slate-700     | Body text, row values                 |
-| `text-text-secondary`   | slate-600     | Sub-labels, descriptions              |
-| `text-text-subtle`      | slate-500     | Helper text, timestamps               |
-| `text-text-muted`       | slate-400     | Placeholders, minor labels            |
-| `text-text-disabled`    | slate-300     | Disabled states                       |
-| `text-text-on-accent`   | white         | Text on primary/accent backgrounds    |
-| `text-text-on-inverse`  | white         | Text on inverse (dark) background     |
-| `text-text-placeholder` | slate-400     | Input placeholder                     |
+| `text-primary`     | slate-900     | Headings, strong labels               |
+| `text-strong`      | slate-700     | Body text, row values                 |
+| `text-secondary`   | slate-600     | Sub-labels, descriptions              |
+| `text-subtle`      | slate-500     | Helper text, timestamps               |
+| `text-muted`       | slate-400     | Placeholders, minor labels            |
+| `text-disabled`    | slate-300     | Disabled states                       |
+| `text-on-accent`   | white         | Text on primary/accent backgrounds    |
+| `text-on-inverse`  | white         | Text on inverse (dark) background     |
+| `text-placeholder` | slate-400     | Input placeholder                     |
 
 ### Border Colors
 
 | Tailwind class          | Approx. value | Use case                        |
 |-------------------------|---------------|---------------------------------|
-| `border-border-subtle`  | slate-100     | Section dividers, very light separators |
-| `border-border-default` | slate-200     | Default card / input border     |
-| `border-border-hover`   | slate-300     | Hovered border                  |
-| `border-border-focus`   | brand-500 (#156a52) | Focused input ring        |
-| `border-border-error`   | red-500       | Error state                     |
+| `border-subtle`  | slate-100     | Section dividers, very light separators |
+| `border-default` | slate-200     | Default card / input border     |
+| `border-hover`   | slate-300     | Hovered border                  |
+| `border-focus`   | brand-500 (#156a52) | Focused input ring        |
+| `border-error`   | red-500       | Error state                     |
 
 ### Status Colors
 
@@ -259,13 +279,13 @@ equally valid and easier to scan:
 
 | Role       | Utilities                                          |
 |------------|----------------------------------------------------|
-| Page title | `text-3xl font-bold tracking-tight text-text-primary` |
-| Section    | `text-xl font-semibold text-text-primary`          |
-| Card title | `text-base font-semibold text-text-primary`        |
-| Body       | `text-sm text-text-primary`                        |
-| Label      | `text-sm font-medium text-text-secondary`          |
-| Caption    | `text-xs text-text-muted`                          |
-| Metric     | `text-2xl font-bold text-text-primary`             |
+| Page title | `text-3xl font-bold tracking-tight text-primary` |
+| Section    | `text-xl font-semibold text-primary`          |
+| Card title | `text-base font-semibold text-primary`        |
+| Body       | `text-sm text-primary`                        |
+| Label      | `text-sm font-medium text-secondary`          |
+| Caption    | `text-xs text-muted`                          |
+| Metric     | `text-2xl font-bold text-primary`             |
 | Code / ref | `font-mono text-xs`                                |
 
 > Note: `coliix` does **not** define these composite variables — it uses the utility

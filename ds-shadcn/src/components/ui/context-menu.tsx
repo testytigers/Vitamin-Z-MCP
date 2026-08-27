@@ -5,16 +5,16 @@ import { cn } from "@/lib/utils";
 
 const contentClass = cn(
   "z-[var(--z-popover)] min-w-[8rem] overflow-hidden rounded-overlay p-1",
-  "border border-border-default bg-surface-popover shadow-popover text-text-primary",
+  "border border-default bg-popover shadow-popover text-primary",
   "animate-in fade-in-0 zoom-in-95"
 );
 
 const itemClass = cn(
   "relative flex cursor-default select-none items-center gap-inline-sm rounded-sm",
-  "px-2 py-1.5 text-sm text-text-primary outline-none",
+  "px-2 py-1.5 text-sm text-primary outline-none",
   "transition-colors duration-fast",
   "hover:bg-action-ghost-hover focus:bg-action-ghost-hover",
-  "data-[disabled]:pointer-events-none data-[disabled]:text-text-disabled"
+  "data-[disabled]:pointer-events-none data-[disabled]:text-disabled"
 );
 
 const ContextMenu        = ContextMenuPrimitive.Root;
@@ -99,7 +99,7 @@ const ContextMenuLabel = React.forwardRef<
   React.ElementRef<typeof ContextMenuPrimitive.Label>,
   React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Label> & { inset?: boolean }
 >(({ className, inset, ...props }, ref) => (
-  <ContextMenuPrimitive.Label ref={ref} className={cn("px-2 py-1.5 text-xs font-semibold text-text-muted", inset && "pl-8", className)} {...props} />
+  <ContextMenuPrimitive.Label ref={ref} className={cn("px-2 py-1.5 text-xs font-semibold text-muted", inset && "pl-8", className)} {...props} />
 ));
 ContextMenuLabel.displayName = ContextMenuPrimitive.Label.displayName;
 
@@ -112,7 +112,7 @@ const ContextMenuSeparator = React.forwardRef<
 ContextMenuSeparator.displayName = ContextMenuPrimitive.Separator.displayName;
 
 const ContextMenuShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => (
-  <span className={cn("ml-auto text-xs tracking-widest text-text-muted", className)} {...props} />
+  <span className={cn("ml-auto text-xs tracking-widest text-muted", className)} {...props} />
 );
 ContextMenuShortcut.displayName = "ContextMenuShortcut";
 

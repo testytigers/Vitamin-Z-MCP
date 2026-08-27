@@ -12,13 +12,13 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default:     "bg-bg-secondary text-text-primary",
-        secondary:   "bg-bg-secondary text-text-secondary",
+        default:     "bg-secondary text-primary",
+        secondary:   "bg-secondary text-secondary",
         destructive: "bg-status-error-bg text-status-error-fg border border-status-error-border",
         success:     "bg-status-success-bg text-status-success-fg border border-status-success-border",
         warning:     "bg-status-warning-bg text-status-warning-fg border border-status-warning-border",
         info:        "bg-status-info-bg text-status-info-fg border border-status-info-border",
-        outline:     "border border-border-default text-text-primary bg-transparent",
+        outline:     "border border-default text-primary bg-transparent",
       },
     },
     defaultVariants: { variant: "default" },

@@ -11,7 +11,7 @@ const alertVariants = cva(
   {
     variants: {
       variant: {
-        default:     "border-border-default bg-surface-canvas text-text-primary [&>svg]:text-icon-default",
+        default:     "border-default bg-canvas text-primary [&>svg]:text-icon-default",
         destructive: "border-status-error-border bg-status-error-bg text-status-error-fg [&>svg]:text-status-error-fg",
         success:     "border-status-success-border bg-status-success-bg text-status-success-fg [&>svg]:text-status-success-fg",
         warning:     "border-status-warning-border bg-status-warning-bg text-status-warning-fg [&>svg]:text-status-warning-fg",

@@ -10,10 +10,10 @@ const Switch = React.forwardRef<
     ref={ref}
     className={cn(
       "peer inline-flex h-5 w-10 shrink-0 cursor-pointer items-center rounded-pill",
-      "border-2 border-transparent bg-bg-tertiary",
+      "border-2 border-transparent bg-tertiary",
       "transition-[background-color,box-shadow] duration-fast",
       "focus-visible:outline-none focus-visible:shadow-focus",
-      "disabled:cursor-not-allowed disabled:bg-bg-disabled",
+      "disabled:cursor-not-allowed disabled:bg-disabled",
       "data-[state=checked]:bg-action-primary",
       className
     )}

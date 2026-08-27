@@ -116,7 +116,7 @@ function genTabs() {
         needCn: false,
         helpers: [],
         jsx: `      {/* Tabs + filter bar */}
-      <div className="flex items-center justify-between border-b border-border-default">
+      <div className="flex items-center justify-between border-b border-default">
         <Tabs defaultValue="all">
           <TabsList className="border-b-0 -mb-px">
             <TabsTrigger value="all">All</TabsTrigger>
@@ -163,7 +163,7 @@ function genTable(ctx) {
     const bodyCells = keys
         .map((k) => k === statusKey
         ? `                  <TableCell><Badge variant="success">{item.${k}}</Badge></TableCell>`
-        : `                  <TableCell className="text-sm text-text-primary">{item.${k}}</TableCell>`)
+        : `                  <TableCell className="text-sm text-primary">{item.${k}}</TableCell>`)
         .join("\n");
     return {
         ui: ["Card", "CardHeader", "CardTitle", "CardContent", "CardFooter",
@@ -225,7 +225,7 @@ ${bodyCells}
           </Table>
         </CardContent>
         <CardFooter className="flex items-center justify-between py-4">
-          <p className="text-sm text-text-secondary">Showing {items.length} results</p>
+          <p className="text-sm text-secondary">Showing {items.length} results</p>
         </CardFooter>
       </Card>`,
     };
@@ -266,11 +266,11 @@ function genEmpty(ctx) {
       <Card>
         <CardContent className="p-0">
           <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-            <div className="w-12 h-12 rounded-overlay bg-bg-secondary flex items-center justify-center mb-stack-lg">
+            <div className="w-12 h-12 rounded-overlay bg-secondary flex items-center justify-center mb-stack-lg">
               <FolderOpen className="w-6 h-6 text-icon-muted" />
             </div>
-            <h3 className="text-base font-semibold text-text-primary mb-stack-xs">No ${ctx.title.toLowerCase()} yet</h3>
-            <p className="text-sm text-text-secondary max-w-sm mb-stack-xl">Create your first item to get started.</p>
+            <h3 className="text-base font-semibold text-primary mb-stack-xs">No ${ctx.title.toLowerCase()} yet</h3>
+            <p className="text-sm text-secondary max-w-sm mb-stack-xl">Create your first item to get started.</p>
             <Button variant="primary"><Plus className="w-4 h-4" /> New</Button>
           </div>
         </CardContent>
@@ -362,8 +362,8 @@ export default function ${componentName}() {
         {/* Page header */}
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-text-primary mb-stack-xs">${title}</h1>
-            <p className="text-sm text-text-secondary">Manage and monitor your ${title.toLowerCase()}.</p>
+            <h1 className="text-3xl font-bold tracking-tight text-primary mb-stack-xs">${title}</h1>
+            <p className="text-sm text-secondary">Manage and monitor your ${title.toLowerCase()}.</p>
           </div>
           <div className="flex items-center gap-inline-sm">
             <Button variant="primary"><Plus className="w-4 h-4" /> New</Button>
@@ -383,14 +383,14 @@ ${body.join("\n\n")}
 const STAT_CARD_HELPER = `function StatCard({ label, value, trend, up }: { label: string; value: string; trend: string; up: boolean | null }) {
   return (
     <Card className="p-5 hover:shadow-popover transition-shadow duration-normal">
-      <p className="text-sm font-medium text-text-secondary mb-2">{label}</p>
+      <p className="text-sm font-medium text-secondary mb-2">{label}</p>
       <div className="flex items-end justify-between">
-        <span className="text-2xl font-bold text-text-primary">{value}</span>
+        <span className="text-2xl font-bold text-primary">{value}</span>
         <span className={cn(
           "text-xs font-medium",
           up === true && "text-status-success-fg",
           up === false && "text-status-error-fg",
-          up === null && "text-text-muted"
+          up === null && "text-muted"
         )}>
           {trend}
         </span>

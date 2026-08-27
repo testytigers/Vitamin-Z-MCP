@@ -124,7 +124,7 @@ CarouselItem.displayName = "CarouselItem";
 
 const navButtonClass = cn(
   "absolute inline-flex h-8 w-8 items-center justify-center rounded-pill",
-  "border border-border-default bg-surface-canvas text-text-primary",
+  "border border-default bg-canvas text-primary",
   "shadow-control hover:bg-action-ghost-hover",
   "focus-visible:outline-none focus-visible:shadow-focus",
   "disabled:pointer-events-none disabled:opacity-50",

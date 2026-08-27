@@ -11,12 +11,12 @@ const Checkbox = React.forwardRef<
     ref={ref}
     className={cn(
       "peer h-4 w-4 shrink-0 rounded-sm",
-      "border border-border-default bg-surface-canvas",
+      "border border-default bg-canvas",
       "transition-[background-color,border-color,box-shadow] duration-fast",
-      "hover:border-border-hover",
+      "hover:border-hover",
       "focus-visible:outline-none focus-visible:shadow-focus",
-      "disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:border-border-disabled",
-      "data-[state=checked]:bg-action-primary data-[state=checked]:border-action-primary data-[state=checked]:text-text-on-accent",
+      "disabled:cursor-not-allowed disabled:bg-disabled disabled:border-disabled",
+      "data-[state=checked]:bg-action-primary data-[state=checked]:border-action-primary data-[state=checked]:text-on-accent",
       "data-[state=indeterminate]:bg-action-primary data-[state=indeterminate]:border-action-primary",
       className
     )}

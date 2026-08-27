@@ -20,7 +20,7 @@ function Avatar({ className, size = "md", src, alt, fallback, ...props }: Avatar
     <div
       className={cn(
         "relative flex shrink-0 overflow-hidden rounded-pill",
-        "border-2 border-border-default bg-bg-secondary",
+        "border-2 border-default bg-secondary",
         avatarSizes[size],
         className
       )}
@@ -34,7 +34,7 @@ function Avatar({ className, size = "md", src, alt, fallback, ...props }: Avatar
           onError={() => setImgError(true)}
         />
       ) : (
-        <div className="flex h-full w-full items-center justify-center font-medium text-text-secondary">
+        <div className="flex h-full w-full items-center justify-center font-medium text-secondary">
           {fallback || alt?.slice(0, 2).toUpperCase() || "?"}
         </div>
       )}

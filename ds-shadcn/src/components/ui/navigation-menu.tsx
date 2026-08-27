@@ -35,10 +35,10 @@ const NavigationMenuItem = NavigationMenuPrimitive.Item;
 
 const navigationMenuTriggerStyle = cva([
   "group inline-flex h-9 w-max items-center justify-center rounded-control",
-  "px-4 py-2 text-sm font-medium text-text-primary bg-surface-canvas",
-  "hover:bg-action-ghost-hover hover:text-text-primary",
-  "focus:bg-action-ghost-hover focus:text-text-primary focus:outline-none",
-  "disabled:pointer-events-none disabled:text-text-disabled",
+  "px-4 py-2 text-sm font-medium text-primary bg-canvas",
+  "hover:bg-action-ghost-hover hover:text-primary",
+  "focus:bg-action-ghost-hover focus:text-primary focus:outline-none",
+  "disabled:pointer-events-none disabled:text-disabled",
   "data-[active]:bg-action-ghost-active data-[state=open]:bg-action-ghost-active",
   "transition-colors duration-fast",
 ]);
@@ -93,7 +93,7 @@ const NavigationMenuViewport = React.forwardRef<
         "origin-top-center relative mt-1.5 overflow-hidden rounded-overlay",
         "h-[var(--radix-navigation-menu-viewport-height)]",
         "w-full md:w-[var(--radix-navigation-menu-viewport-width)]",
-        "border border-border-default bg-surface-popover shadow-popover",
+        "border border-default bg-popover shadow-popover",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90",
         className

@@ -12,7 +12,7 @@ Table.displayName = "Table";
 
 const TableHeader = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>(
   ({ className, ...props }, ref) => (
-    <thead ref={ref} className={cn("bg-bg-secondary", className)} {...props} />
+    <thead ref={ref} className={cn("bg-secondary", className)} {...props} />
   )
 );
 TableHeader.displayName = "TableHeader";
@@ -26,7 +26,7 @@ TableBody.displayName = "TableBody";
 
 const TableFooter = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>(
   ({ className, ...props }, ref) => (
-    <tfoot ref={ref} className={cn("border-t border-border-default bg-bg-secondary font-medium text-text-primary", className)} {...props} />
+    <tfoot ref={ref} className={cn("border-t border-default bg-secondary font-medium text-primary", className)} {...props} />
   )
 );
 TableFooter.displayName = "TableFooter";
@@ -36,8 +36,8 @@ const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTML
     <tr
       ref={ref}
       className={cn(
-        "border-b border-border-default transition-colors duration-fast",
-        "hover:bg-bg-secondary",
+        "border-b border-default transition-colors duration-fast",
+        "hover:bg-secondary",
         "data-[state=selected]:bg-action-primary-subtle",
         className
       )}
@@ -53,7 +53,7 @@ const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<
       ref={ref}
       className={cn(
         "h-10 px-[var(--spacing-component-px)] text-left align-middle",
-        "text-xs font-medium text-text-secondary uppercase tracking-wide",
+        "text-xs font-medium text-secondary uppercase tracking-wide",
         "[&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
         className
       )}
@@ -68,7 +68,7 @@ const TableCell = React.forwardRef<HTMLTableCellElement, React.TdHTMLAttributes<
     <td
       ref={ref}
       className={cn(
-        "px-[var(--spacing-component-px)] py-[var(--spacing-stack-sm)] align-middle text-text-primary",
+        "px-[var(--spacing-component-px)] py-[var(--spacing-stack-sm)] align-middle text-primary",
         "[&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
         className
       )}
@@ -80,7 +80,7 @@ TableCell.displayName = "TableCell";
 
 const TableCaption = React.forwardRef<HTMLTableCaptionElement, React.HTMLAttributes<HTMLTableCaptionElement>>(
   ({ className, ...props }, ref) => (
-    <caption ref={ref} className={cn("mt-4 text-sm text-text-muted", className)} {...props} />
+    <caption ref={ref} className={cn("mt-4 text-sm text-muted", className)} {...props} />
   )
 );
 TableCaption.displayName = "TableCaption";

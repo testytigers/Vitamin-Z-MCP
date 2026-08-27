@@ -14,10 +14,10 @@ The file `gemini-code-1779566133115.html` is the canonical visual reference. Eve
 | Zone         | Required style                              | DS tokens                                     |
 |--------------|---------------------------------------------|-----------------------------------------------|
 | Root `<html>`| Light mode + brand accent                   | `data-appearance="light" data-brand="brand"`  |
-| Header       | **Dark** background, white text, h-14       | `bg-bg-inverse text-text-on-inverse`          |
-| Sidebar      | **White** background, right border, w-64    | `bg-surface-elevated border-r border-border-default` |
-| Main area    | **Light gray** background, p-8              | `bg-surface-sunken`                           |
-| Cards        | White bg, subtle border, rounded-card       | `bg-surface-elevated border-border-default rounded-card shadow-card` |
+| Header       | **Dark** background, white text, h-14       | `bg-inverse text-on-inverse`          |
+| Sidebar      | **White** background, right border, w-64    | `bg-elevated border-r border-default` |
+| Main area    | **Light gray** background, p-8              | `bg-sunken`                           |
+| Cards        | White bg, subtle border, rounded-card       | `bg-elevated border-default rounded-card shadow-card` |
 | Primary CTA  | Indigo/blue solid button                    | `<Button variant="primary">` with brand mode  |
 | Active nav   | Indigo tint bg + indigo text                | `bg-action-primary-subtle text-action-primary`|
 
@@ -37,7 +37,7 @@ Run the `TEMPLATE_STYLE.md` enforcement checklist before finalising any componen
 
 0. **The template is the visual law.** See `TEMPLATE_STYLE.md`. Full stop.
 
-1. **Use semantic tokens only.** Never use `text-slate-900`, `bg-blue-50`, or hex colors. Always use `text-text-primary`, `bg-status-info-bg`, etc.
+1. **Use semantic tokens only.** Never use `text-slate-900`, `bg-blue-50`, or hex colors. Always use `text-primary`, `bg-status-info-bg`, etc.
    → See `ENFORCEMENT.md` for the full forbidden→correct mapping and the automated lint script that enforces this at build time.
 
 2. **Never override component internals.** Don't add raw Tailwind colors to `<Button>`, `<Badge>`, or `<Card>` to change their theme. Switch the variant instead.
@@ -48,7 +48,7 @@ Run the `TEMPLATE_STYLE.md` enforcement checklist before finalising any componen
 
 5. **Use Lucide icons everywhere.** The DS is tuned for Lucide. Import from `lucide-react`. Never use `feather-icons` or inline SVGs.
 
-6. **Respect layer order.** Cards use `bg-surface-elevated`, modal uses `bg-surface-overlay`, page bg uses `bg-surface-sunken`. Do not mix them.
+6. **Respect layer order.** Cards use `bg-elevated`, modal uses `bg-overlay`, page bg uses `bg-sunken`. Do not mix them.
 
 7. **Dark mode is automatic.** Never write `dark:` Tailwind modifiers. Apply `data-appearance="dark"` to the root and every token switches automatically.
 
@@ -121,7 +121,7 @@ export default function MyPage() {
 ### Step 3 — Add Tabs if the page has sub-views
 ```tsx
 <Tabs defaultValue="tab1">
-  <div className="flex items-center justify-between border-b border-border-default">
+  <div className="flex items-center justify-between border-b border-default">
     <TabsList className="border-b-0 -mb-px">
       <TabsTrigger value="tab1">Tab 1</TabsTrigger>
       <TabsTrigger value="tab2">Tab 2</TabsTrigger>
@@ -157,21 +157,21 @@ For a chart: wrap in `<Card>` with `<CardHeader>` toolbar and `<CardContent clas
 
 | Purpose                       | Tailwind class              |
 |-------------------------------|-----------------------------|
-| Page title                    | `text-3xl font-bold text-text-primary` |
-| Section heading               | `text-xl font-semibold text-text-primary` |
-| Card title                    | `text-base font-semibold text-text-primary` |
-| Label / nav item              | `text-sm font-medium text-text-secondary` |
-| Table cell value              | `text-sm text-text-primary` |
-| Caption / timestamp           | `text-xs text-text-muted` |
-| Metric value                  | `text-2xl font-bold text-text-primary` |
+| Page title                    | `text-3xl font-bold text-primary` |
+| Section heading               | `text-xl font-semibold text-primary` |
+| Card title                    | `text-base font-semibold text-primary` |
+| Label / nav item              | `text-sm font-medium text-secondary` |
+| Table cell value              | `text-sm text-primary` |
+| Caption / timestamp           | `text-xs text-muted` |
+| Metric value                  | `text-2xl font-bold text-primary` |
 | Positive trend                | `text-xs font-medium text-status-success-fg` |
 | Negative trend                | `text-xs font-medium text-status-error-fg` |
-| Card background               | `bg-surface-elevated` (auto on `<Card>`) |
-| Page area background          | `bg-surface-sunken` |
-| TopBar background             | `bg-bg-inverse` |
-| Input background              | `bg-surface-canvas` (auto on `<Input>`) |
-| Table header background       | `bg-bg-secondary` (auto on `<TableHeader>`) |
-| Default border                | `border border-border-default` |
+| Card background               | `bg-elevated` (auto on `<Card>`) |
+| Page area background          | `bg-sunken` |
+| TopBar background             | `bg-inverse` |
+| Input background              | `bg-canvas` (auto on `<Input>`) |
+| Table header background       | `bg-secondary` (auto on `<TableHeader>`) |
+| Default border                | `border border-default` |
 | Focus ring                    | `focus-visible:shadow-focus` (auto on inputs/buttons) |
 | Hover on ghost controls       | `hover:bg-action-ghost-hover` |
 
@@ -185,17 +185,17 @@ The lint script rejects ALL of these. See `ENFORCEMENT.md` for the complete forb
 
 ```tsx
 // BAD — every one of these fails the linter
-<p className="text-slate-600">...</p>           // → text-text-secondary
-<p className="text-slate-900">...</p>           // → text-text-primary
-<p className="text-slate-700">...</p>           // → text-text-strong
-<p className="text-slate-500">...</p>           // → text-text-subtle
-<p className="text-slate-400">...</p>           // → text-text-muted
-<div className="bg-white">...</div>             // → bg-surface-elevated
-<div className="bg-slate-50">...</div>          // → bg-surface-sunken
-<div className="bg-slate-100">...</div>         // → bg-bg-secondary
+<p className="text-slate-600">...</p>           // → text-secondary
+<p className="text-slate-900">...</p>           // → text-primary
+<p className="text-slate-700">...</p>           // → text-strong
+<p className="text-slate-500">...</p>           // → text-subtle
+<p className="text-slate-400">...</p>           // → text-muted
+<div className="bg-white">...</div>             // → bg-elevated
+<div className="bg-slate-50">...</div>          // → bg-sunken
+<div className="bg-slate-100">...</div>         // → bg-secondary
 <div className="hover:bg-slate-100">...</div>   // → hover:bg-action-ghost-hover
-<div className="border-slate-200">...</div>     // → border-border-default
-<div className="border-slate-100">...</div>     // → border-border-subtle
+<div className="border-slate-200">...</div>     // → border-default
+<div className="border-slate-100">...</div>     // → border-subtle
 <div className="bg-blue-50 border-blue-200">Info box</div>  // → use status-info-* tokens
 <span className="text-green-600">Success</span>              // → text-status-success-fg
 <span className="text-red-600">Error</span>                  // → text-status-error-fg
@@ -207,11 +207,11 @@ The lint script rejects ALL of these. See `ENFORCEMENT.md` for the complete forb
 
 ```tsx
 // GOOD
-<p className="text-text-secondary">Description</p>
-<div className="bg-surface-elevated">Card</div>
-<div className="bg-surface-sunken">Page area</div>
+<p className="text-secondary">Description</p>
+<div className="bg-elevated">Card</div>
+<div className="bg-sunken">Page area</div>
 <div className="hover:bg-action-ghost-hover">Nav item</div>
-<div className="border border-border-default">Default border</div>
+<div className="border border-default">Default border</div>
 <div className="bg-status-info-bg border border-status-info-border text-status-info-fg">Info box</div>
 <span className="text-status-success-fg">Success</span>
 <span className="text-status-error-fg">Error</span>
@@ -229,7 +229,7 @@ The lint script rejects ALL of these. See `ENFORCEMENT.md` for the complete forb
 ```tsx
 // GOOD — set mode at root, tokens handle the rest
 <div data-appearance="dark">
-  <div className="bg-surface-elevated">
+  <div className="bg-elevated">
 ```
 
 ### ❌ Creating custom badge colors
@@ -285,7 +285,7 @@ The lint script rejects ALL of these. See `ENFORCEMENT.md` for the complete forb
 ```
 ```tsx
 // GOOD — use Tailwind utilities that map to the tokens
-<div className="bg-surface-elevated p-cont-px">
+<div className="bg-elevated p-cont-px">
 ```
 
 ---
@@ -379,9 +379,9 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 When a task requires a UI element not explicitly in this guide, build it from primitives following this formula:
 
 1. **Shell:** Start with `<Card>` or a plain `div` with DS token classes
-2. **Typography:** Use `text-text-primary / secondary / muted` + `text-sm/base/xl` + `font-medium/semibold/bold`
+2. **Typography:** Use `text-primary / secondary / muted` + `text-sm/base/xl` + `font-medium/semibold/bold`
 3. **Spacing:** Use `gap-stack-*` and `gap-inline-*` — never arbitrary pixel values
-4. **Borders:** Use `border border-border-default` — never `border-gray-200`
+4. **Borders:** Use `border border-default` — never `border-gray-200`
 5. **Interactive states:** Use `hover:bg-action-ghost-hover` and `focus-visible:shadow-focus`
 6. **Status coloring:** Use `text-status-{error|success|warning|info}-fg` and matching `-bg` / `-border`
 
@@ -391,20 +391,20 @@ When a task requires a UI element not explicitly in this guide, build it from pr
 
 ```
 LAYOUT         TOKENS
-TopBar         bg-bg-inverse + text-text-on-inverse
-Sidebar        bg-surface-elevated + border-border-default
-Main           bg-surface-sunken
-Card           bg-surface-elevated + border-border-default + shadow-card + rounded-card
-Dialog         bg-surface-overlay + shadow-overlay + rounded-overlay
-Popover        bg-surface-popover + shadow-popover + rounded-overlay
+TopBar         bg-inverse + text-on-inverse
+Sidebar        bg-elevated + border-default
+Main           bg-sunken
+Card           bg-elevated + border-default + shadow-card + rounded-card
+Dialog         bg-overlay + shadow-overlay + rounded-overlay
+Popover        bg-popover + shadow-popover + rounded-overlay
 
 TEXT HIERARCHY
-H1 page title  text-3xl font-bold text-text-primary
-H2 section     text-xl font-semibold text-text-primary
-Card title     text-base font-semibold text-text-primary
-Label          text-sm font-medium text-text-secondary
-Body           text-sm text-text-primary
-Caption        text-xs text-text-muted
+H1 page title  text-3xl font-bold text-primary
+H2 section     text-xl font-semibold text-primary
+Card title     text-base font-semibold text-primary
+Label          text-sm font-medium text-secondary
+Body           text-sm text-primary
+Caption        text-xs text-muted
 
 ACTIONS
 Primary CTA    variant="primary"

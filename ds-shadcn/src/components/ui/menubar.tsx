@@ -5,15 +5,15 @@ import { cn } from "@/lib/utils";
 
 const contentClass = cn(
   "z-[var(--z-dropdown)] min-w-[12rem] overflow-hidden rounded-overlay p-1",
-  "border border-border-default bg-surface-popover shadow-popover text-text-primary"
+  "border border-default bg-popover shadow-popover text-primary"
 );
 
 const itemClass = cn(
   "relative flex cursor-default select-none items-center gap-inline-sm rounded-sm",
-  "px-2 py-1.5 text-sm text-text-primary outline-none",
+  "px-2 py-1.5 text-sm text-primary outline-none",
   "transition-colors duration-fast",
   "hover:bg-action-ghost-hover focus:bg-action-ghost-hover",
-  "data-[disabled]:pointer-events-none data-[disabled]:text-text-disabled"
+  "data-[disabled]:pointer-events-none data-[disabled]:text-disabled"
 );
 
 const Menubar = React.forwardRef<
@@ -24,7 +24,7 @@ const Menubar = React.forwardRef<
     ref={ref}
     className={cn(
       "flex h-9 items-center gap-1 rounded-control",
-      "border border-border-default bg-surface-canvas p-1",
+      "border border-default bg-canvas p-1",
       className
     )}
     {...props}
@@ -46,7 +46,7 @@ const MenubarTrigger = React.forwardRef<
     ref={ref}
     className={cn(
       "flex cursor-default select-none items-center rounded-sm",
-      "px-3 py-1 text-sm font-medium text-text-primary outline-none",
+      "px-3 py-1 text-sm font-medium text-primary outline-none",
       "hover:bg-action-ghost-hover focus:bg-action-ghost-hover",
       "data-[state=open]:bg-action-ghost-active",
       "transition-colors duration-fast",
@@ -139,7 +139,7 @@ const MenubarLabel = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Label>,
   React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Label> & { inset?: boolean }
 >(({ className, inset, ...props }, ref) => (
-  <MenubarPrimitive.Label ref={ref} className={cn("px-2 py-1.5 text-xs font-semibold text-text-muted", inset && "pl-8", className)} {...props} />
+  <MenubarPrimitive.Label ref={ref} className={cn("px-2 py-1.5 text-xs font-semibold text-muted", inset && "pl-8", className)} {...props} />
 ));
 MenubarLabel.displayName = MenubarPrimitive.Label.displayName;
 
@@ -152,7 +152,7 @@ const MenubarSeparator = React.forwardRef<
 MenubarSeparator.displayName = MenubarPrimitive.Separator.displayName;
 
 const MenubarShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => (
-  <span className={cn("ml-auto text-xs tracking-widest text-text-muted", className)} {...props} />
+  <span className={cn("ml-auto text-xs tracking-widest text-muted", className)} {...props} />
 );
 MenubarShortcut.displayName = "MenubarShortcut";
 

@@ -13,23 +13,23 @@ The template defines a **3-zone layout** with an exact color contract:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│ ZONE 1 — HEADER   bg-surface-elevated (white)           │
+│ ZONE 1 — HEADER   bg-elevated (white)           │
 │ h-14, full width, shrink-0, border-b                    │
 ├──────────────┬──────────────────────────────────────────┤
-│ ZONE 2       │ ZONE 3 — MAIN   bg-surface-sunken (gray) │
+│ ZONE 2       │ ZONE 3 — MAIN   bg-sunken (gray) │
 │ SIDEBAR      │ overflow-y-auto, p-8                     │
 │ bg-surface-  │                                          │
-│ elevated     │   Cards: bg-surface-elevated,            │
-│ w-64, border-r│         border-border-default           │
+│ elevated     │   Cards: bg-elevated,            │
+│ w-64, border-r│         border-default           │
 └──────────────┴──────────────────────────────────────────┘
 ```
 
 **Never invert these zones.** Header and sidebar sit on the same white plane
-(`bg-surface-elevated`), separated from the grey canvas (`bg-surface-sunken`) by
-`border-border-default`. The accent comes from `action-primary`, never a raw hue.
+(`bg-elevated`), separated from the grey canvas (`bg-sunken`) by
+`border-default`. The accent comes from `action-primary`, never a raw hue.
 
 > **Changed 2026-08-24:** the header was previously a dark inverse bar
-> (`bg-bg-inverse` + `text-text-on-inverse`). It is now white, matching the shipping
+> (`bg-inverse` + `text-on-inverse`). It is now white, matching the shipping
 > app and `cheatsheet.ts`. If you find dark-topbar markup, it predates this change.
 
 ---
@@ -38,14 +38,14 @@ The template defines a **3-zone layout** with an exact color contract:
 
 ### DS Token Translation
 ```tsx
-<header className="flex items-center justify-between px-6 py-3 h-14 shrink-0 bg-surface-elevated text-text-primary border-b border-border-default z-sticky">
+<header className="flex items-center justify-between px-6 py-3 h-14 shrink-0 bg-elevated text-primary border-b border-default z-sticky">
 ```
 
 | Raw class you might reach for | DS token class          | Why                              |
 |-------------------------------|-------------------------|----------------------------------|
-| `bg-white`                    | `bg-surface-elevated`   | Same plane as sidebar and cards  |
-| `text-gray-900`               | `text-text-primary`     | Primary label colour             |
-| `border-gray-200`             | `border-border-default` | Auto adapts light/dark           |
+| `bg-white`                    | `bg-elevated`   | Same plane as sidebar and cards  |
+| `text-gray-900`               | `text-primary`     | Primary label colour             |
+| `border-gray-200`             | `border-default` | Auto adapts light/dark           |
 | `px-6 py-3`                   | `px-6` + `h-14`         | Fixed height 56px                |
 
 ### Header — Logo
@@ -53,7 +53,7 @@ The template defines a **3-zone layout** with an exact color contract:
 <div class="w-8 h-8 bg-indigo-500 rounded-md ...">Logo</div>
 ```
 ```tsx
-<div className="w-8 h-8 bg-action-primary rounded-control flex items-center justify-center text-text-on-accent text-xs font-bold">
+<div className="w-8 h-8 bg-action-primary rounded-control flex items-center justify-center text-on-accent text-xs font-bold">
 ```
 
 ### Header — Workspace Switcher
@@ -61,7 +61,7 @@ The template defines a **3-zone layout** with an exact color contract:
 <div class="... hover:bg-gray-800 px-3 py-1.5 rounded-md ...">Workspace Name</div>
 ```
 ```tsx
-<button className="flex items-center gap-inline-xs text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-action-ghost-hover px-3 py-1.5 rounded-control transition-colors duration-fast">
+<button className="flex items-center gap-inline-xs text-sm font-medium text-secondary hover:text-primary hover:bg-action-ghost-hover px-3 py-1.5 rounded-control transition-colors duration-fast">
 ```
 
 ### Header — Search Input
@@ -69,7 +69,7 @@ The template defines a **3-zone layout** with an exact color contract:
 <input class="h-9 w-64 rounded-md border border-gray-700 bg-gray-900 px-8 text-sm text-gray-200 placeholder-gray-500 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"/>
 ```
 ```tsx
-<input className="h-9 w-64 rounded-control border border-border-default bg-surface-sunken px-8 text-sm text-text-primary placeholder:text-text-placeholder focus:outline-none focus:ring-1 focus:ring-border-focus focus:border-border-focus transition-colors duration-fast" />
+<input className="h-9 w-64 rounded-control border border-default bg-sunken px-8 text-sm text-primary placeholder:text-placeholder focus:outline-none focus:ring-1 focus:ring-focus focus:border-focus transition-colors duration-fast" />
 ```
 
 ### Header — Icon Buttons
@@ -77,7 +77,7 @@ The template defines a **3-zone layout** with an exact color contract:
 <button class="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md">
 ```
 ```tsx
-<button className="p-2 text-icon-default hover:text-text-primary hover:bg-action-ghost-hover rounded-control transition-colors duration-fast">
+<button className="p-2 text-icon-default hover:text-primary hover:bg-action-ghost-hover rounded-control transition-colors duration-fast">
 ```
 
 ### Header — Avatar
@@ -85,8 +85,8 @@ The template defines a **3-zone layout** with an exact color contract:
 <div class="h-8 w-8 bg-gray-800 border border-gray-700 rounded-full ...">
 ```
 ```tsx
-<Avatar className="w-8 h-8 border border-border-default bg-surface-sunken">
-  <AvatarFallback className="text-text-primary text-xs font-medium bg-transparent">
+<Avatar className="w-8 h-8 border border-default bg-sunken">
+  <AvatarFallback className="text-primary text-xs font-medium bg-transparent">
 ```
 
 ---
@@ -100,13 +100,13 @@ The template defines a **3-zone layout** with an exact color contract:
 
 ### DS Token Translation
 ```tsx
-<aside className="w-64 shrink-0 border-r border-border-default bg-surface-elevated flex flex-col justify-between overflow-y-auto">
+<aside className="w-64 shrink-0 border-r border-default bg-elevated flex flex-col justify-between overflow-y-auto">
 ```
 
 | Original class      | DS token class            |
 |---------------------|---------------------------|
-| `bg-white`          | `bg-surface-elevated`     |
-| `border-gray-200`   | `border-border-default`   |
+| `bg-white`          | `bg-elevated`     |
+| `border-gray-200`   | `border-default`   |
 | `w-64`              | `w-64` (fixed, no token)  |
 
 ### Sidebar — Nav Container
@@ -133,7 +133,7 @@ The template defines a **3-zone layout** with an exact color contract:
   <i class="text-gray-400"></i>
 ```
 ```tsx
-<Link className="... text-sm font-medium text-text-secondary hover:bg-action-ghost-hover hover:text-text-primary transition-colors duration-fast">
+<Link className="... text-sm font-medium text-secondary hover:bg-action-ghost-hover hover:text-primary transition-colors duration-fast">
   <Icon className="text-icon-muted w-4 h-4" />
 ```
 
@@ -142,7 +142,7 @@ The template defines a **3-zone layout** with an exact color contract:
 <div class="pt-6 pb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider px-3">Section 1</div>
 ```
 ```tsx
-<p className="pt-6 pb-2 text-xs font-semibold text-text-muted uppercase tracking-wider px-3">
+<p className="pt-6 pb-2 text-xs font-semibold text-muted uppercase tracking-wider px-3">
 ```
 
 ### Sidebar — Badge Count
@@ -161,8 +161,8 @@ The template defines a **3-zone layout** with an exact color contract:
     <button class="w-full ... text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
 ```
 ```tsx
-<div className="p-4 border-t border-border-default">
-  <Card className="bg-bg-secondary shadow-control">
+<div className="p-4 border-t border-default">
+  <Card className="bg-secondary shadow-control">
     <CardContent className="p-4">
       <Button variant="outline" size="sm" className="w-full">
 ```
@@ -179,14 +179,14 @@ The template defines a **3-zone layout** with an exact color contract:
 
 ### DS Token Translation
 ```tsx
-<main className="flex-1 overflow-y-auto bg-surface-sunken">
+<main className="flex-1 overflow-y-auto bg-sunken">
   <div className="p-8">
     <div className="max-w-screen-xl mx-auto space-y-stack-xl">
 ```
 
 | Original class    | DS token class         |
 |-------------------|------------------------|
-| `bg-gray-50`      | `bg-surface-sunken`    |
+| `bg-gray-50`      | `bg-sunken`    |
 | `p-8`             | `p-8` (fixed)          |
 | `space-y-6`       | `space-y-stack-xl`     |
 | `max-w-6xl`       | `max-w-screen-xl`      |
@@ -197,8 +197,8 @@ The template defines a **3-zone layout** with an exact color contract:
 <p class="text-sm text-gray-500">Brief description</p>
 ```
 ```tsx
-<h1 className="text-3xl font-bold tracking-tight text-text-primary mb-stack-xs">Page Title</h1>
-<p className="text-sm text-text-secondary">Brief description</p>
+<h1 className="text-3xl font-bold tracking-tight text-primary mb-stack-xs">Page Title</h1>
+<p className="text-sm text-secondary">Brief description</p>
 ```
 
 ### Primary Action Button
@@ -223,7 +223,7 @@ The template defines a **3-zone layout** with an exact color contract:
 <a class="px-1 py-2 text-sm font-medium text-indigo-600 border-b-2 border-indigo-600">
 ```
 ```tsx
-<TabsTrigger value="x">  {/* data-[state=active] auto-applies text-text-primary + border-action-primary */}
+<TabsTrigger value="x">  {/* data-[state=active] auto-applies text-primary + border-action-primary */}
 ```
 
 ### Tabs — Filter Button (right of tab bar)
@@ -246,9 +246,9 @@ The template defines a **3-zone layout** with an exact color contract:
 ```
 ```tsx
 <Card className="p-5 hover:shadow-popover transition-shadow duration-normal">
-  <p className="text-sm font-medium text-text-secondary mb-2">Metric Alpha</p>
+  <p className="text-sm font-medium text-secondary mb-2">Metric Alpha</p>
   <div className="flex items-end justify-between">
-    <span className="text-2xl font-bold text-text-primary">1,234</span>
+    <span className="text-2xl font-bold text-primary">1,234</span>
     <span className="text-xs font-medium text-status-success-fg">+2.5%</span>
   </div>
 </Card>
@@ -266,7 +266,7 @@ The template defines a **3-zone layout** with an exact color contract:
 ```
 ```tsx
 <Card className="flex flex-col">
-  <CardHeader className="flex-row items-center justify-between border-b border-border-default py-4">
+  <CardHeader className="flex-row items-center justify-between border-b border-default py-4">
     <CardTitle className="text-base">Data View A</CardTitle>
     <Button variant="outline" size="sm">
       Dropdown <ChevronDown className="w-3 h-3" />
@@ -332,16 +332,16 @@ This keeps indigo for: primary buttons, active nav (`bg-action-primary-subtle`),
     "--color-bg-secondary":          "var(--_color-slate-100)",
     "--color-bg-tertiary":           "var(--_color-slate-200)",
   } as React.CSSProperties}
-  className="flex flex-col h-screen overflow-hidden bg-surface-sunken text-text-primary font-sans"
+  className="flex flex-col h-screen overflow-hidden bg-sunken text-primary font-sans"
 >
 
   {/* Header — WHITE, full width */}
-  <header className="flex items-center justify-between px-5 h-14 shrink-0 bg-surface-elevated text-text-primary border-b border-border-default z-sticky w-full">
+  <header className="flex items-center justify-between px-5 h-14 shrink-0 bg-elevated text-primary border-b border-default z-sticky w-full">
     {/* LEFT: logo mark + wordmark + city/workspace selector */}
     <div className="flex items-center gap-3">
       <Link href="/">
-        <div className="w-8 h-8 rounded-control bg-action-primary flex items-center justify-center text-text-on-accent font-bold text-sm">C</div>
-        <span className="text-base font-semibold text-text-primary">AppName</span>
+        <div className="w-8 h-8 rounded-control bg-action-primary flex items-center justify-center text-on-accent font-bold text-sm">C</div>
+        <span className="text-base font-semibold text-primary">AppName</span>
       </Link>
       {/* workspace/city dropdown here */}
     </div>
@@ -357,7 +357,7 @@ This keeps indigo for: primary buttons, active nav (`bg-action-primary-subtle`),
     </aside>
 
     {/* Main — GRAY */}
-    <main className="flex-1 overflow-y-auto bg-surface-sunken">
+    <main className="flex-1 overflow-y-auto bg-sunken">
       <div className="p-8">
         <div className="max-w-screen-xl mx-auto space-y-stack-xl">
           {/* Page content */}
@@ -377,22 +377,22 @@ Before submitting any dashboard code, verify every point:
 
 - [ ] Root has `data-appearance="light" data-brand="brand"` **plus the 7 neutral token overrides** (see Brand-Mode Override section above)
 - [ ] Header is **full width** (rendered before the sidebar in flex-col, or `w-full`)
-- [ ] Header background is `bg-surface-elevated` (white, same plane as sidebar)
-- [ ] Header has `border-b border-border-default` separating it from the canvas
-- [ ] Header text is `text-text-primary`; icons `text-icon-default`
+- [ ] Header background is `bg-elevated` (white, same plane as sidebar)
+- [ ] Header has `border-b border-default` separating it from the canvas
+- [ ] Header text is `text-primary`; icons `text-icon-default`
 - [ ] **Logo mark + wordmark are in the header** (left side) — NOT in the sidebar
 - [ ] Sidebar starts directly with nav sections — no logo inside the sidebar
 - [ ] Sidebar background is `bg-white` (literal, not token, to avoid brand tint)
 - [ ] Sidebar border is `border-r border-slate-200` (literal, to avoid brand blue)
-- [ ] Main background is `bg-surface-sunken` (resolves to slate-100 after override)
-- [ ] Cards use `<Card>` component — `bg-surface-elevated border-border-default rounded-card shadow-card`
+- [ ] Main background is `bg-sunken` (resolves to slate-100 after override)
+- [ ] Cards use `<Card>` component — `bg-elevated border-default rounded-card shadow-card`
 - [ ] Active nav item uses `bg-action-primary-subtle text-action-primary` (indigo)
-- [ ] Inactive nav hover uses `hover:bg-slate-100 hover:text-text-primary` (neutral gray)
+- [ ] Inactive nav hover uses `hover:bg-slate-100 hover:text-primary` (neutral gray)
 - [ ] Primary buttons use `<Button variant="primary">` — renders indigo with brand mode
-- [ ] Section labels use `text-text-muted uppercase tracking-wider text-xs font-semibold`
-- [ ] Page title uses `text-3xl font-bold tracking-tight text-text-primary`
-- [ ] Page subtitle uses `text-sm text-text-secondary`
-- [ ] KPI card metric value uses `text-2xl font-bold text-text-primary`
+- [ ] Section labels use `text-muted uppercase tracking-wider text-xs font-semibold`
+- [ ] Page title uses `text-3xl font-bold tracking-tight text-primary`
+- [ ] Page subtitle uses `text-sm text-secondary`
+- [ ] KPI card metric value uses `text-2xl font-bold text-primary`
 - [ ] Positive trends use `text-status-success-fg`
 - [ ] Negative trends use `text-status-error-fg`
 - [ ] **Zero raw hex values** — no `#` colors anywhere

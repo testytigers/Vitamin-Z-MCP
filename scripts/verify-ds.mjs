@@ -157,29 +157,49 @@ function checkDocPaths() {
 // ──────────────────────────────────────────────────────────────
 // 5. DS classes named in docs are backed by a real token family
 // ──────────────────────────────────────────────────────────────
-function tokenNamesFromConfig(tw) {
-  // capture the quoted keys in the extend blocks we care about
-  const names = new Set();
-  for (const m of tw.matchAll(/["']([a-z0-9-]+)["']\s*:\s*["']var\(--[a-zA-Z0-9_-]+\)["']/g)) {
-    names.add(m[1]);
-  }
-  // unquoted keys, e.g. control: "var(--radius-control)"
-  for (const m of tw.matchAll(/^\s*([a-z][a-z0-9-]*)\s*:\s*["']var\(--[a-zA-Z0-9_-]+\)["']/gm)) {
-    names.add(m[1]);
-  }
-  return names;
+/** Real class names, built per property key so `text-primary` resolves correctly. */
+function classNamesFromConfig(tw) {
+  const classes = new Set();
+  const block = (key) => {
+    const i = tw.indexOf(`${key}: {`);
+    if (i < 0) return [];
+    let depth = 0, end = -1;
+    for (let j = tw.indexOf("{", i); j < tw.length; j++) {
+      if (tw[j] === "{") depth++;
+      else if (tw[j] === "}") { depth--; if (depth === 0) { end = j; break; } }
+    }
+    return [...tw.slice(i, end).matchAll(/["']?([a-zA-Z0-9-]+)["']?\s*:\s*(?:\[|["']var\()/g)].map((m) => m[1]);
+  };
+  for (const k of block("colors"))
+    for (const p of ["text", "bg", "border", "ring", "divide", "fill", "stroke"]) classes.add(`${p}-${k}`);
+  for (const k of block("textColor")) classes.add(`text-${k}`);
+  for (const k of block("backgroundColor")) classes.add(`bg-${k}`);
+  for (const k of block("borderColor")) classes.add(`border-${k}`);
+  for (const k of block("ringColor")) classes.add(`ring-${k}`);
+  for (const k of block("divideColor")) classes.add(`divide-${k}`);
+  for (const k of block("spacing"))
+    for (const p of ["gap", "space-y", "space-x", "p", "px", "py", "m", "mx", "my"]) classes.add(`${p}-${k}`);
+  for (const k of block("borderRadius")) classes.add(`rounded-${k}`);
+  for (const k of block("boxShadow")) classes.add(`shadow-${k}`);
+  for (const k of block("zIndex")) classes.add(`z-${k}`);
+  for (const k of block("transitionDuration")) classes.add(`duration-${k}`);
+  for (const k of block("transitionTimingFunction")) classes.add(`ease-${k}`);
+  for (const k of block("height")) classes.add(`h-${k}`);
+  return classes;
 }
 
 function checkDocumentedClasses() {
   const tw = read(TW_CONFIG);
   if (!tw) return fail("documented classes", "tailwind.config.ts missing");
-  const tokens = tokenNamesFromConfig(tw);
+  const valid = classNamesFromConfig(tw);
 
-  // families whose suffix must be a known token
+  // families that are unambiguously ours. After the naming migration, bare
+  // forms like `text-primary` are indistinguishable from core utilities, so
+  // they're validated by set membership below rather than by prefix.
   const FAMILIES = [
-    "bg-surface-", "bg-bg-", "bg-action-", "bg-status-", "bg-chart-",
-    "text-text-", "text-status-", "text-icon-", "text-chart-",
-    "border-border-", "border-status-",
+    "bg-action-", "bg-status-", "bg-chart-",
+    "text-status-", "text-icon-", "text-chart-",
+    "border-status-",
     "gap-stack-", "gap-inline-", "space-y-stack-", "p-stack-", "px-cont-", "py-comp-", "px-comp-",
     "rounded-", "shadow-", "z-", "duration-", "ease-",
   ];
@@ -209,13 +229,7 @@ function checkDocumentedClasses() {
       if (!fam) continue;
       if (KNOWN_NON_TOKEN.has(cls) || isNumericScale(cls)) continue;
       scanned++;
-      // strip the utility prefix to get the token name as tailwind knows it
-      const candidates = [
-        cls.replace(/^(bg|text|border|fill|stroke|ring)-/, ""),
-        cls.replace(/^(gap|space-y|space-x|p|px|py|m|mx|my|h|w)-/, ""),
-        cls.replace(/^(rounded|shadow|z|duration|ease)-/, ""),
-      ];
-      if (!candidates.some((c) => tokens.has(c))) bad.push(`${f}: ${cls}`);
+      if (!valid.has(cls)) bad.push(`${f}: ${cls}`);
     }
   }
 

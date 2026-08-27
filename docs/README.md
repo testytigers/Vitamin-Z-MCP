@@ -43,18 +43,18 @@ The design language matches the Gemini SaaS dashboard template: dark top bar, wh
 
 ```
 ✅ Always use                         ❌ Never use (lint will fail)
-text-text-primary                     text-slate-900 / text-slate-800
-text-text-strong                      text-slate-700
-text-text-secondary                   text-slate-600
-text-text-subtle                      text-slate-500
-text-text-muted                       text-slate-400
-text-text-disabled                    text-slate-300
-bg-surface-elevated                   bg-white
-bg-surface-sunken                     bg-slate-50
-bg-bg-secondary                       bg-slate-100
+text-primary                     text-slate-900 / text-slate-800
+text-strong                      text-slate-700
+text-secondary                   text-slate-600
+text-subtle                      text-slate-500
+text-muted                       text-slate-400
+text-disabled                    text-slate-300
+bg-elevated                   bg-white
+bg-sunken                     bg-slate-50
+bg-secondary                       bg-slate-100
 hover:bg-action-ghost-hover           hover:bg-slate-100
-border-border-subtle                  border-slate-100
-border-border-default                 border-slate-200 / border-gray-200
+border-subtle                  border-slate-100
+border-default                 border-slate-200 / border-gray-200
 text-status-success-fg                text-green-600
 text-status-error-fg                  text-red-600
 text-status-warning-fg                text-yellow-600
@@ -79,7 +79,7 @@ Badge variant="success"               custom green badge span
   --_color-slate-900: #0f172a;
 
   /* SEMANTIC (use these in Tailwind) */
-  --color-text-primary: var(--_color-slate-900);  → text-text-primary
+  --color-text-primary: var(--_color-slate-900);  → text-primary
 
   /* COMPONENT */
   --card-radius: var(--radius-card);              → rounded-card
@@ -121,10 +121,10 @@ Import path: `@/components/ui/<name>`
 ┌─────────────────────────────────────────────────────────┐
 │ AnnouncementBanner (bg-status-info-bg)                  │
 ├─────────────────────────────────────────────────────────┤
-│ TopBar (bg-bg-inverse, h-14, shrink-0)                  │
+│ TopBar (bg-inverse, h-14, shrink-0)                  │
 │  Logo | Workspace ▾ | [Search] | ⚙ 🔔 | Avatar ▾       │
 ├──────────────┬──────────────────────────────────────────┤
-│              │ Main (bg-surface-sunken, overflow-y-auto) │
+│              │ Main (bg-sunken, overflow-y-auto) │
 │  Sidebar     │  ┌──────────────────────────────────────┐│
 │  (w-64,      │  │ PageContent (p-8, max-w-screen-xl)   ││
 │   bg-surface │  │  PageHeader (title + primary CTA)    ││

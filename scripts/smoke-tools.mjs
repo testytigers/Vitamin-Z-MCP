@@ -71,11 +71,16 @@ check("get_cheatsheet mentions charts", (await call("get_cheatsheet")).includes(
 
 // validator: real tokens pass, invented tokens fail
 check("validate_code accepts real tokens",
-  (await call("validate_code", { code: '<div className="bg-surface-elevated text-text-strong gap-stack-lg" />' })).startsWith("✓"));
-check("validate_code rejects invented tokens",
-  (await call("validate_code", { code: '<div className="bg-surface-elevatd" />' })).includes("Unknown DS token"));
+  (await call("validate_code", { code: '<div className="bg-elevated text-strong gap-stack-lg" />' })).startsWith("✓"));
+// typo (1 edit) and invented-suffix (extends a real token) are different shapes
+check("validate_code rejects a typo'd token",
+  !(await call("validate_code", { code: '<div className="bg-elevatd" />' })).startsWith("✓"));
+check("validate_code rejects an invented suffix",
+  !(await call("validate_code", { code: '<div className="text-strongest" />' })).startsWith("✓"));
+check("validate_code ignores core Tailwind utilities",
+  (await call("validate_code", { code: '<div className="text-sm text-center flex p-4 border-t bg-cover" />' })).startsWith("✓"));
 check("validate_code rejects raw tailwind",
-  (await call("validate_code", { code: '<div className="bg-white" />' })).includes("bg-surface-elevated"));
+  (await call("validate_code", { code: '<div className="bg-white" />' })).includes("bg-elevated"));
 check("validate_code catches syntax errors",
   (await call("validate_code", { code: "export default function P(){ return <div>" })).includes("syntax"));
 

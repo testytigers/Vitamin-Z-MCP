@@ -37,8 +37,8 @@ The script walks every `.tsx` / `.ts` file under `src/` and fails on any of thes
 | `bg-[#004030]` | `bg-action-primary` |
 | `bg-[#003526]` | `bg-action-primary-hover` |
 | `text-[#004030]` | `text-icon-interactive` |
-| `border-[#004030]` | `border-border-focus` |
-| `ring-[#004030]` | `ring-border-focus` |
+| `border-[#004030]` | `border-focus` |
+| `ring-[#004030]` | `ring-focus` |
 | `bg-[rgba(0,64,48,0.04)]` | `bg-action-primary-tint` |
 | `bg-[rgba(0,64,48,0.08)]` | `bg-action-primary-subtle` |
 | `bg-[rgba(0,64,48,0.1)]` | `bg-action-primary-subtle` |
@@ -46,25 +46,25 @@ The script walks every `.tsx` / `.ts` file under `src/` and fails on any of thes
 | `border-[rgba(0,64,48,...)]` | `border-action-primary-subtle` |
 | Any other `bg-[#...]`, `text-[#...]`, `border-[#...]` | Use a DS token |
 | **Text primitives** | |
-| `text-slate-900` | `text-text-primary` |
-| `text-slate-800` | `text-text-primary` |
-| `text-slate-700` | `text-text-strong` |
-| `text-slate-600` | `text-text-secondary` |
-| `text-slate-500` | `text-text-subtle` |
-| `text-slate-400` | `text-text-muted` |
-| `text-slate-300` | `text-text-disabled` |
+| `text-slate-900` | `text-primary` |
+| `text-slate-800` | `text-primary` |
+| `text-slate-700` | `text-strong` |
+| `text-slate-600` | `text-secondary` |
+| `text-slate-500` | `text-subtle` |
+| `text-slate-400` | `text-muted` |
+| `text-slate-300` | `text-disabled` |
 | **Background primitives** | |
-| `bg-white` | `bg-surface-elevated` |
-| `bg-slate-50` | `bg-surface-sunken` |
-| `bg-slate-100` | `bg-bg-secondary` |
-| `bg-slate-200` | `bg-bg-tertiary` |
+| `bg-white` | `bg-elevated` |
+| `bg-slate-50` | `bg-sunken` |
+| `bg-slate-100` | `bg-secondary` |
+| `bg-slate-200` | `bg-tertiary` |
 | `hover:bg-slate-100` | `hover:bg-action-ghost-hover` |
 | `hover:bg-slate-200` | `hover:bg-action-ghost-active` |
-| `hover:bg-slate-50` | `hover:bg-surface-sunken` |
+| `hover:bg-slate-50` | `hover:bg-sunken` |
 | **Border primitives** | |
-| `border-slate-100` | `border-border-subtle` |
-| `border-slate-200` | `border-border-default` |
-| `border-slate-300` | `border-border-hover` |
+| `border-slate-100` | `border-subtle` |
+| `border-slate-200` | `border-default` |
+| `border-slate-300` | `border-hover` |
 | **Status color primitives** | |
 | `text-red-*` / `bg-red-*` / `border-red-*` | `{text\|bg\|border}-status-error-{fg\|bg\|border}` |
 | `text-green-*` / `bg-green-*` / `border-green-*` | `{text\|bg\|border}-status-success-{fg\|bg\|border}` |
@@ -90,7 +90,7 @@ const RULES = [
   { pattern: /text-slate-\d+/g,
     message: "Raw text-slate-* — use text-text-{primary|strong|secondary|subtle|muted|disabled}" },
   { pattern: /\bbg-white\b/g,
-    message: "Raw bg-white — use bg-surface-elevated" },
+    message: "Raw bg-white — use bg-elevated" },
   { pattern: /\bbg-slate-\d+/g,
     message: "Raw bg-slate-* — use bg-surface-{sunken|elevated} or bg-bg-{secondary|tertiary}" },
   { pattern: /\bborder-slate-\d+/g,
@@ -224,9 +224,26 @@ That's it. The codebase is now enforced at write time (CLAUDE.md), at lint time 
 ## Why This Exists
 
 Without enforcement, AI agents and developers gradually drift back to Tailwind primitives:
-- `text-slate-600` is shorter to type than `text-text-secondary`
 - GitHub Copilot and similar tools suggest primitives by default
 - Copying code from Stack Overflow, shadcn docs, or AI outputs brings primitives in
+- Models reach for the names they saw most in training, which is raw Tailwind
+
+**One historical cause has been removed.** This list used to begin with *"`text-slate-600`
+is shorter to type than `text-text-secondary`"* — the token names were genuinely more
+awkward than the primitives they replaced, which quietly rewarded breaking the rules.
+Registering colours under `textColor` / `backgroundColor` / `borderColor` instead of the
+generic `colors` key removed the doubled prefix, and the DS names are now equal length or
+shorter:
+
+| Primitive | DS token | |
+|---|---|---|
+| `text-slate-900` (14) | `text-primary` (12) | shorter |
+| `text-slate-600` (14) | `text-secondary` (14) | equal |
+| `bg-white` (8) | `bg-elevated` (11) | longer, but unambiguous |
+| `border-slate-200` (16) | `border-default` (14) | shorter |
+
+Naming that fights the rules will lose to the rules eventually. Worth checking whenever
+compliance keeps slipping in one particular spot.
 
 The 3-layer system catches drift **before it reaches the codebase**. The CLAUDE.md stops it at generation time. The lint script catches it before merge. The pre-commit hook catches it at commit time.
 

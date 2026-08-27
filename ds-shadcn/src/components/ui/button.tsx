@@ -16,39 +16,39 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary: [
-          "bg-action-primary text-text-on-accent shadow-control",
+          "bg-action-primary text-on-accent shadow-control",
           "hover:bg-action-primary-hover",
           "active:bg-action-primary-active",
-          "disabled:bg-action-primary-disabled disabled:text-text-disabled disabled:shadow-none",
+          "disabled:bg-action-primary-disabled disabled:text-disabled disabled:shadow-none",
         ],
         secondary: [
-          "bg-action-secondary text-text-primary",
+          "bg-action-secondary text-primary",
           "hover:bg-action-secondary-hover",
           "active:bg-action-secondary-active",
-          "disabled:bg-action-primary-disabled disabled:text-text-disabled",
+          "disabled:bg-action-primary-disabled disabled:text-disabled",
         ],
         destructive: [
-          "bg-action-destructive text-text-on-destructive",
+          "bg-action-destructive text-on-destructive",
           "hover:bg-action-destructive-hover",
           "active:bg-action-destructive-active",
-          "disabled:bg-action-primary-disabled disabled:text-text-disabled",
+          "disabled:bg-action-primary-disabled disabled:text-disabled",
         ],
         outline: [
-          "border border-border-default bg-transparent text-text-primary",
-          "hover:bg-action-ghost-hover hover:border-border-hover",
+          "border border-default bg-transparent text-primary",
+          "hover:bg-action-ghost-hover hover:border-hover",
           "active:bg-action-ghost-active",
-          "disabled:border-border-disabled disabled:text-text-disabled",
+          "disabled:border-disabled disabled:text-disabled",
         ],
         ghost: [
-          "bg-transparent text-text-primary",
+          "bg-transparent text-primary",
           "hover:bg-action-ghost-hover",
           "active:bg-action-ghost-active",
-          "disabled:text-text-disabled",
+          "disabled:text-disabled",
         ],
         link: [
-          "bg-transparent text-text-link underline-offset-4",
+          "bg-transparent text-link underline-offset-4",
           "hover:text-[var(--color-action-link-text-hover)] hover:underline",
-          "disabled:text-text-disabled",
+          "disabled:text-disabled",
         ],
       },
       size: {

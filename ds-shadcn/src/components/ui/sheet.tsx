@@ -29,7 +29,7 @@ SheetOverlay.displayName = "SheetOverlay";
 const sheetVariants = cva(
   [
     "fixed z-[var(--z-modal)] p-6",
-    "bg-surface-overlay border-border-default shadow-overlay",
+    "bg-overlay border-default shadow-overlay",
     "transition-transform duration-normal ease-ease-in-out",
     "data-[state=open]:animate-in data-[state=closed]:animate-out",
   ],
@@ -90,7 +90,7 @@ const SheetTitle = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Title>,
   React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Title>
 >(({ className, ...props }, ref) => (
-  <DrawerPrimitive.Title ref={ref} className={cn("text-lg font-semibold text-text-primary", className)} {...props} />
+  <DrawerPrimitive.Title ref={ref} className={cn("text-lg font-semibold text-primary", className)} {...props} />
 ));
 SheetTitle.displayName = "SheetTitle";
 
@@ -98,7 +98,7 @@ const SheetDescription = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Description>,
   React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Description>
 >(({ className, ...props }, ref) => (
-  <DrawerPrimitive.Description ref={ref} className={cn("text-sm text-text-secondary", className)} {...props} />
+  <DrawerPrimitive.Description ref={ref} className={cn("text-sm text-secondary", className)} {...props} />
 ));
 SheetDescription.displayName = "SheetDescription";
 

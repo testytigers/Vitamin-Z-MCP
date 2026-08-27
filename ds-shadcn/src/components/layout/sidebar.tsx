@@ -38,11 +38,11 @@
  *   />
  *
  * Tokens:
- *   bg-surface-elevated   → white (light) / slate-900 (dark)
- *   border-border-default → auto
+ *   bg-elevated   → white (light) / slate-900 (dark)
+ *   border-default → auto
  *   bg-action-primary-subtle + text-action-primary → active nav item
  *   bg-action-ghost-hover → hover state
- *   text-text-secondary   → inactive nav text
+ *   text-secondary   → inactive nav text
  *   text-icon-muted       → inactive nav icon
  */
 
@@ -114,7 +114,7 @@ function SidebarNavItem({ item, isActive }: NavItemProps) {
     // States
     isActive
       ? "bg-action-primary-subtle text-action-primary"
-      : "text-text-secondary hover:bg-action-ghost-hover hover:text-text-primary",
+      : "text-secondary hover:bg-action-ghost-hover hover:text-primary",
     item.disabled && "pointer-events-none opacity-50"
   );
 
@@ -175,8 +175,8 @@ export function Sidebar({ nav, upsell, footer, className }: SidebarProps) {
         // Layout
         "w-64 shrink-0 flex flex-col overflow-y-auto",
         // Colours
-        "bg-surface-elevated",
-        "border-r border-border-default",
+        "bg-elevated",
+        "border-r border-default",
         className
       )}
     >
@@ -186,7 +186,7 @@ export function Sidebar({ nav, upsell, footer, className }: SidebarProps) {
           <div key={sectionIdx}>
             {/* Section heading */}
             {section.label && (
-              <p className="pt-6 pb-1 px-3 text-xs font-semibold text-text-muted uppercase tracking-wider select-none">
+              <p className="pt-6 pb-1 px-3 text-xs font-semibold text-muted uppercase tracking-wider select-none">
                 {section.label}
               </p>
             )}
@@ -213,13 +213,13 @@ export function Sidebar({ nav, upsell, footer, className }: SidebarProps) {
 
       {/* ── Upsell card ────────────────────────────────────── */}
       {upsell && (
-        <div className="p-4 border-t border-border-default">
-          <Card className="shadow-none bg-bg-secondary">
+        <div className="p-4 border-t border-default">
+          <Card className="shadow-none bg-secondary">
             <CardContent className="p-4">
-              <p className="text-sm font-semibold text-text-primary mb-stack-xs">
+              <p className="text-sm font-semibold text-primary mb-stack-xs">
                 {upsell.title}
               </p>
-              <p className="text-xs text-text-secondary mb-stack-lg leading-relaxed">
+              <p className="text-xs text-secondary mb-stack-lg leading-relaxed">
                 {upsell.description}
               </p>
               {upsell.href ? (

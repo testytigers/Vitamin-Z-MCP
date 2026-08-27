@@ -38,9 +38,9 @@
  *  ┌─────────────────────────────────────────────────────────┐
  *  │ AnnouncementBanner (optional, bg-status-info-bg)        │
  *  ├─────────────────────────────────────────────────────────┤
- *  │ Header (bg-bg-inverse, h-14)                            │
+ *  │ Header (bg-inverse, h-14)                            │
  *  ├──────────────┬──────────────────────────────────────────┤
- *  │ Sidebar      │ <main> (bg-surface-sunken, overflow-auto)│
+ *  │ Sidebar      │ <main> (bg-sunken, overflow-auto)│
  *  │ (w-64)       │   {children}                             │
  *  └──────────────┴──────────────────────────────────────────┘
  */
@@ -133,7 +133,7 @@ export function AppShell({
   mainClassName,
 }: AppShellProps) {
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-surface-canvas font-sans">
+    <div className="flex flex-col h-screen overflow-hidden bg-canvas font-sans">
 
       {/* ── Announcement Banner ──────────────────────────── */}
       {announcement && <AnnouncementBanner {...announcement} />}
@@ -161,7 +161,7 @@ export function AppShell({
         {/* Main content area */}
         <main
           className={cn(
-            "flex-1 overflow-y-auto bg-surface-sunken",
+            "flex-1 overflow-y-auto bg-sunken",
             mainClassName
           )}
         >
@@ -232,11 +232,11 @@ export function PageHeader({
     <div className={cn("flex items-start justify-between", className)}>
       <div className="flex flex-col gap-stack-xs">
         {breadcrumb}
-        <h1 className="text-3xl font-bold tracking-tight text-text-primary">
+        <h1 className="text-3xl font-bold tracking-tight text-primary">
           {title}
         </h1>
         {description && (
-          <p className="text-sm text-text-secondary">{description}</p>
+          <p className="text-sm text-secondary">{description}</p>
         )}
       </div>
       {actions && (

@@ -4,9 +4,9 @@ import { cn } from "@/lib/utils";
 
 const btnClass = cn(
   "inline-flex items-center justify-center gap-1 rounded-control h-9 px-3",
-  "border border-border-default bg-surface-canvas",
-  "text-sm font-medium text-text-primary",
-  "hover:bg-action-ghost-hover hover:text-text-primary",
+  "border border-default bg-canvas",
+  "text-sm font-medium text-primary",
+  "hover:bg-action-ghost-hover hover:text-primary",
   "focus-visible:outline-none focus-visible:shadow-focus",
   "disabled:pointer-events-none disabled:opacity-50",
   "transition-colors duration-fast"
@@ -38,7 +38,7 @@ const PaginationLink = ({
     aria-current={isActive ? "page" : undefined}
     className={cn(
       btnClass,
-      isActive && "bg-action-primary text-text-on-accent border-action-primary pointer-events-none",
+      isActive && "bg-action-primary text-on-accent border-action-primary pointer-events-none",
       className
     )}
     {...props}
@@ -63,7 +63,7 @@ const PaginationNext = ({ className, ...props }: React.ComponentProps<typeof Pag
 PaginationNext.displayName = "PaginationNext";
 
 const PaginationEllipsis = ({ className, ...props }: React.ComponentProps<"span">) => (
-  <span aria-hidden className={cn("flex h-9 w-9 items-center justify-center text-text-muted", className)} {...props}>
+  <span aria-hidden className={cn("flex h-9 w-9 items-center justify-center text-muted", className)} {...props}>
     <MoreHorizontal className="h-4 w-4" />
     <span className="sr-only">More pages</span>
   </span>

@@ -15,13 +15,13 @@ const SelectTrigger = React.forwardRef<
     ref={ref}
     className={cn(
       "flex h-control-md w-full items-center justify-between gap-inline-sm rounded-control",
-      "border border-border-default bg-surface-canvas",
+      "border border-default bg-canvas",
       "px-[var(--control-px-md)] py-[var(--control-py-md)]",
-      "text-sm text-text-primary placeholder:text-text-placeholder",
+      "text-sm text-primary placeholder:text-placeholder",
       "transition-[border-color,box-shadow] duration-fast",
-      "hover:border-border-hover",
-      "focus:outline-none focus:border-border-focus focus:shadow-focus",
-      "disabled:cursor-not-allowed disabled:bg-bg-disabled disabled:text-text-disabled",
+      "hover:border-hover",
+      "focus:outline-none focus:border-focus focus:shadow-focus",
+      "disabled:cursor-not-allowed disabled:bg-disabled disabled:text-disabled",
       "[&>span]:line-clamp-1",
       className
     )}
@@ -72,7 +72,7 @@ const SelectContent = React.forwardRef<
       ref={ref}
       className={cn(
         "relative z-[var(--z-popover)] overflow-hidden rounded-overlay",
-        "border border-border-default bg-surface-popover shadow-popover",
+        "border border-default bg-popover shadow-popover",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
@@ -95,7 +95,7 @@ const SelectLabel = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Label>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Label>
 >(({ className, ...props }, ref) => (
-  <SelectPrimitive.Label ref={ref} className={cn("px-2 py-1.5 text-xs font-semibold text-text-muted", className)} {...props} />
+  <SelectPrimitive.Label ref={ref} className={cn("px-2 py-1.5 text-xs font-semibold text-muted", className)} {...props} />
 ));
 SelectLabel.displayName = SelectPrimitive.Label.displayName;
 
@@ -108,9 +108,9 @@ const SelectItem = React.forwardRef<
     className={cn(
       "relative flex w-full cursor-default select-none items-center rounded-sm",
       "py-[var(--_size-1_5)] pl-2 pr-8",
-      "text-sm text-text-primary outline-none",
+      "text-sm text-primary outline-none",
       "hover:bg-action-ghost-hover focus:bg-action-ghost-hover",
-      "data-[disabled]:pointer-events-none data-[disabled]:text-text-disabled",
+      "data-[disabled]:pointer-events-none data-[disabled]:text-disabled",
       className
     )}
     {...props}

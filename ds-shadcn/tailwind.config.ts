@@ -8,93 +8,42 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Surface
-        "surface-canvas":   "var(--color-surface-canvas)",
-        "surface-elevated": "var(--color-surface-elevated)",
-        "surface-overlay":  "var(--color-surface-overlay)",
-        "surface-sunken":   "var(--color-surface-sunken)",
-        "surface-popover":  "var(--color-surface-popover)",
-
-        // Background
-        "bg-primary":   "var(--color-bg-primary)",
-        "bg-secondary": "var(--color-bg-secondary)",
-        "bg-tertiary":  "var(--color-bg-tertiary)",
-        "bg-disabled":  "var(--color-bg-disabled)",
-        "bg-inverse":   "var(--color-bg-inverse)",
-
-        // Action — Primary
-        "action-primary":          "var(--color-action-primary-bg)",
-        "action-primary-hover":    "var(--color-action-primary-bg-hover)",
-        "action-primary-active":   "var(--color-action-primary-bg-active)",
+        "action-primary": "var(--color-action-primary-bg)",
+        "action-primary-hover": "var(--color-action-primary-bg-hover)",
+        "action-primary-active": "var(--color-action-primary-bg-active)",
         "action-primary-disabled": "var(--color-action-primary-bg-disabled)",
-        "action-primary-subtle":   "var(--color-action-primary-bg-subtle)",
-        "action-primary-tint":     "var(--color-action-primary-bg-tint)",
-
-        // Action — Secondary
-        "action-secondary":        "var(--color-action-secondary-bg)",
-        "action-secondary-hover":  "var(--color-action-secondary-bg-hover)",
+        "action-primary-subtle": "var(--color-action-primary-bg-subtle)",
+        "action-primary-tint": "var(--color-action-primary-bg-tint)",
+        "action-secondary": "var(--color-action-secondary-bg)",
+        "action-secondary-hover": "var(--color-action-secondary-bg-hover)",
         "action-secondary-active": "var(--color-action-secondary-bg-active)",
-
-        // Action — Ghost
-        "action-ghost-hover":  "var(--color-action-ghost-bg-hover)",
+        "action-ghost-hover": "var(--color-action-ghost-bg-hover)",
         "action-ghost-active": "var(--color-action-ghost-bg-active)",
-
-        // Action — Destructive
-        "action-destructive":        "var(--color-action-destructive-bg)",
-        "action-destructive-hover":  "var(--color-action-destructive-bg-hover)",
+        "action-destructive": "var(--color-action-destructive-bg)",
+        "action-destructive-hover": "var(--color-action-destructive-bg-hover)",
         "action-destructive-active": "var(--color-action-destructive-bg-active)",
-
-        // Status
-        "status-error-fg":      "var(--color-status-error-fg)",
-        "status-error-bg":      "var(--color-status-error-bg)",
-        "status-error-border":  "var(--color-status-error-border)",
-        "status-success-fg":    "var(--color-status-success-fg)",
-        "status-success-bg":    "var(--color-status-success-bg)",
-        "status-success-border":"var(--color-status-success-border)",
-        "status-warning-fg":    "var(--color-status-warning-fg)",
-        "status-warning-bg":    "var(--color-status-warning-bg)",
-        "status-warning-border":"var(--color-status-warning-border)",
-        "status-info-fg":       "var(--color-status-info-fg)",
-        "status-attention-fg":  "var(--color-status-attention-fg)",
-        "status-info-bg":       "var(--color-status-info-bg)",
-        "status-info-border":   "var(--color-status-info-border)",
-
-        // Text
-        "text-primary":        "var(--color-text-primary)",
-        "text-strong":         "var(--color-text-strong)",
-        "text-secondary":      "var(--color-text-secondary)",
-        "text-subtle":         "var(--color-text-subtle)",
-        "text-tertiary":       "var(--color-text-tertiary)",
-        "text-muted":          "var(--color-text-muted)",
-        "text-disabled":       "var(--color-text-disabled)",
-        "text-on-accent":      "var(--color-text-on-accent)",
-        "text-on-destructive": "var(--color-text-on-destructive)",
-        "text-on-inverse":     "var(--color-text-on-inverse)",
-        "text-link":           "var(--color-text-link)",
-        "text-placeholder":    "var(--color-text-placeholder)",
-
-        // Border
-        "border-subtle":   "var(--color-border-subtle)",
-        "border-default":  "var(--color-border-default)",
-        "border-hover":    "var(--color-border-hover)",
-        "border-focus":    "var(--color-border-focus)",
-        "border-disabled": "var(--color-border-disabled)",
-        "border-error":    "var(--color-border-error)",
-        "border-success":  "var(--color-border-success)",
-
-        // Icon
-        "icon-default":     "var(--color-icon-default)",
-        "icon-muted":       "var(--color-icon-muted)",
-        "icon-on-accent":   "var(--color-icon-on-accent)",
+        "status-error-fg": "var(--color-status-error-fg)",
+        "status-error-bg": "var(--color-status-error-bg)",
+        "status-error-border": "var(--color-status-error-border)",
+        "status-success-fg": "var(--color-status-success-fg)",
+        "status-success-bg": "var(--color-status-success-bg)",
+        "status-success-border": "var(--color-status-success-border)",
+        "status-warning-fg": "var(--color-status-warning-fg)",
+        "status-warning-bg": "var(--color-status-warning-bg)",
+        "status-warning-border": "var(--color-status-warning-border)",
+        "status-info-fg": "var(--color-status-info-fg)",
+        "status-attention-fg": "var(--color-status-attention-fg)",
+        "status-info-bg": "var(--color-status-info-bg)",
+        "status-info-border": "var(--color-status-info-border)",
+        "icon-default": "var(--color-icon-default)",
+        "icon-muted": "var(--color-icon-muted)",
+        "icon-on-accent": "var(--color-icon-on-accent)",
         "icon-interactive": "var(--color-icon-interactive)",
-        "icon-disabled":    "var(--color-icon-disabled)",
-
-        /* Chart — semantic roles (1–2 series) */
-        "chart-primary":   "var(--color-chart-primary)",
+        "icon-disabled": "var(--color-icon-disabled)",
+        "chart-primary": "var(--color-chart-primary)",
         "chart-secondary": "var(--color-chart-secondary)",
-        "chart-accent":    "var(--color-chart-accent)",
-        "chart-muted":     "var(--color-chart-muted)",
-        /* Chart — categorical series (use in order, never skip) */
+        "chart-accent": "var(--color-chart-accent)",
+        "chart-muted": "var(--color-chart-muted)",
         "chart-cat-1": "var(--color-chart-cat-1)",
         "chart-cat-2": "var(--color-chart-cat-2)",
         "chart-cat-3": "var(--color-chart-cat-3)",
@@ -103,15 +52,76 @@ const config: Config = {
         "chart-cat-6": "var(--color-chart-cat-6)",
         "chart-cat-7": "var(--color-chart-cat-7)",
         "chart-cat-8": "var(--color-chart-cat-8)",
-        /* Chart — sequential ramp (low → high) */
         "chart-seq-1": "var(--color-chart-seq-1)",
         "chart-seq-2": "var(--color-chart-seq-2)",
         "chart-seq-3": "var(--color-chart-seq-3)",
         "chart-seq-4": "var(--color-chart-seq-4)",
         "chart-seq-5": "var(--color-chart-seq-5)",
-        /* Chart — structure */
         "chart-grid": "var(--color-chart-grid)",
         "chart-axis": "var(--color-chart-axis)",
+      },
+
+      /* Text colours live in textColor so the class reads text-primary,
+         not text-text-primary. Same tokens, no stutter. */
+      textColor: {
+        "primary": "var(--color-text-primary)",
+        "strong": "var(--color-text-strong)",
+        "secondary": "var(--color-text-secondary)",
+        "subtle": "var(--color-text-subtle)",
+        "tertiary": "var(--color-text-tertiary)",
+        "muted": "var(--color-text-muted)",
+        "disabled": "var(--color-text-disabled)",
+        "on-accent": "var(--color-text-on-accent)",
+        "on-destructive": "var(--color-text-on-destructive)",
+        "on-inverse": "var(--color-text-on-inverse)",
+        "link": "var(--color-text-link)",
+        "placeholder": "var(--color-text-placeholder)",
+      },
+
+      /* Surfaces and tonal fills merged — they overlapped (surface-canvas,
+         surface-elevated and bg-primary were all white). */
+      backgroundColor: {
+        "canvas": "var(--color-surface-canvas)",
+        "elevated": "var(--color-surface-elevated)",
+        "overlay": "var(--color-surface-overlay)",
+        "sunken": "var(--color-surface-sunken)",
+        "popover": "var(--color-surface-popover)",
+        "secondary": "var(--color-bg-secondary)",
+        "tertiary": "var(--color-bg-tertiary)",
+        "disabled": "var(--color-bg-disabled)",
+        "inverse": "var(--color-bg-inverse)",
+      },
+
+      borderColor: {
+        "subtle": "var(--color-border-subtle)",
+        "default": "var(--color-border-default)",
+        "hover": "var(--color-border-hover)",
+        "focus": "var(--color-border-focus)",
+        "disabled": "var(--color-border-disabled)",
+        "error": "var(--color-border-error)",
+        "success": "var(--color-border-success)",
+        "canvas": "var(--color-surface-canvas)",
+        "elevated": "var(--color-surface-elevated)",
+      },
+
+      ringColor: {
+        "subtle": "var(--color-border-subtle)",
+        "default": "var(--color-border-default)",
+        "hover": "var(--color-border-hover)",
+        "focus": "var(--color-border-focus)",
+        "disabled": "var(--color-border-disabled)",
+        "error": "var(--color-border-error)",
+        "success": "var(--color-border-success)",
+      },
+
+      divideColor: {
+        "subtle": "var(--color-border-subtle)",
+        "default": "var(--color-border-default)",
+        "hover": "var(--color-border-hover)",
+        "focus": "var(--color-border-focus)",
+        "disabled": "var(--color-border-disabled)",
+        "error": "var(--color-border-error)",
+        "success": "var(--color-border-success)",
       },
 
       borderRadius: {

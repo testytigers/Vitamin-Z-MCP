@@ -17,8 +17,8 @@ const PopoverContent = React.forwardRef<
       sideOffset={sideOffset}
       className={cn(
         "z-[var(--z-popover)] w-72 rounded-overlay",
-        "border border-border-default bg-surface-popover shadow-popover",
-        "p-[var(--spacing-component-px)] text-text-primary outline-none",
+        "border border-default bg-popover shadow-popover",
+        "p-[var(--spacing-component-px)] text-primary outline-none",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",

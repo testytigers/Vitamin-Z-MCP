@@ -11,7 +11,7 @@ const Command = React.forwardRef<
     ref={ref}
     className={cn(
       "flex h-full w-full flex-col overflow-hidden rounded-overlay",
-      "bg-surface-popover text-text-primary",
+      "bg-popover text-primary",
       className
     )}
     {...props}
@@ -23,13 +23,13 @@ const CommandInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
 >(({ className, ...props }, ref) => (
-  <div className="flex items-center border-b border-border-default px-3" cmdk-input-wrapper="">
+  <div className="flex items-center border-b border-default px-3" cmdk-input-wrapper="">
     <Search className="mr-2 h-4 w-4 shrink-0 text-icon-muted" />
     <CommandPrimitive.Input
       ref={ref}
       className={cn(
         "flex h-10 w-full rounded-none bg-transparent py-3 text-sm",
-        "text-text-primary placeholder:text-text-placeholder",
+        "text-primary placeholder:text-placeholder",
         "outline-none",
         "disabled:cursor-not-allowed disabled:opacity-50",
         className
@@ -58,7 +58,7 @@ const CommandEmpty = React.forwardRef<
 >((props, ref) => (
   <CommandPrimitive.Empty
     ref={ref}
-    className="py-6 text-center text-sm text-text-muted"
+    className="py-6 text-center text-sm text-muted"
     {...props}
   />
 ));
@@ -71,10 +71,10 @@ const CommandGroup = React.forwardRef<
   <CommandPrimitive.Group
     ref={ref}
     className={cn(
-      "overflow-hidden p-1 text-text-primary",
+      "overflow-hidden p-1 text-primary",
       "[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5",
       "[&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-semibold",
-      "[&_[cmdk-group-heading]]:text-text-muted",
+      "[&_[cmdk-group-heading]]:text-muted",
       className
     )}
     {...props}
@@ -102,9 +102,9 @@ const CommandItem = React.forwardRef<
     ref={ref}
     className={cn(
       "relative flex cursor-default gap-inline-sm select-none items-center rounded-sm",
-      "px-2 py-1.5 text-sm text-text-primary outline-none",
+      "px-2 py-1.5 text-sm text-primary outline-none",
       "data-[selected=true]:bg-action-ghost-hover",
-      "data-[disabled=true]:pointer-events-none data-[disabled=true]:text-text-disabled",
+      "data-[disabled=true]:pointer-events-none data-[disabled=true]:text-disabled",
       className
     )}
     {...props}
@@ -117,7 +117,7 @@ const CommandShortcut = ({
   ...props
 }: React.HTMLAttributes<HTMLSpanElement>) => (
   <span
-    className={cn("ml-auto text-xs tracking-widest text-text-muted", className)}
+    className={cn("ml-auto text-xs tracking-widest text-muted", className)}
     {...props}
   />
 );

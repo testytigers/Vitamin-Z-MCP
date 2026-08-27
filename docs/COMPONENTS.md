@@ -82,9 +82,9 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 
 // Stat / metric card (no sub-components needed)
 <Card className="p-5">
-  <p className="text-sm font-medium text-text-secondary mb-2">Total Revenue</p>
+  <p className="text-sm font-medium text-secondary mb-2">Total Revenue</p>
   <div className="flex items-end justify-between">
-    <span className="text-2xl font-bold text-text-primary">$12,450</span>
+    <span className="text-2xl font-bold text-primary">$12,450</span>
     <span className="text-xs font-medium text-status-success-fg">+14.5%</span>
   </div>
 </Card>
@@ -102,8 +102,8 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 ```
 
 **Token mapping:**
-- Background: `bg-surface-elevated` (auto)
-- Border: `border-border-default` (auto)
+- Background: `bg-elevated` (auto)
+- Border: `border-default` (auto)
 - Shadow: `shadow-card` (auto)
 - Radius: `rounded-card` (auto)
 
@@ -180,10 +180,10 @@ import { Label } from "@/components/ui/label";
 ```
 
 **Token mapping (auto-applied):**
-- Background: `bg-surface-canvas`
-- Border default: `border-border-default`
-- Border focus: `border-border-focus` + `shadow-focus`
-- Border error: `border-border-error`
+- Background: `bg-canvas`
+- Border default: `border-default`
+- Border focus: `border-focus` + `shadow-focus`
+- Border error: `border-error`
 
 ---
 
@@ -245,7 +245,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 </Tabs>
 
 // Tabs with filter bar (right-aligned actions alongside tabs)
-<div className="flex items-center justify-between border-b border-border-default pb-0">
+<div className="flex items-center justify-between border-b border-default pb-0">
   <Tabs defaultValue="all">
     <TabsList className="border-b-0">
       <TabsTrigger value="all">All Items</TabsTrigger>
@@ -260,7 +260,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 </div>
 ```
 
-**Active state:** The active tab has `text-text-primary`, `font-semibold`, and a bottom border color of `bg-action-primary` (auto via `data-[state=active]`).
+**Active state:** The active tab has `text-primary`, `font-semibold`, and a bottom border color of `bg-action-primary` (auto via `data-[state=active]`).
 
 ---
 
@@ -289,13 +289,13 @@ import {
       <TableBody>
         {items.map((item) => (
           <TableRow key={item.id}>
-            <TableCell className="font-medium text-text-primary">{item.name}</TableCell>
+            <TableCell className="font-medium text-primary">{item.name}</TableCell>
             <TableCell>
               <Badge variant={item.status === "active" ? "success" : "warning"}>
                 {item.status}
               </Badge>
             </TableCell>
-            <TableCell className="text-text-secondary">{item.createdAt}</TableCell>
+            <TableCell className="text-secondary">{item.createdAt}</TableCell>
             <TableCell className="text-right">
               <Button variant="ghost" size="icon">
                 <MoreHorizontal className="w-4 h-4" />
@@ -310,9 +310,9 @@ import {
 ```
 
 **Token mapping (auto):**
-- Header bg: `bg-bg-secondary`
-- Row border: `border-border-default`
-- Row hover: `hover:bg-bg-secondary`
+- Header bg: `bg-secondary`
+- Row border: `border-default`
+- Row hover: `hover:bg-secondary`
 - Selected row: `bg-action-primary-subtle`
 
 ---
@@ -410,7 +410,7 @@ import {
 **File:** `popover.tsx`
 **Sub-components:** `Popover`, `PopoverTrigger`, `PopoverContent`, `PopoverAnchor`
 
-Floating panel anchored to a trigger. Base for `Combobox`. Content is DS-tokenized: `rounded-overlay border-border-default bg-surface-popover shadow-popover`. Never restyle the panel chrome with raw colors.
+Floating panel anchored to a trigger. Base for `Combobox`. Content is DS-tokenized: `rounded-overlay border-default bg-popover shadow-popover`. Never restyle the panel chrome with raw colors.
 
 ```tsx
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
@@ -420,7 +420,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
     <Button variant="outline">Open</Button>
   </PopoverTrigger>
   <PopoverContent align="start" className="w-64">
-    <p className="text-sm text-text-primary">Panel content</p>
+    <p className="text-sm text-primary">Panel content</p>
   </PopoverContent>
 </Popover>
 ```
@@ -436,7 +436,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 **File:** `command.tsx` (built on `cmdk`)
 **Sub-components:** `Command`, `CommandInput`, `CommandList`, `CommandEmpty`, `CommandGroup`, `CommandItem`, `CommandSeparator`
 
-Searchable command/list primitive. Mostly used inside `Popover` to build a `Combobox`. The input separator is `border-b border-border-subtle`; selected item state is `data-[selected=true]:bg-action-ghost-hover`. Items carry `outline-none` — never add a raw focus ring.
+Searchable command/list primitive. Mostly used inside `Popover` to build a `Combobox`. The input separator is `border-b border-subtle`; selected item state is `data-[selected=true]:bg-action-ghost-hover`. Items carry `outline-none` — never add a raw focus ring.
 
 ```tsx
 import {
@@ -503,7 +503,7 @@ import { Combobox, MultiCombobox } from "@/components/ui/combobox";
 **Props:** `options`, `value`, `onChange`, `placeholder`, `searchPlaceholder`, `emptyText`, `className`, `contentClassName`. `Combobox` also takes `clearValue` (sentinel for "nothing selected", default `""`) — re-selecting the active option clears it.
 
 **Rules:**
-- Trigger matches `Select`'s chrome: `h-9 border-border-default bg-surface-elevated rounded-control shadow-control focus:border-border-focus focus:shadow-focus`. Don't restyle borders with raw colors.
+- Trigger matches `Select`'s chrome: `h-9 border-default bg-elevated rounded-control shadow-control focus:border-focus focus:shadow-focus`. Don't restyle borders with raw colors.
 - Works inside a `Sheet` (the filter pattern) — the popover layers above the sheet correctly.
 - For a multiselect filter, surface chosen values as removable pills outside the combobox (see DASHBOARD_PATTERNS → Filter Sheet).
 
@@ -523,7 +523,7 @@ import {
 
 <Sheet open={open} onOpenChange={setOpen}>
   <SheetContent className="w-[420px] sm:w-[480px] flex flex-col p-0">
-    <SheetHeader className="px-6 py-5 border-b border-border-subtle">
+    <SheetHeader className="px-6 py-5 border-b border-subtle">
       <SheetTitle>Filtres</SheetTitle>
     </SheetHeader>
     <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">{/* fields */}</div>
@@ -570,7 +570,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 // Initials only
 <Avatar>
-  <AvatarFallback className="bg-action-primary text-text-on-accent">MO</AvatarFallback>
+  <AvatarFallback className="bg-action-primary text-on-accent">MO</AvatarFallback>
 </Avatar>
 
 // Small size
@@ -767,8 +767,8 @@ import { Progress } from "@/components/ui/progress";
 // In a stat card
 <Card className="p-5">
   <div className="flex items-center justify-between mb-2">
-    <p className="text-sm text-text-secondary">Storage used</p>
-    <span className="text-sm font-medium text-text-primary">72%</span>
+    <p className="text-sm text-secondary">Storage used</p>
+    <span className="text-sm font-medium text-primary">72%</span>
   </div>
   <Progress value={72} className="h-1.5" />
 </Card>
@@ -953,8 +953,8 @@ Rich preview on hover — user cards, entity summaries. For short text use
     <Button variant="ghost" className="p-0 h-auto font-medium">CX-1042</Button>
   </HoverCardTrigger>
   <HoverCardContent className="w-72">
-    <p className="text-sm font-semibold text-text-primary">Colis CX-1042</p>
-    <p className="text-xs text-text-subtle mt-1">Alger → Oran · 2.4 kg</p>
+    <p className="text-sm font-semibold text-primary">Colis CX-1042</p>
+    <p className="text-xs text-subtle mt-1">Alger → Oran · 2.4 kg</p>
     <Badge variant="success" className="mt-2">Livré</Badge>
   </HoverCardContent>
 </HoverCard>
@@ -1083,7 +1083,7 @@ when navigation must live in the top bar.
 Draggable split panes — list/detail layouts, side-by-side comparison.
 
 ```tsx
-<ResizablePanelGroup direction="horizontal" className="min-h-[500px] rounded-card border border-border-default">
+<ResizablePanelGroup direction="horizontal" className="min-h-[500px] rounded-card border border-default">
   <ResizablePanel defaultSize={40} minSize={25}>
     {/* list */}
   </ResizablePanel>
@@ -1172,7 +1172,7 @@ import { Header } from "@/components/layout/header";
   onSettings={() => router.push("/settings")}
   onNotifications={() => setNotifOpen(true)}
   // Inject extra actions between search and icon cluster
-  actions={<Button variant="ghost" size="sm" className="text-text-on-inverse/80 hover:text-text-on-inverse hover:bg-white/10">Invite</Button>}
+  actions={<Button variant="ghost" size="sm" className="text-on-inverse/80 hover:text-on-inverse hover:bg-white/10">Invite</Button>}
 />
 ```
 

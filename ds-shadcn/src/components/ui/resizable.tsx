@@ -16,7 +16,7 @@ const ResizableHandle = ({
     className={cn(
       "relative flex w-px items-center justify-center bg-border-default",
       "after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2",
-      "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-border-focus",
+      "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-focus",
       "data-[panel-group-direction=vertical]:h-px data-[panel-group-direction=vertical]:w-full",
       "hover:bg-border-hover transition-colors duration-fast",
       "[&[data-panel-group-direction=vertical]>div]:rotate-90",
@@ -25,7 +25,7 @@ const ResizableHandle = ({
     {...props}
   >
     {withHandle && (
-      <div className="z-10 flex h-4 w-3 items-center justify-center rounded-sm border border-border-default bg-surface-elevated">
+      <div className="z-10 flex h-4 w-3 items-center justify-center rounded-sm border border-default bg-elevated">
         <GripVertical className="h-2.5 w-2.5 text-icon-muted" />
       </div>
     )}

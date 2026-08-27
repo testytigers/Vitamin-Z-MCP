@@ -26,7 +26,7 @@ const toastVariants = cva(
   [
     "group pointer-events-auto relative flex w-full items-center justify-between",
     "gap-inline-md overflow-hidden rounded-card",
-    "border border-border-default bg-surface-overlay shadow-overlay",
+    "border border-default bg-overlay shadow-overlay",
     "px-[var(--spacing-component-px)] py-[var(--spacing-stack-md)]",
     "transition-all duration-normal",
     "data-[swipe=cancel]:translate-x-0",
@@ -68,10 +68,10 @@ const ToastAction = React.forwardRef<
     ref={ref}
     className={cn(
       "inline-flex h-8 shrink-0 items-center justify-center rounded-control",
-      "border border-border-default bg-transparent px-3 text-sm font-medium text-text-primary",
+      "border border-default bg-transparent px-3 text-sm font-medium text-primary",
       "transition-colors duration-fast hover:bg-action-ghost-hover",
       "focus:outline-none focus:shadow-focus",
-      "disabled:pointer-events-none disabled:text-text-disabled",
+      "disabled:pointer-events-none disabled:text-disabled",
       className
     )}
     {...props}
@@ -106,7 +106,7 @@ const ToastTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitive.Title
     ref={ref}
-    className={cn("text-sm font-medium text-text-primary", className)}
+    className={cn("text-sm font-medium text-primary", className)}
     {...props}
   />
 ));
@@ -118,7 +118,7 @@ const ToastDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitive.Description
     ref={ref}
-    className={cn("text-xs text-text-secondary", className)}
+    className={cn("text-xs text-secondary", className)}
     {...props}
   />
 ));

@@ -13,17 +13,17 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       ref={ref}
       className={cn(
         "flex w-full rounded-control",
-        "border border-border-default bg-surface-canvas",
-        "text-text-primary placeholder:text-text-placeholder",
+        "border border-default bg-canvas",
+        "text-primary placeholder:text-placeholder",
         "transition-[border-color,box-shadow] duration-fast ease-ease-out",
-        "hover:border-border-hover",
-        "focus-visible:outline-none focus-visible:border-border-focus focus-visible:shadow-focus",
-        "disabled:bg-bg-disabled disabled:text-text-disabled disabled:cursor-not-allowed",
+        "hover:border-hover",
+        "focus-visible:outline-none focus-visible:border-focus focus-visible:shadow-focus",
+        "disabled:bg-disabled disabled:text-disabled disabled:cursor-not-allowed",
         "file:border-0 file:bg-transparent file:text-sm file:font-medium",
         size === "sm" && "h-control-sm px-[var(--control-px-sm)] text-[var(--control-font-sm)]",
         size === "md" && "h-control-md px-[var(--control-px-md)] text-[var(--control-font-md)]",
         size === "lg" && "h-control-lg px-[var(--control-px-lg)] text-[var(--control-font-lg)]",
-        error && "border-border-error focus-visible:border-border-error",
+        error && "border-error focus-visible:border-error",
         className
       )}
       {...props}

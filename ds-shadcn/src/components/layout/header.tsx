@@ -14,9 +14,9 @@
  *   />
  *
  * Tokens used:
- *   bg-surface-elevated   → white topbar, same plane as the sidebar
- *   text-text-primary     → primary label colour
- *   border-border-default → bottom rule separating bar from canvas
+ *   bg-elevated   → white topbar, same plane as the sidebar
+ *   text-primary     → primary label colour
+ *   border-default → bottom rule separating bar from canvas
  *   bg-action-primary     → primary accent for logo bg
  */
 
@@ -120,8 +120,8 @@ export function Header({
           "flex items-center justify-between shrink-0 h-14",
           "px-6",
           // Colours — white bar on the same plane as the sidebar
-          "bg-surface-elevated text-text-primary",
-          "border-b border-border-default",
+          "bg-elevated text-primary",
+          "border-b border-default",
           // Stacking
           "z-sticky",
           className
@@ -133,10 +133,10 @@ export function Header({
           {/* Logo + App name */}
           <Link
             href="/"
-            className="flex items-center gap-inline-sm text-base font-bold text-text-primary hover:opacity-90 transition-opacity duration-fast"
+            className="flex items-center gap-inline-sm text-base font-bold text-primary hover:opacity-90 transition-opacity duration-fast"
           >
             {logo ?? (
-              <span className="w-8 h-8 rounded-control bg-action-primary flex items-center justify-center text-text-on-accent text-xs font-bold shrink-0">
+              <span className="w-8 h-8 rounded-control bg-action-primary flex items-center justify-center text-on-accent text-xs font-bold shrink-0">
                 {appName.charAt(0).toUpperCase()}
               </span>
             )}
@@ -148,7 +148,7 @@ export function Header({
             workspace.items?.length ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-inline-xs text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-action-ghost-hover px-3 py-1.5 rounded-control transition-colors duration-fast">
+                  <button className="flex items-center gap-inline-xs text-sm font-medium text-secondary hover:text-primary hover:bg-action-ghost-hover px-3 py-1.5 rounded-control transition-colors duration-fast">
                     {workspace.name}
                     <ChevronDown className="w-4 h-4 opacity-60" />
                   </button>
@@ -164,7 +164,7 @@ export function Header({
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <span className="flex items-center gap-inline-xs text-sm font-medium text-text-secondary px-3 py-1.5">
+              <span className="flex items-center gap-inline-xs text-sm font-medium text-secondary px-3 py-1.5">
                 {workspace.name}
                 <ChevronDown className="w-4 h-4 opacity-60" />
               </span>
@@ -186,14 +186,14 @@ export function Header({
               aria-label="Global search"
               className={cn(
                 "h-9 w-56 lg:w-72 rounded-control",
-                "border border-border-default bg-surface-sunken",
+                "border border-default bg-sunken",
                 "pl-9 pr-10 text-sm",
-                "text-text-primary placeholder:text-text-placeholder",
-                "focus:outline-none focus:ring-1 focus:ring-border-focus focus:border-border-hover",
+                "text-primary placeholder:text-placeholder",
+                "focus:outline-none focus:ring-1 focus:ring-focus focus:border-hover",
                 "transition-colors duration-fast"
               )}
             />
-            <kbd className="absolute right-3 hidden lg:inline-flex items-center text-[10px] text-text-muted font-mono pointer-events-none">
+            <kbd className="absolute right-3 hidden lg:inline-flex items-center text-[10px] text-muted font-mono pointer-events-none">
               ⌘K
             </kbd>
           </div>
@@ -202,7 +202,7 @@ export function Header({
           {actions}
 
           {/* Divider */}
-          <div className="h-5 w-px bg-bg-secondary" aria-hidden />
+          <div className="h-5 w-px bg-secondary" aria-hidden />
 
           {/* Settings icon */}
           <Tooltip>
@@ -210,7 +210,7 @@ export function Header({
               <button
                 onClick={onSettings}
                 aria-label="Settings"
-                className="p-2 rounded-control text-icon-default hover:text-text-primary hover:bg-action-ghost-hover transition-colors duration-fast"
+                className="p-2 rounded-control text-icon-default hover:text-primary hover:bg-action-ghost-hover transition-colors duration-fast"
               >
                 <Settings className="w-5 h-5" />
               </button>
@@ -224,7 +224,7 @@ export function Header({
               <button
                 onClick={onNotifications}
                 aria-label={hasNotifications ? "Notifications (unread)" : "Notifications"}
-                className="relative p-2 rounded-control text-icon-default hover:text-text-primary hover:bg-action-ghost-hover transition-colors duration-fast"
+                className="relative p-2 rounded-control text-icon-default hover:text-primary hover:bg-action-ghost-hover transition-colors duration-fast"
               >
                 <Bell className="w-5 h-5" />
                 {hasNotifications && (
@@ -244,11 +244,11 @@ export function Header({
               <DropdownMenuTrigger asChild>
                 <button
                   aria-label="User menu"
-                  className="flex items-center gap-inline-sm ml-1 rounded-control hover:opacity-80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-border-focus transition-opacity duration-fast"
+                  className="flex items-center gap-inline-sm ml-1 rounded-control hover:opacity-80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-focus transition-opacity duration-fast"
                 >
-                  <Avatar className="w-8 h-8 border border-border-default">
+                  <Avatar className="w-8 h-8 border border-default">
                     <AvatarImage src={user.avatarUrl} alt={user.name} />
-                    <AvatarFallback className="bg-action-primary text-text-on-accent text-xs font-medium">
+                    <AvatarFallback className="bg-action-primary text-on-accent text-xs font-medium">
                       {user.initials}
                     </AvatarFallback>
                   </Avatar>
@@ -258,9 +258,9 @@ export function Header({
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col gap-stack-xs">
-                    <p className="text-sm font-medium text-text-primary">{user.name}</p>
+                    <p className="text-sm font-medium text-primary">{user.name}</p>
                     {user.email && (
-                      <p className="text-xs text-text-muted truncate">{user.email}</p>
+                      <p className="text-xs text-muted truncate">{user.email}</p>
                     )}
                   </div>
                 </DropdownMenuLabel>

@@ -12,7 +12,7 @@ The app shell is the full-screen container. It mirrors the Gemini template's str
 // app/layout.tsx or root layout component
 export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
-    <div data-appearance="light" className="flex flex-col h-screen overflow-hidden bg-surface-canvas font-sans">
+    <div data-appearance="light" className="flex flex-col h-screen overflow-hidden bg-canvas font-sans">
 
       {/* ── Announcement Banner (optional) ─────────── */}
       <AnnouncementBanner />
@@ -23,7 +23,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       {/* ── Body: Sidebar + Main ─────────────────────*/}
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
-        <main className="flex-1 overflow-y-auto [scrollbar-gutter:stable] bg-surface-sunken">
+        <main className="flex-1 overflow-y-auto [scrollbar-gutter:stable] bg-sunken">
           {children}
         </main>
       </div>
@@ -35,7 +35,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
 **Critical rules:**
 - The root `div` carries `data-appearance` (not `<html>` in React) — this drives all token switching
-- TopBar = white (`bg-surface-elevated border-b border-border-default`); Sidebar = white (`bg-surface-elevated border-r border-border-default`); `<main>` = light gray canvas (`bg-surface-sunken`)
+- TopBar = white (`bg-elevated border-b border-default`); Sidebar = white (`bg-elevated border-r border-default`); `<main>` = light gray canvas (`bg-sunken`)
 - `h-screen overflow-hidden` on root prevents double scrollbars
 - Only `<main>` scrolls — sidebar and topbar are sticky
 - **Always put `[scrollbar-gutter:stable]` on the scrolling `<main>`** — reserves the scrollbar gutter so content does NOT shift sideways when a page toggles between scrollable and non-scrollable
@@ -67,20 +67,20 @@ function AnnouncementBanner() {
 ```tsx
 function TopBar() {
   return (
-    <header className="flex items-center justify-between px-6 py-3 bg-bg-inverse text-text-on-inverse border-b border-border-default shrink-0 h-14">
+    <header className="flex items-center justify-between px-6 py-3 bg-inverse text-on-inverse border-b border-default shrink-0 h-14">
 
       {/* Left: Logo + Workspace switcher */}
       <div className="flex items-center gap-inline-lg">
         {/* Logo */}
         <div className="flex items-center gap-inline-sm text-base font-bold">
-          <div className="w-8 h-8 rounded-control bg-action-primary flex items-center justify-center text-text-on-accent text-xs font-bold">
+          <div className="w-8 h-8 rounded-control bg-action-primary flex items-center justify-center text-on-accent text-xs font-bold">
             A
           </div>
           <span>AppName</span>
         </div>
 
         {/* Workspace switcher */}
-        <button className="flex items-center gap-inline-xs text-sm font-medium text-text-on-inverse/80 hover:text-text-on-inverse hover:bg-white/10 px-3 py-1.5 rounded-control transition-colors duration-fast">
+        <button className="flex items-center gap-inline-xs text-sm font-medium text-on-inverse/80 hover:text-on-inverse hover:bg-white/10 px-3 py-1.5 rounded-control transition-colors duration-fast">
           Workspace Name
           <ChevronDown className="w-4 h-4" />
         </button>
@@ -90,13 +90,13 @@ function TopBar() {
       <div className="flex items-center gap-inline-md">
         {/* Global search */}
         <div className="relative hidden md:flex items-center">
-          <Search className="absolute left-3 w-4 h-4 text-text-on-inverse/50" />
+          <Search className="absolute left-3 w-4 h-4 text-on-inverse/50" />
           <input
             type="text"
             placeholder="Search…"
-            className="h-9 w-64 rounded-control border border-white/20 bg-white/10 pl-9 pr-3 text-sm text-text-on-inverse placeholder:text-text-on-inverse/50 focus:outline-none focus:ring-1 focus:ring-white/40 transition-colors duration-fast"
+            className="h-9 w-64 rounded-control border border-white/20 bg-white/10 pl-9 pr-3 text-sm text-on-inverse placeholder:text-on-inverse/50 focus:outline-none focus:ring-1 focus:ring-white/40 transition-colors duration-fast"
           />
-          <kbd className="absolute right-3 hidden lg:inline-flex items-center text-xs text-text-on-inverse/40 font-mono">⌘K</kbd>
+          <kbd className="absolute right-3 hidden lg:inline-flex items-center text-xs text-on-inverse/40 font-mono">⌘K</kbd>
         </div>
 
         {/* Divider */}
@@ -105,7 +105,7 @@ function TopBar() {
         {/* Icon actions */}
         <Tooltip>
           <TooltipTrigger asChild>
-            <button className="p-2 rounded-control text-text-on-inverse/70 hover:text-text-on-inverse hover:bg-white/10 transition-colors duration-fast">
+            <button className="p-2 rounded-control text-on-inverse/70 hover:text-on-inverse hover:bg-white/10 transition-colors duration-fast">
               <Settings className="w-5 h-5" />
             </button>
           </TooltipTrigger>
@@ -114,7 +114,7 @@ function TopBar() {
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <button className="relative p-2 rounded-control text-text-on-inverse/70 hover:text-text-on-inverse hover:bg-white/10 transition-colors duration-fast">
+            <button className="relative p-2 rounded-control text-on-inverse/70 hover:text-on-inverse hover:bg-white/10 transition-colors duration-fast">
               <Bell className="w-5 h-5" />
               {/* Notification dot */}
               <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-pill bg-action-destructive" />
@@ -129,7 +129,7 @@ function TopBar() {
             <button className="flex items-center gap-inline-sm hover:opacity-80 transition-opacity ml-1">
               <Avatar className="w-8 h-8 border border-white/30">
                 <AvatarImage src="/avatar.jpg" alt="User" />
-                <AvatarFallback className="bg-action-primary text-text-on-accent text-xs">MO</AvatarFallback>
+                <AvatarFallback className="bg-action-primary text-on-accent text-xs">MO</AvatarFallback>
               </Avatar>
             </button>
           </DropdownMenuTrigger>
@@ -149,8 +149,8 @@ function TopBar() {
 ```
 
 **Key tokens used:**
-- `bg-bg-inverse` — dark background (slate-900 light / slate-50 dark)
-- `text-text-on-inverse` — white text on dark background
+- `bg-inverse` — dark background (slate-900 light / slate-50 dark)
+- `text-on-inverse` — white text on dark background
 - `hover:bg-white/10` — subtle hover on dark surface (raw CSS opacity ok here)
 
 ---
@@ -160,7 +160,7 @@ function TopBar() {
 ```tsx
 function Sidebar() {
   return (
-    <aside className="w-64 bg-surface-elevated border-r border-border-default flex flex-col overflow-y-auto shrink-0">
+    <aside className="w-64 bg-elevated border-r border-default flex flex-col overflow-y-auto shrink-0">
 
       {/* ── Nav items ──────────────────────────────── */}
       <nav className="flex-1 p-4 space-y-stack-xs">
@@ -169,7 +169,7 @@ function Sidebar() {
         <SidebarItem href="/dashboard" icon={Home} label="Overview" active />
 
         {/* Section header */}
-        <p className="pt-6 pb-1 text-xs font-semibold text-text-muted uppercase tracking-wider px-3">
+        <p className="pt-6 pb-1 text-xs font-semibold text-muted uppercase tracking-wider px-3">
           Section 1
         </p>
 
@@ -177,7 +177,7 @@ function Sidebar() {
         <SidebarItem href="/projects" icon={Layers} label="Projects" />
         <SidebarItem href="/resources" icon={Box} label="Resources" badge={3} />
 
-        <p className="pt-6 pb-1 text-xs font-semibold text-text-muted uppercase tracking-wider px-3">
+        <p className="pt-6 pb-1 text-xs font-semibold text-muted uppercase tracking-wider px-3">
           Section 2
         </p>
 
@@ -186,11 +186,11 @@ function Sidebar() {
       </nav>
 
       {/* ── Bottom upsell card ─────────────────────── */}
-      <div className="p-4 border-t border-border-default">
+      <div className="p-4 border-t border-default">
         <Card className="shadow-none">
           <CardContent className="p-4">
-            <p className="text-sm font-semibold text-text-primary mb-1">Upgrade to Pro</p>
-            <p className="text-xs text-text-secondary mb-3">Unlock unlimited projects and advanced analytics.</p>
+            <p className="text-sm font-semibold text-primary mb-1">Upgrade to Pro</p>
+            <p className="text-xs text-secondary mb-3">Unlock unlimited projects and advanced analytics.</p>
             <Button variant="outline" size="sm" className="w-full">Upgrade</Button>
           </CardContent>
         </Card>
@@ -213,7 +213,7 @@ function SidebarItem({
         "flex items-center justify-between px-3 py-2 rounded-control text-sm font-medium transition-colors duration-fast",
         active
           ? "bg-action-primary-subtle text-action-primary"
-          : "text-text-secondary hover:bg-action-ghost-hover hover:text-text-primary"
+          : "text-secondary hover:bg-action-ghost-hover hover:text-primary"
       )}
     >
       <div className="flex items-center gap-inline-md">
@@ -266,11 +266,11 @@ function PageHeader({
   return (
     <div className="flex items-start justify-between mb-stack-xl">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-text-primary mb-stack-xs">
+        <h1 className="text-3xl font-bold tracking-tight text-primary mb-stack-xs">
           {title}
         </h1>
         {description && (
-          <p className="text-sm text-text-secondary">{description}</p>
+          <p className="text-sm text-secondary">{description}</p>
         )}
       </div>
       {primaryAction && (
@@ -325,19 +325,19 @@ const stats = [
   { label: "Event count",  value: "111" },
 ];
 
-<div className="bg-surface-elevated border border-border-default rounded-card grid grid-cols-2 lg:grid-cols-4 divide-x divide-border-subtle">
+<div className="bg-elevated border border-default rounded-card grid grid-cols-2 lg:grid-cols-4 divide-x divide-subtle">
   {stats.map(({ label, value }) => (
     <div key={label} className="px-6 py-5">
-      <p className="inline-block text-sm text-text-secondary border-b border-dotted border-border-hover pb-1 mb-2">
+      <p className="inline-block text-sm text-secondary border-b border-dotted border-hover pb-1 mb-2">
         {label}
       </p>
-      <p className="text-3xl font-bold text-text-primary">{value}</p>
+      <p className="text-3xl font-bold text-primary">{value}</p>
     </div>
   ))}
 </div>
 ```
 
-**Rules:** No icons on stat cells. One enclosing `Card`/bordered container with `divide-x divide-border-subtle` between columns (not gapped separate cards). Label gets a dotted underline (`border-b border-dotted border-border-hover`, `inline-block`). Value is `text-3xl font-bold text-text-primary`.
+**Rules:** No icons on stat cells. One enclosing `Card`/bordered container with `divide-x divide-subtle` between columns (not gapped separate cards). Label gets a dotted underline (`border-b border-dotted border-hover`, `inline-block`). Value is `text-3xl font-bold text-primary`.
 
 **Grid rule:** Always `grid-cols-2 lg:grid-cols-4` for 4-up KPI rows.
 
@@ -346,7 +346,7 @@ const stats = [
 ## 8. Tabs + Filter Bar
 
 ```tsx
-<div className="flex items-center justify-between border-b border-border-default">
+<div className="flex items-center justify-between border-b border-default">
   <Tabs defaultValue="all">
     <TabsList className="border-b-0 -mb-px">
       <TabsTrigger value="all">All Items</TabsTrigger>
@@ -394,29 +394,29 @@ const setT = (patch) => setTemp((t) => ({ ...t, ...patch }));
   className={cn(
     "h-8 inline-flex items-center gap-1.5 px-3 rounded-md border text-sm transition-colors",
     activeCount > 0
-      ? "border-border-focus bg-action-primary-subtle text-icon-interactive"
-      : "border-border-default bg-surface-elevated text-text-secondary hover:border-border-hover",
+      ? "border-focus bg-action-primary-subtle text-icon-interactive"
+      : "border-default bg-elevated text-secondary hover:border-hover",
   )}
 >
   <ListFilter className="w-4 h-4" /> Filtres
   {activeCount > 0 && (
-    <span className="bg-action-primary text-text-on-accent text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+    <span className="bg-action-primary text-on-accent text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
       {activeCount}
     </span>
   )}
 </button>
 
 // Pills bar (above the table, only when filters are applied)
-<div className="flex items-center gap-2 px-4 py-2 border-b border-border-subtle bg-bg-secondary flex-wrap">
-  <span className="text-xs text-text-muted">Filtres actifs :</span>
+<div className="flex items-center gap-2 px-4 py-2 border-b border-subtle bg-secondary flex-wrap">
+  <span className="text-xs text-muted">Filtres actifs :</span>
   {pills.map((p) => (
     <span key={p.key} className="inline-flex items-center gap-1 bg-action-primary-subtle text-xs px-2.5 py-1 rounded-full">
-      <span className="text-text-secondary">{p.label} :</span>
+      <span className="text-secondary">{p.label} :</span>
       <span className="text-icon-interactive font-medium">{p.val}</span>
-      <button onClick={p.clear} className="text-text-muted hover:text-status-error-fg"><X className="w-3 h-3" /></button>
+      <button onClick={p.clear} className="text-muted hover:text-status-error-fg"><X className="w-3 h-3" /></button>
     </span>
   ))}
-  <button onClick={() => setFilters(EMPTY)} className="text-xs text-text-muted hover:text-status-error-fg ml-auto flex items-center gap-1">
+  <button onClick={() => setFilters(EMPTY)} className="text-xs text-muted hover:text-status-error-fg ml-auto flex items-center gap-1">
     <X className="w-3 h-3" /> Effacer tout
   </button>
 </div>
@@ -424,31 +424,31 @@ const setT = (patch) => setTemp((t) => ({ ...t, ...patch }));
 // The sheet
 <Sheet open={open} onOpenChange={(o) => !o && setOpen(false)}>
   <SheetContent className="w-[420px] sm:w-[480px] flex flex-col p-0">
-    <SheetHeader className="px-6 py-5 border-b border-border-subtle">
+    <SheetHeader className="px-6 py-5 border-b border-subtle">
       <SheetTitle className="flex items-center gap-2"><ListFilter className="w-4 h-4 text-icon-interactive" /> Filtres</SheetTitle>
     </SheetHeader>
 
     <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
       <div className="space-y-2">
-        <Label className="text-sm font-medium text-text-primary">City</Label>
+        <Label className="text-sm font-medium text-primary">City</Label>
         <MultiCombobox options={cityOpts} value={temp.cities} onChange={(v) => setT({ cities: v })}
           placeholder="All cities" searchPlaceholder="Search a city..." />
       </div>
       <div className="space-y-2">
-        <Label className="text-sm font-medium text-text-primary">Shop / Owner</Label>
+        <Label className="text-sm font-medium text-primary">Shop / Owner</Label>
         <Combobox options={shopOpts} value={temp.shop === "all" ? "" : temp.shop}
           onChange={(v) => setT({ shop: v === "" ? "all" : v })}
           placeholder="All shops" searchPlaceholder="Shop or owner..." />
       </div>
       <Separator />
       <div className="space-y-2">
-        <Label htmlFor="f-date" className="text-sm font-medium text-text-primary">Date</Label>
+        <Label htmlFor="f-date" className="text-sm font-medium text-primary">Date</Label>
         <input id="f-date" type="date" value={temp.date} onChange={(e) => setT({ date: e.target.value })}
-          className="h-9 w-full rounded-md border border-border-default bg-surface-sunken px-3 text-sm text-text-primary focus:outline-none focus:border-border-focus" />
+          className="h-9 w-full rounded-md border border-default bg-sunken px-3 text-sm text-primary focus:outline-none focus:border-focus" />
       </div>
       <Separator />
       <div className="flex items-center justify-between py-1">
-        <Label htmlFor="f-stock" className="text-sm font-medium text-text-primary">Stock only</Label>
+        <Label htmlFor="f-stock" className="text-sm font-medium text-primary">Stock only</Label>
         <Switch id="f-stock" checked={temp.stockOnly} onCheckedChange={(v) => setT({ stockOnly: v })} />
       </div>
     </div>
@@ -509,8 +509,8 @@ function DataTableCard() {
               <TableRow key={p.id}>
                 <TableCell><Checkbox /></TableCell>
                 <TableCell>
-                  <div className="font-medium text-text-primary">{p.name}</div>
-                  <div className="text-xs text-text-muted">{p.description}</div>
+                  <div className="font-medium text-primary">{p.name}</div>
+                  <div className="text-xs text-muted">{p.description}</div>
                 </TableCell>
                 <TableCell>
                   <Badge variant={statusVariant(p.status)}>{p.status}</Badge>
@@ -520,10 +520,10 @@ function DataTableCard() {
                     <Avatar className="w-6 h-6">
                       <AvatarFallback className="text-xs">{p.ownerInitials}</AvatarFallback>
                     </Avatar>
-                    <span className="text-sm text-text-secondary">{p.owner}</span>
+                    <span className="text-sm text-secondary">{p.owner}</span>
                   </div>
                 </TableCell>
-                <TableCell className="text-text-muted text-sm">{p.updatedAt}</TableCell>
+                <TableCell className="text-muted text-sm">{p.updatedAt}</TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -549,7 +549,7 @@ function DataTableCard() {
 
       {/* Pagination */}
       <CardFooter className="flex items-center justify-between py-4">
-        <p className="text-sm text-text-secondary">Showing 1–10 of 48 results</p>
+        <p className="text-sm text-secondary">Showing 1–10 of 48 results</p>
         <Pagination>
           <PaginationContent>
             <PaginationItem><PaginationPrevious href="#" /></PaginationItem>
@@ -637,12 +637,12 @@ function EmptyState({
 }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-      <div className="w-12 h-12 rounded-overlay bg-bg-secondary flex items-center justify-center mb-stack-lg">
+      <div className="w-12 h-12 rounded-overlay bg-secondary flex items-center justify-center mb-stack-lg">
         <Icon className="w-6 h-6 text-icon-muted" />
       </div>
-      <h3 className="text-base font-semibold text-text-primary mb-stack-xs">{title}</h3>
+      <h3 className="text-base font-semibold text-primary mb-stack-xs">{title}</h3>
       {description && (
-        <p className="text-sm text-text-secondary max-w-sm mb-stack-xl">{description}</p>
+        <p className="text-sm text-secondary max-w-sm mb-stack-xl">{description}</p>
       )}
       {action}
     </div>
@@ -716,7 +716,7 @@ export default function DashboardPage() {
       />
 
       {/* Tabs + filter */}
-      <div className="flex items-center justify-between border-b border-border-default">
+      <div className="flex items-center justify-between border-b border-default">
         <Tabs defaultValue="overview">
           <TabsList className="border-b-0 -mb-px">
             <TabsTrigger value="overview">Overview</TabsTrigger>
