@@ -11,7 +11,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       ref={ref}
       className={cn(
         "flex min-h-[80px] w-full rounded-control resize-y",
-        "border border-default bg-canvas",
+        "border border-control bg-canvas",
         "px-[var(--control-px-md)] py-[var(--control-py-md)]",
         "text-sm text-primary placeholder:text-placeholder",
         "transition-[border-color,box-shadow] duration-fast",

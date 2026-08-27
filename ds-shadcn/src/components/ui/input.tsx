@@ -13,7 +13,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       ref={ref}
       className={cn(
         "flex w-full rounded-control",
-        "border border-default bg-canvas",
+        "border border-control bg-canvas",
         "text-primary placeholder:text-placeholder",
         "transition-[border-color,box-shadow] duration-fast ease-ease-out",
         "hover:border-hover",

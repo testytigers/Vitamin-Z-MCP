@@ -201,10 +201,17 @@ source references them.
 | Tailwind class          | Approx. value | Use case                        |
 |-------------------------|---------------|---------------------------------|
 | `border-subtle`  | slate-100     | Section dividers, very light separators |
-| `border-default` | slate-200     | Default card / input border     |
+| `border-default` | slate-200     | Card / panel borders — **decorative only** |
+| `border-control` | slate-500     | **Any control's visible boundary** — inputs, selects, textareas, checkboxes |
 | `border-hover`   | slate-300     | Hovered border                  |
 | `border-focus`   | brand-500 (#156a52) | Focused input ring        |
 | `border-error`   | red-500       | Error state                     |
+
+> **`border-default` vs `border-control`.** WCAG 1.4.11 requires 3:1 contrast for
+> anything that identifies a UI component — an input's outline qualifies. `slate-200`
+> is 1.23:1 against white, which is fine for a card edge or a divider (both exempt as
+> decorative) and not fine for a control the user has to locate. Use `border-control`
+> on anything operable; keep `border-default` for structure.
 
 ### Status Colors
 

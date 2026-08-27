@@ -262,6 +262,105 @@ const undocumented = [...twClasses].filter((c) => {
 if (undocumented.length)
   add("warn", "docs", `${undocumented.length} Tailwind classes exist but appear in no doc`, undocumented.join(", "));
 
+
+/* ── 10. Non-text contrast (WCAG 1.4.11) — needs 3:1 ─────────
+   Only applies where the colour carries meaning: a control's visible boundary
+   and a meaningful icon. Decorative dividers and card borders are exempt, which
+   is why border-default is checked as decorative and border-control is not. */
+const NONTEXT = [
+  ["--color-border-control", "control boundary"],
+  ["--color-icon-muted", "meaningful icon"],
+  ["--color-icon-default", "meaningful icon"],
+  ["--color-border-focus", "focus indicator"],
+];
+for (const mode of ["light", "dark"]) {
+  for (const [tok, role] of NONTEXT) {
+    const tv = resolve(tok, mode);
+    if (!tv || !/^#/.test(tv)) continue;
+    for (const s of ["--color-surface-canvas", "--color-surface-elevated", "--color-surface-sunken"]) {
+      const sv = resolve(s, mode);
+      if (!sv || !/^#/.test(sv)) continue;
+      const c = contrast(tv, sv);
+      if (c && c < 3.0)
+        add("error", "a11y", `${tok.replace("--color-", "")} (${role}) below 3:1 on ${s.replace("--color-surface-", "")} (${mode})`,
+          `${tv} on ${sv} = ${c.toFixed(2)}:1 — WCAG 1.4.11 requires 3:1`);
+    }
+  }
+}
+
+/* ── 11. Status foreground on its own tinted background ────── */
+for (const mode of ["light", "dark"]) {
+  for (const s of ["error", "success", "warning", "info"]) {
+    const fg = resolve(`--color-status-${s}-fg`, mode);
+    const bg = resolve(`--color-status-${s}-bg`, mode);
+    if (!fg || !bg || !/^#/.test(fg) || !/^#/.test(bg)) continue;
+    const c = contrast(fg, bg);
+    if (c && c < 4.5)
+      add("error", "a11y", `status-${s} text on its own background fails AA (${mode})`,
+        `${fg} on ${bg} = ${c.toFixed(2)}:1 — this is the Badge and Alert pairing`);
+  }
+}
+
+/* ── 12. Colourblind separation of the categorical chart palette ──
+   Simulates deuteranopia and protanopia, then measures CIE76 distance.
+   Eight hue-encoded categories cannot clear ΔE 20, so only 1..6 are enforced;
+   past six, colour must not be the sole cue (WCAG 1.4.1). */
+function simCVD(hex, kind) {
+  const rgb = hexToRgb(hex);
+  if (!rgb) return null;
+  const lin = rgb.map((c) => { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); });
+  const [r, g, b] = lin;
+  let L = 0.31399022 * r + 0.63951294 * g + 0.04649755 * b;
+  let M = 0.15537241 * r + 0.75789446 * g + 0.08670142 * b;
+  const S = 0.01775239 * r + 0.10944209 * g + 0.87256922 * b;
+  if (kind === "deutan") M = 0.9513092 * L + 0.04866992 * S;
+  else L = 1.05118294 * M - 0.05116099 * S;
+  const out = [
+    5.47221206 * L - 4.6419601 * M + 0.16963708 * S,
+    -1.1252419 * L + 2.29317094 * M - 0.1678952 * S,
+    0.02980165 * L - 0.19318073 * M + 1.16364789 * S,
+  ].map((v) => Math.max(0, Math.min(1, v)));
+  return out;
+}
+function toLab(lin) {
+  const [r, g, b] = lin;
+  const X = (0.4124 * r + 0.3576 * g + 0.1805 * b) / 0.95047;
+  const Y = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  const Z = (0.0193 * r + 0.1192 * g + 0.9505 * b) / 1.08883;
+  const f = (t) => (t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116);
+  const [fx, fy, fz] = [f(Math.max(X, 0)), f(Math.max(Y, 0)), f(Math.max(Z, 0))];
+  return [116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz)];
+}
+const deltaE = (a, b) => {
+  const [la, lb] = [toLab(a), toLab(b)];
+  return Math.hypot(la[0] - lb[0], la[1] - lb[1], la[2] - lb[2]);
+};
+for (const mode of ["light", "dark"]) {
+  const cats = [];
+  for (let i = 1; i <= 6; i++) {
+    const v = resolve(`--color-chart-cat-${i}`, mode);
+    if (v && /^#/.test(v)) cats.push(v);
+  }
+  if (cats.length < 6) continue;
+  for (const kind of ["deutan", "protan"]) {
+    const sims = cats.map((c) => simCVD(c, kind));
+    let worst = Infinity, pair = "";
+    for (let i = 0; i < sims.length; i++)
+      for (let j = i + 1; j < sims.length; j++) {
+        const d = deltaE(sims[i], sims[j]);
+        if (d < worst) { worst = d; pair = `cat-${i + 1}/cat-${j + 1}`; }
+      }
+    if (worst < 20)
+      add("error", "a11y", `chart cat-1..6 not colourblind-safe under ${kind} (${mode})`,
+        `closest pair ${pair} is ΔE ${worst.toFixed(1)} — needs ≥20`);
+  }
+}
+
+/* ── 13. prefers-reduced-motion ────────────────────────────── */
+if (!/@media\s*\(prefers-reduced-motion/.test(css))
+  add("error", "a11y", "no prefers-reduced-motion support",
+    "The system animates but never honours the OS setting. WCAG 2.3.3.");
+
 /* ── output ────────────────────────────────────────────────── */
 if (process.argv.includes("--json")) {
   console.log(JSON.stringify(R, null, 2));

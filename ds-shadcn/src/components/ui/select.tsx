@@ -15,7 +15,7 @@ const SelectTrigger = React.forwardRef<
     ref={ref}
     className={cn(
       "flex h-control-md w-full items-center justify-between gap-inline-sm rounded-control",
-      "border border-default bg-canvas",
+      "border border-control bg-canvas",
       "px-[var(--control-px-md)] py-[var(--control-py-md)]",
       "text-sm text-primary placeholder:text-placeholder",
       "transition-[border-color,box-shadow] duration-fast",
@@ -72,7 +72,7 @@ const SelectContent = React.forwardRef<
       ref={ref}
       className={cn(
         "relative z-[var(--z-popover)] overflow-hidden rounded-overlay",
-        "border border-default bg-popover shadow-popover",
+        "border border-control bg-popover shadow-popover",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
@@ -129,7 +129,7 @@ const SelectSeparator = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Separator>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Separator>
 >(({ className, ...props }, ref) => (
-  <SelectPrimitive.Separator ref={ref} className={cn("-mx-1 my-1 h-px bg-border-default", className)} {...props} />
+  <SelectPrimitive.Separator ref={ref} className={cn("-mx-1 my-1 h-px bg-border-control", className)} {...props} />
 ));
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 
