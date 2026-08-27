@@ -836,6 +836,271 @@ const form = useForm({ defaultValues: { name: "" } });
 
 ---
 
+## Toast
+
+**File:** `toast.tsx` + `use-toast.ts`
+**Variants:** `default` | `destructive`
+
+Transient feedback. Mount `<Toaster />` once in the app shell, then call `toast()`
+from anywhere. Prefer this over `<Alert>` for anything that should disappear.
+
+```tsx
+import { useToast } from "@/components/ui/use-toast";
+
+const { toast } = useToast();
+
+// success
+toast({ title: "Colis créé", description: "Référence CX-1042 enregistrée." });
+
+// error — use the destructive variant, not a custom colour
+toast({
+  variant: "destructive",
+  title: "Échec de l'enregistrement",
+  description: "Vérifiez la connexion et réessayez.",
+});
+
+// with an action
+toast({
+  title: "Colis supprimé",
+  action: <ToastAction altText="Annuler">Annuler</ToastAction>,
+});
+```
+
+**Exports:** `ToastProvider` · `ToastViewport` · `Toast` · `ToastAction` · `ToastClose` · `ToastTitle` · `ToastDescription` · `toastVariants`, plus `useToast` / `toast` from `use-toast.ts`.
+
+> `ToastAction` requires `altText` for screen readers.
+
+---
+
+## Drawer
+
+**File:** `drawer.tsx`
+
+Bottom sheet, primarily for mobile. On desktop prefer `<Dialog>` (centred) or
+`<Sheet>` (side panel).
+
+```tsx
+<Drawer>
+  <DrawerTrigger asChild>
+    <Button variant="outline">Filtres</Button>
+  </DrawerTrigger>
+  <DrawerContent>
+    <DrawerHeader>
+      <DrawerTitle>Filtrer les colis</DrawerTitle>
+      <DrawerDescription>Affinez la liste par statut et hub.</DrawerDescription>
+    </DrawerHeader>
+    {/* body */}
+    <DrawerFooter>
+      <Button variant="primary">Appliquer</Button>
+      <DrawerClose asChild><Button variant="ghost">Annuler</Button></DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>
+```
+
+**Exports:** `Drawer` · `DrawerTrigger` · `DrawerPortal` · `DrawerOverlay` · `DrawerClose` · `DrawerContent` · `DrawerHeader` · `DrawerFooter` · `DrawerTitle` · `DrawerDescription`
+
+---
+
+## Context Menu
+
+**File:** `context-menu.tsx`
+
+Right-click menu. For a click-triggered menu use `<DropdownMenu>` instead — same
+item vocabulary, different trigger.
+
+```tsx
+<ContextMenu>
+  <ContextMenuTrigger asChild>
+    <TableRow>{/* … */}</TableRow>
+  </ContextMenuTrigger>
+  <ContextMenuContent className="w-48">
+    <ContextMenuItem><Edit className="w-4 h-4 mr-2" /> Modifier</ContextMenuItem>
+    <ContextMenuItem>
+      <Copy className="w-4 h-4 mr-2" /> Dupliquer
+      <ContextMenuShortcut>⌘D</ContextMenuShortcut>
+    </ContextMenuItem>
+    <ContextMenuSeparator />
+    <ContextMenuSub>
+      <ContextMenuSubTrigger>Déplacer vers</ContextMenuSubTrigger>
+      <ContextMenuSubContent>
+        <ContextMenuItem>Hub Alger</ContextMenuItem>
+        <ContextMenuItem>Hub Oran</ContextMenuItem>
+      </ContextMenuSubContent>
+    </ContextMenuSub>
+    <ContextMenuSeparator />
+    <ContextMenuItem className="text-status-error-fg">
+      <Trash2 className="w-4 h-4 mr-2" /> Supprimer
+    </ContextMenuItem>
+  </ContextMenuContent>
+</ContextMenu>
+```
+
+**Exports:** `ContextMenu` · `ContextMenuTrigger` · `ContextMenuContent` · `ContextMenuItem` · `ContextMenuCheckboxItem` · `ContextMenuRadioItem` · `ContextMenuRadioGroup` · `ContextMenuLabel` · `ContextMenuSeparator` · `ContextMenuShortcut` · `ContextMenuGroup` · `ContextMenuPortal` · `ContextMenuSub` · `ContextMenuSubContent` · `ContextMenuSubTrigger`
+
+---
+
+## Hover Card
+
+**File:** `hover-card.tsx`
+
+Rich preview on hover — user cards, entity summaries. For short text use
+`<Tooltip>`; hover cards can contain layout.
+
+```tsx
+<HoverCard>
+  <HoverCardTrigger asChild>
+    <Button variant="ghost" className="p-0 h-auto font-medium">CX-1042</Button>
+  </HoverCardTrigger>
+  <HoverCardContent className="w-72">
+    <p className="text-sm font-semibold text-text-primary">Colis CX-1042</p>
+    <p className="text-xs text-text-subtle mt-1">Alger → Oran · 2.4 kg</p>
+    <Badge variant="success" className="mt-2">Livré</Badge>
+  </HoverCardContent>
+</HoverCard>
+```
+
+**Exports:** `HoverCard` · `HoverCardTrigger` · `HoverCardContent`
+
+> Hover-only content is invisible to touch and keyboard users. Never put an action
+> or information that exists nowhere else inside a hover card.
+
+---
+
+## Input OTP
+
+**File:** `input-otp.tsx`
+
+Segmented one-time-code entry — SMS confirmation, 2FA.
+
+```tsx
+<InputOTP maxLength={6}>
+  <InputOTPGroup>
+    <InputOTPSlot index={0} />
+    <InputOTPSlot index={1} />
+    <InputOTPSlot index={2} />
+  </InputOTPGroup>
+  <InputOTPSeparator />
+  <InputOTPGroup>
+    <InputOTPSlot index={3} />
+    <InputOTPSlot index={4} />
+    <InputOTPSlot index={5} />
+  </InputOTPGroup>
+</InputOTP>
+```
+
+**Exports:** `InputOTP` · `InputOTPGroup` · `InputOTPSlot` · `InputOTPSeparator`
+
+---
+
+## Carousel
+
+**File:** `carousel.tsx`
+
+Horizontal slider. In dashboards, use sparingly — a scrollable row or a table is
+usually clearer than hiding content behind arrows.
+
+```tsx
+<Carousel className="w-full">
+  <CarouselContent>
+    {items.map((item) => (
+      <CarouselItem key={item.id} className="md:basis-1/2 lg:basis-1/3">
+        <Card className="p-5">{item.name}</Card>
+      </CarouselItem>
+    ))}
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>
+```
+
+**Exports:** `Carousel` · `CarouselContent` · `CarouselItem` · `CarouselPrevious` · `CarouselNext` · `useCarousel`
+
+---
+
+## Menubar
+
+**File:** `menubar.tsx`
+
+Desktop-application menu bar (File / Edit / View). Not for site navigation — use
+`<NavigationMenu>` or the DS `Sidebar` for that.
+
+```tsx
+<Menubar>
+  <MenubarMenu>
+    <MenubarTrigger>Fichier</MenubarTrigger>
+    <MenubarContent>
+      <MenubarItem>Nouveau colis <MenubarShortcut>⌘N</MenubarShortcut></MenubarItem>
+      <MenubarSeparator />
+      <MenubarItem>Exporter CSV</MenubarItem>
+    </MenubarContent>
+  </MenubarMenu>
+</Menubar>
+```
+
+**Exports:** `Menubar` · `MenubarMenu` · `MenubarTrigger` · `MenubarContent` · `MenubarItem` · `MenubarCheckboxItem` · `MenubarRadioItem` · `MenubarRadioGroup` · `MenubarLabel` · `MenubarSeparator` · `MenubarShortcut` · `MenubarGroup` · `MenubarPortal` · `MenubarSub` · `MenubarSubTrigger` · `MenubarSubContent`
+
+---
+
+## Navigation Menu
+
+**File:** `navigation-menu.tsx`
+
+Horizontal nav with dropdown panels — marketing headers and multi-section apps.
+The DS dashboard shell uses the vertical `Sidebar` instead; reach for this only
+when navigation must live in the top bar.
+
+```tsx
+<NavigationMenu>
+  <NavigationMenuList>
+    <NavigationMenuItem>
+      <NavigationMenuTrigger>Opérations</NavigationMenuTrigger>
+      <NavigationMenuContent>
+        <ul className="grid w-[400px] gap-stack-sm p-4">
+          <li>
+            <NavigationMenuLink href="/colis">Tous les colis</NavigationMenuLink>
+          </li>
+        </ul>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
+    <NavigationMenuItem>
+      <NavigationMenuLink href="/rapports" className={navigationMenuTriggerStyle()}>
+        Rapports
+      </NavigationMenuLink>
+    </NavigationMenuItem>
+  </NavigationMenuList>
+</NavigationMenu>
+```
+
+**Exports:** `NavigationMenu` · `NavigationMenuList` · `NavigationMenuItem` · `NavigationMenuTrigger` · `NavigationMenuContent` · `NavigationMenuLink` · `NavigationMenuViewport` · `NavigationMenuIndicator` · `navigationMenuTriggerStyle`
+
+---
+
+## Resizable
+
+**File:** `resizable.tsx`
+
+Draggable split panes — list/detail layouts, side-by-side comparison.
+
+```tsx
+<ResizablePanelGroup direction="horizontal" className="min-h-[500px] rounded-card border border-border-default">
+  <ResizablePanel defaultSize={40} minSize={25}>
+    {/* list */}
+  </ResizablePanel>
+  <ResizableHandle withHandle />
+  <ResizablePanel defaultSize={60}>
+    {/* detail */}
+  </ResizablePanel>
+</ResizablePanelGroup>
+```
+
+**Exports:** `ResizablePanelGroup` · `ResizablePanel` · `ResizableHandle`
+
+> `ResizableHandle` is keyboard-operable via arrow keys once focused. Pass
+> `withHandle` to render the visible grip.
+
+---
+
 ## Complete Component Import List
 
 ```tsx

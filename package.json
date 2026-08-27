@@ -1,16 +1,23 @@
 {
   "name": "vitamin-z-server",
   "version": "2.0.0",
-  "description": "MCP server for Design System v1.2 — voice-command-optimized page scaffolding, token/component lookups, and DS code validation",
+  "description": "MCP server for Design System v1.2 \u2014 voice-command-optimized page scaffolding, token/component lookups, and DS code validation",
   "type": "module",
-  "bin": { "vitamin-z": "dist/index.js" },
-  "files": ["dist"],
+  "bin": {
+    "vitamin-z": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsc --watch",
     "docs:build": "node docs/site/build-docs.mjs",
-    "docs:serve": "node docs/site/serve.mjs"
+    "docs:serve": "node docs/site/serve.mjs",
+    "verify": "node scripts/verify-ds.mjs",
+    "smoke": "node scripts/smoke-tools.mjs",
+    "test": "npm run build && npm run verify && npm run smoke"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",

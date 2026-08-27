@@ -28,6 +28,7 @@ const config: Config = {
         "action-primary-active":   "var(--color-action-primary-bg-active)",
         "action-primary-disabled": "var(--color-action-primary-bg-disabled)",
         "action-primary-subtle":   "var(--color-action-primary-bg-subtle)",
+        "action-primary-tint":     "var(--color-action-primary-bg-tint)",
 
         // Action — Secondary
         "action-secondary":        "var(--color-action-secondary-bg)",
@@ -54,12 +55,15 @@ const config: Config = {
         "status-warning-bg":    "var(--color-status-warning-bg)",
         "status-warning-border":"var(--color-status-warning-border)",
         "status-info-fg":       "var(--color-status-info-fg)",
+        "status-attention-fg":  "var(--color-status-attention-fg)",
         "status-info-bg":       "var(--color-status-info-bg)",
         "status-info-border":   "var(--color-status-info-border)",
 
         // Text
         "text-primary":        "var(--color-text-primary)",
+        "text-strong":         "var(--color-text-strong)",
         "text-secondary":      "var(--color-text-secondary)",
+        "text-subtle":         "var(--color-text-subtle)",
         "text-tertiary":       "var(--color-text-tertiary)",
         "text-muted":          "var(--color-text-muted)",
         "text-disabled":       "var(--color-text-disabled)",
@@ -70,6 +74,7 @@ const config: Config = {
         "text-placeholder":    "var(--color-text-placeholder)",
 
         // Border
+        "border-subtle":   "var(--color-border-subtle)",
         "border-default":  "var(--color-border-default)",
         "border-hover":    "var(--color-border-hover)",
         "border-focus":    "var(--color-border-focus)",

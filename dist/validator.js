@@ -4,6 +4,52 @@
  * A local LLM can call validate_code once and get corrected code back.
  */
 import ts from "typescript";
+import fs from "node:fs";
+import path from "node:path";
+import { DOCS_DIR } from "./docIndex.js";
+/**
+ * Token whitelist — loaded from the real Tailwind config at startup.
+ *
+ * The forbidden-pattern rules below catch raw Tailwind colours, but they cannot
+ * catch the opposite and far more common failure: a model inventing a token that
+ * looks right. `bg-surface-elevatd`, `text-text-strongest` and
+ * `border-border-medium` all pass a blacklist and emit no CSS at all, so the
+ * element silently renders unstyled. This checks the suffix of any DS-family
+ * class against the tokens that actually exist.
+ */
+const DS_FAMILIES = [
+    "bg-surface-", "bg-bg-", "bg-action-", "bg-status-", "bg-chart-",
+    "text-text-", "text-status-", "text-icon-", "text-chart-",
+    "border-border-", "border-status-", "ring-border-",
+    "gap-stack-", "gap-inline-", "space-y-stack-", "space-x-inline-",
+];
+let VALID_TOKENS = null;
+function loadTokens() {
+    if (VALID_TOKENS)
+        return VALID_TOKENS;
+    const tokens = new Set();
+    const cfg = path.join(DOCS_DIR, "..", "ds-shadcn", "tailwind.config.ts");
+    try {
+        const src = fs.readFileSync(cfg, "utf8");
+        for (const m of src.matchAll(/["']?([a-zA-Z0-9-]+)["']?\s*:\s*["']var\(--[a-zA-Z0-9_-]+\)["']/g)) {
+            tokens.add(m[1]);
+        }
+    }
+    catch {
+        /* config unavailable — whitelist check is skipped, blacklist still applies */
+    }
+    VALID_TOKENS = tokens;
+    return tokens;
+}
+/** Strip the utility prefix so the remainder can be matched against token names. */
+function tokenSuffix(cls) {
+    const m = /^(?:hover|focus|focus-visible|active|disabled|group-hover|aria-selected):?(.*)$/.exec(cls);
+    const bare = m && m[1] ? m[1] : cls;
+    const prefix = /^(bg|text|border|ring|fill|stroke|gap|space-y|space-x)-/.exec(bare);
+    if (!prefix)
+        return null;
+    return bare.slice(prefix[0].length);
+}
 /** Deterministic replacements, applied longest-prefix-first. */
 const FIX_MAP = [
     // hover variants BEFORE plain variants
@@ -113,6 +159,30 @@ export function validate(code) {
             }
         }
     });
+    // Unknown-token check: a DS-family class whose suffix isn't a real token.
+    // These emit no CSS, so the element renders unstyled with no error anywhere.
+    const known = loadTokens();
+    if (known.size > 0) {
+        lines.forEach((line, i) => {
+            for (const m of line.matchAll(/[\s"'`{]((?:hover:|focus:|focus-visible:|active:|disabled:)?(?:bg|text|border|ring|gap|space-y|space-x)-[a-z][a-z0-9-]*)/g)) {
+                const cls = m[1];
+                if (!DS_FAMILIES.some((f) => cls.replace(/^[a-z-]*?:/, "").startsWith(f)))
+                    continue;
+                const suffix = tokenSuffix(cls);
+                if (!suffix || known.has(suffix))
+                    continue;
+                const near = [...known]
+                    .filter((k) => k.split("-")[0] === suffix.split("-")[0])
+                    .slice(0, 3);
+                violations.push({
+                    line: i + 1,
+                    match: cls,
+                    fix: null,
+                    message: `Unknown DS token — emits no CSS.${near.length ? ` Did you mean: ${near.join(", ")}?` : " Check get_tokens."}`,
+                });
+            }
+        });
+    }
     // dedupe (overlapping detect rules can double-report the same token)
     const seen = new Set();
     const unique = violations.filter((v) => {

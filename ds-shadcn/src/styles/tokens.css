@@ -222,6 +222,7 @@
   --color-action-primary-text: var(--_color-white);
   --color-action-primary-text-disabled: var(--_color-slate-400);
   --color-action-primary-bg-subtle: rgba(59, 130, 246, 0.1);
+  --color-action-primary-bg-tint: rgba(59, 130, 246, 0.06);
 
   /* Action — Secondary */
   --color-action-secondary-bg: var(--_color-slate-100);
@@ -252,13 +253,16 @@
   --color-status-warning-bg: var(--_color-yellow-50);
   --color-status-warning-border: var(--_color-yellow-200);
   --color-status-info-fg: var(--_color-blue-600);
+  --color-status-attention-fg: var(--_color-orange-600);
   --color-status-info-bg: var(--_color-blue-50);
   --color-status-info-border: var(--_color-blue-200);
 
   /* Text */
   --color-text-primary: var(--_color-slate-900);
+  --color-text-strong: var(--_color-slate-700);
   --color-text-secondary: var(--_color-slate-600);
-  --color-text-tertiary: var(--_color-slate-500);
+  --color-text-subtle: var(--_color-slate-500);
+  --color-text-tertiary: var(--_color-slate-500); /* legacy alias of subtle */
   --color-text-muted: var(--_color-slate-400);
   --color-text-disabled: var(--_color-slate-300);
   --color-text-on-accent: var(--_color-white);
@@ -268,6 +272,7 @@
   --color-text-placeholder: var(--_color-slate-400);
 
   /* Border */
+  --color-border-subtle: var(--_color-slate-100);
   --color-border-default: var(--_color-slate-200);
   --color-border-hover: var(--_color-slate-300);
   --color-border-focus: var(--_color-blue-500);
@@ -381,6 +386,7 @@
   --color-action-primary-text: var(--_color-slate-900);
   --color-action-primary-text-disabled: var(--_color-slate-500);
   --color-action-primary-bg-subtle: rgba(59, 130, 246, 0.2);
+  --color-action-primary-bg-tint: rgba(96, 165, 250, 0.1);
 
   --color-action-secondary-bg: var(--_color-slate-800);
   --color-action-secondary-bg-hover: var(--_color-slate-700);
@@ -406,12 +412,15 @@
   --color-status-warning-bg: var(--_color-yellow-950);
   --color-status-warning-border: var(--_color-yellow-800);
   --color-status-info-fg: var(--_color-blue-400);
+  --color-status-attention-fg: var(--_color-orange-400);
   --color-status-info-bg: var(--_color-blue-950);
   --color-status-info-border: var(--_color-blue-800);
 
   --color-text-primary: var(--_color-slate-50);
+  --color-text-strong: var(--_color-slate-200);
   --color-text-secondary: var(--_color-slate-400);
-  --color-text-tertiary: var(--_color-slate-500);
+  --color-text-subtle: var(--_color-slate-500);
+  --color-text-tertiary: var(--_color-slate-500); /* legacy alias of subtle */
   --color-text-muted: var(--_color-slate-500);
   --color-text-disabled: var(--_color-slate-600);
   --color-text-on-accent: var(--_color-slate-900);
@@ -420,6 +429,7 @@
   --color-text-link: var(--_color-blue-400);
   --color-text-placeholder: var(--_color-slate-500);
 
+  --color-border-subtle: var(--_color-slate-800);
   --color-border-default: var(--_color-slate-700);
   --color-border-hover: var(--_color-slate-600);
   --color-border-focus: var(--_color-blue-400);
