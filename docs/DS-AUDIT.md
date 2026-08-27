@@ -11,17 +11,21 @@ npm run audit:components    # per-component rule + a11y scan
 
 ---
 
-## Summary
+## Summary — all findings resolved
 
-| | Result |
-|---|---|
-| Component errors | **0** (4 found, 4 fixed) |
-| Component warnings | 5 (all arbitrary values, reviewed below) |
-| Token errors | 0 |
-| Token warnings | 3 categories |
-| Components documented | 45 / 45 |
-| Components clean | 40 / 45 |
-| Contrast failures | 18 body-text/surface pairs |
+| | First run | Now |
+|---|---|---|
+| Component errors | 4 | **0** |
+| Component warnings | 6 | 5 (arbitrary values, all reviewed & accepted) |
+| Token errors | 0 | **0** |
+| Token warnings | 4 categories | **0** |
+| Contrast failures | 18 pairs | **0** |
+| Dead component tokens | 24 | **0** (layer deleted) |
+| Undocumented classes | 5 | **0** |
+| Components documented | 45 / 45 | 45 / 45 |
+
+Everything below is retained as the record of what was found and why each decision
+was made. §3 and §4 describe problems that are now **fixed** — see §7 for what changed.
 
 ---
 
@@ -187,13 +191,47 @@ This is expected — a design system should ship more than any one app consumes.
 
 ---
 
-## 6. Recommended order
+## 7. Resolutions
 
-1. **Decide the component-token layer** — wire up or delete. It's the only structurally ambiguous thing left.
-2. **Fix `--focus-ring-color`** — small, mechanical, restores an advertised affordance.
-3. **Decide on `text-muted` contrast** — needs a visual call, affects real readability.
-4. **Collapse `text-tertiary` into `text-subtle`** — two names, one value.
-5. Document the five undocumented classes, or delete the two unused ones.
-6. Look at `drawer`'s `w-[100px]` and `header`'s `text-[10px]`.
+### 7.1 Component token layer — **deleted** (32 tokens)
 
-Items 1–4 are judgement calls and are deliberately left open rather than decided unilaterally.
+All were pass-throughs (`--button-radius: var(--radius-control)`) and none was read by any component. In a Tailwind + cva system the variant map already *is* the component contract, so a parallel CSS-variable layer means maintaining the same decision twice — and cva can't consume the variables cleanly anyway.
+
+The rule is now written into `TOKENS.md`: create a component token only where a component must **diverge** from semantics. `--color-control-thumb` is the sole surviving example — "the knob on a switch" isn't a semantic concept.
+
+If Figma↔code parity is ever required, generate this layer from the cva variants rather than hand-maintaining both.
+
+### 7.2 Focus ring — **now composable**
+
+`--focus-ring-shadow` is declared once and composed from `--focus-ring-width`, `--focus-ring-offset`, `--focus-ring-color` and `--focus-ring-halo`. Each mode block sets only colour and halo. Verified in compiled CSS: the parts are present and the dark block overrides them.
+
+### 7.3 Contrast — **all pairs now clear AA**
+
+Three coordinated changes:
+
+- **`sunken`: slate-100 → slate-50.** The darker fill was what pushed `text-subtle` to 4.34:1. slate-50 is also the value `TOKENS.md` had always documented, so this closed a doc/implementation mismatch at the same time.
+- **`text-muted` and `text-tertiary` became deprecated aliases of `text-subtle`.** `muted` was slate-400 — 2.56:1 on white, failing AA and even the 3:1 non-text floor. There is no room for a fifth readable grey above slate-500, so rather than invent one, the level was retired. Existing markup keeps working.
+- **Dark ladder shifted one step lighter** — `secondary` slate-400→300, `subtle` slate-500→400. slate-500 reached only 3.07:1 on `overlay`.
+
+Measured after the change, independently of the audit's own code:
+
+| | light: white / sunken | dark: canvas / elevated / overlay |
+|---|---|---|
+| `text-primary` | 17.85 / 17.06 | 19.28 / 17.06 / 13.98 |
+| `text-strong` | 10.35 / 9.90 | 16.36 / 14.48 / 11.87 |
+| `text-secondary` | 7.58 / 7.24 | 13.59 / 12.02 / 9.85 |
+| `text-subtle` | 4.76 / 4.55 | 7.87 / 6.96 / 5.71 |
+
+`text-disabled` and `text-placeholder` are exempt under WCAG 1.4.3; `placeholder` was still moved off slate-400 to the AA floor.
+
+### 7.4 Undocumented classes — **all documented**
+
+`text-on-destructive`, `bg-action-secondary-active`, `bg-action-destructive-active`, `border-status-warning-border`, `bg-thumb`, plus the deprecation table for `text-tertiary` / `text-muted`.
+
+> **A flaw in this audit was found while fixing it.** The doc-coverage check treated *any* markdown in `docs/` as documentation — including this report. Because §3.3 listed the undocumented classes by name, the next run saw them as documented and the warning silently disappeared. The check now excludes `DS-AUDIT.md` and `DS-IMPROVEMENTS-LOG.md`: a report about the DS is not reference documentation.
+
+### 7.5 Still open — accepted, not fixed
+
+- **5 arbitrary values.** `dialog`'s `left-[50%]`, `scroll-area`'s `rounded-[inherit]` and `navigation-menu`'s `top-[60%]` are correct as-is. `drawer`'s `w-[100px]` and `header`'s `text-[10px]` are cosmetic and low-risk; `text-[10px]` sits below the type scale's 12px floor, so the scale would need a new step to fix it properly.
+- **28 of 45 components unused by the app.** Expected for a design system, but it marks the components with no production exposure — which is exactly where `avatar` and `carousel` were hiding broken.
+- **10 unreferenced semantic tokens and 43 unused primitives.** Unused palette steps are normal; the 10 semantic ones (`--color-bg-primary`, `--motion-*`, `--spacing-section-gap`) are candidates for removal but harmless.

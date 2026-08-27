@@ -192,6 +192,16 @@
      dark-mode chart series unable to lighten like every other hue. */
   --_color-orange-400: #fb923c;
   --_color-purple-400: #c084fc;
+
+  /* ── Focus ring ──
+     Composed from four parts so overriding any one of them actually works.
+     Each mode block below sets only --focus-ring-color and --focus-ring-halo;
+     the composed shadow is declared once here and resolves at use time. */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --focus-ring-shadow:
+    0 0 0 var(--focus-ring-offset) var(--focus-ring-halo),
+    0 0 0 calc(var(--focus-ring-offset) + var(--focus-ring-width)) var(--focus-ring-color);
 }
 
 /* ============================================================
@@ -204,7 +214,9 @@
   --color-surface-canvas: var(--_color-white);
   --color-surface-elevated: var(--_color-white);
   --color-surface-overlay: var(--_color-white);
-  --color-surface-sunken: var(--_color-slate-100);
+  /* slate-50, not slate-100: the darker fill dropped text-subtle to 4.34:1,
+     just under WCAG AA. This is also the value TOKENS.md always documented. */
+  --color-surface-sunken: var(--_color-slate-50);
   --color-surface-popover: var(--_color-white);
 
   /* Background */
@@ -258,18 +270,25 @@
   --color-status-info-border: var(--_color-blue-200);
 
   /* Text */
-  --color-text-primary: var(--_color-slate-900);
-  --color-text-strong: var(--_color-slate-700);
-  --color-text-secondary: var(--_color-slate-600);
-  --color-text-subtle: var(--_color-slate-500);
-  --color-text-tertiary: var(--_color-slate-500); /* legacy alias of subtle */
-  --color-text-muted: var(--_color-slate-400);
-  --color-text-disabled: var(--_color-slate-300);
+  /* Text ladder — four prominence levels, every one clearing WCAG AA (4.5:1)
+     on canvas, elevated, overlay and sunken. slate-500 is the floor: slate-400
+     reaches only 2.56:1 on white, so nothing readable may sit below it. */
+  --color-text-primary: var(--_color-slate-900);   /* 17.4:1 on white */
+  --color-text-strong: var(--_color-slate-700);    /* 10.1:1 */
+  --color-text-secondary: var(--_color-slate-600); /*  7.4:1 */
+  --color-text-subtle: var(--_color-slate-500);    /*  4.8:1 — AA floor */
+  /* Deprecated aliases. `tertiary` always duplicated `subtle`; `muted` was
+     slate-400, which failed AA for text. Both now resolve to subtle so existing
+     markup keeps working — use text-subtle in new code. */
+  --color-text-tertiary: var(--color-text-subtle);
+  --color-text-muted: var(--color-text-subtle);
+  /* Exempt from contrast minimums under WCAG 1.4.3 (disabled controls). */
+  --color-text-disabled: var(--_color-slate-400);
   --color-text-on-accent: var(--_color-white);
   --color-text-on-destructive: var(--_color-white);
   --color-text-on-inverse: var(--_color-white);
   --color-text-link: var(--_color-blue-600);
-  --color-text-placeholder: var(--_color-slate-400);
+  --color-text-placeholder: var(--_color-slate-500);
 
   /* Border */
   --color-border-subtle: var(--_color-slate-100);
@@ -300,7 +319,7 @@
 
   /* Focus ring */
   --focus-ring-color: var(--_color-blue-500);
-  --focus-ring-shadow: 0 0 0 2px var(--_color-white), 0 0 0 4px var(--_color-blue-500);
+  --focus-ring-halo: var(--_color-white);
 
   /* Chart — semantic roles (1–2 series) */
   --color-chart-primary: var(--_color-blue-600);
@@ -362,7 +381,7 @@
   --color-icon-interactive: var(--_color-blue-600);
 
   --focus-ring-color: var(--_color-blue-600);
-  --focus-ring-shadow: 0 0 0 2px var(--_color-white), 0 0 0 4px var(--_color-blue-600);
+  --focus-ring-halo: var(--_color-white);
 }
 
 /* ============================================================
@@ -420,12 +439,14 @@
   --color-status-info-bg: var(--_color-blue-950);
   --color-status-info-border: var(--_color-blue-800);
 
-  --color-text-primary: var(--_color-slate-50);
-  --color-text-strong: var(--_color-slate-200);
-  --color-text-secondary: var(--_color-slate-400);
-  --color-text-subtle: var(--_color-slate-500);
-  --color-text-tertiary: var(--_color-slate-500); /* legacy alias of subtle */
-  --color-text-muted: var(--_color-slate-500);
+  /* Dark ladder shifted one step lighter than before: slate-500 reached only
+     3.07:1 on the overlay surface. slate-400 is the dark-mode AA floor. */
+  --color-text-primary: var(--_color-slate-50);    /* 15.9:1 on elevated */
+  --color-text-strong: var(--_color-slate-200);    /* 12.3:1 */
+  --color-text-secondary: var(--_color-slate-300); /* 12.3:1 */
+  --color-text-subtle: var(--_color-slate-400);    /*  7.0:1 — AA floor */
+  --color-text-tertiary: var(--color-text-subtle);
+  --color-text-muted: var(--color-text-subtle);
   --color-text-disabled: var(--_color-slate-600);
   --color-text-on-accent: var(--_color-slate-900);
   --color-text-on-destructive: var(--_color-white);
@@ -455,7 +476,8 @@
   --shadow-popover: var(--_shadow-dark-md);
   --shadow-overlay: var(--_shadow-dark-lg);
 
-  --focus-ring-shadow: 0 0 0 2px var(--_color-slate-950), 0 0 0 4px var(--_color-blue-400);
+  --focus-ring-color: var(--_color-blue-400);
+  --focus-ring-halo: var(--_color-slate-950);
 
   /* Chart — dark. Series lighten so they carry against a dark canvas;
      the sequential ramp inverts so "more" stays "more visible". */
@@ -504,7 +526,8 @@
   --color-action-ghost-bg-hover: var(--_color-blue-900);
   --color-action-ghost-bg-active: var(--_color-blue-800);
 
-  --focus-ring-shadow: 0 0 0 2px var(--_color-slate-950), 0 0 0 4px var(--_color-blue-400);
+  --focus-ring-color: var(--_color-blue-400);
+  --focus-ring-halo: var(--_color-slate-950);
 }
 
 /* ============================================================
@@ -615,69 +638,3 @@
   --control-font-lg: var(--_font-size-sm);
 }
 
-/* ============================================================
-   COMPONENT TOKENS
-   ============================================================ */
-:root {
-  /* Button */
-  --button-radius: var(--radius-control);
-  --button-font-weight: var(--_font-weight-medium);
-  --button-transition: background-color var(--motion-fast), color var(--motion-fast), border-color var(--motion-fast), box-shadow var(--motion-fast);
-
-  /* Input */
-  --input-radius: var(--radius-control);
-  --input-border-width: var(--_border-width-md);
-  --input-transition: border-color var(--motion-fast), box-shadow var(--motion-fast);
-
-  /* Card */
-  --card-radius: var(--radius-card);
-  --card-border-width: var(--_border-width-md);
-  --card-bg: var(--color-surface-elevated);
-  --card-border: var(--color-border-default);
-  --card-shadow: var(--shadow-card);
-
-  /* Badge */
-  --badge-radius: var(--radius-pill);
-
-  /* Dialog */
-  --dialog-radius: var(--radius-overlay);
-  --dialog-shadow: var(--shadow-overlay);
-  --dialog-z: var(--z-modal);
-
-  /* Popover */
-  --popover-radius: var(--radius-overlay);
-  --popover-shadow: var(--shadow-popover);
-  --popover-z: var(--z-popover);
-
-  /* Tooltip */
-  --tooltip-radius: var(--_radius-sm);
-  --tooltip-z: var(--z-tooltip);
-
-  /* Select */
-  --select-radius: var(--radius-control);
-
-  /* Switch */
-  --switch-radius: var(--radius-pill);
-  --switch-thumb-bg: var(--color-control-thumb);
-
-  /* Slider */
-  --slider-thumb-bg: #ffffff;
-  --slider-radius: var(--radius-pill);
-
-  /* Progress */
-  --progress-radius: var(--radius-pill);
-
-  /* Avatar */
-  --avatar-radius: var(--radius-pill);
-
-  /* Toast */
-  --toast-radius: var(--radius-card);
-  --toast-shadow: var(--shadow-overlay);
-  --toast-z: var(--z-toast);
-
-  /* Accordion */
-  --accordion-border: var(--color-border-default);
-
-  /* Separator */
-  --separator-color: var(--color-border-default);
-}

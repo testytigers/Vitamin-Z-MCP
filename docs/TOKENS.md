@@ -39,7 +39,32 @@ Primitives (_color-slate-900)
 Semantic tokens (--color-text-primary → var(--_color-slate-900))
     ↓
 Tailwind utilities (text-primary, bg-elevated, border-subtle, rounded-control)
+    ↓
+Component variants (cva maps in each component)
 ```
+
+**There is deliberately no component-token layer.** An earlier version defined 32
+`--button-*` / `--card-* `/ `--dialog-*` tokens; every one was a pass-through to a
+semantic token (`--button-radius: var(--radius-control)`) and **none was ever read**
+by any component. They were deleted rather than wired up, because in a Tailwind +
+cva system the variant map *is* the component contract:
+
+```tsx
+// button.tsx — this is the component layer
+primary: "bg-action-primary text-on-accent hover:bg-action-primary-hover"
+```
+
+Duplicating that mapping into CSS variables means maintaining the same decision
+twice, and cva can't consume the variables cleanly anyway (`bg-[var(--button-bg)]`
+forfeits IntelliSense and purging).
+
+Create a component token only where a component must **diverge** from the semantic
+layer — a value semantics can't express, or a genuine per-component brand override.
+`--color-control-thumb` is the one current example: "the knob on a switch" is not a
+semantic concept. A pass-through token is a liability, not architecture.
+
+> If Figma↔code variable parity ever becomes a requirement, **generate** this layer
+> from the cva variants rather than hand-maintaining both.
 
 **Class naming.** Colours are registered under Tailwind's property-specific keys
 (`textColor`, `backgroundColor`, `borderColor`, `ringColor`, `divideColor`) rather
@@ -85,6 +110,8 @@ correctly with any prefix: `bg-action-primary`, `text-status-error-fg`.
 - `overlay` — dialogs, modals
 - `sunken` — inset areas, table headers, sidebar backgrounds
 - `popover` — dropdowns, tooltips, select content
+- `thumb` — the knob on a switch or slider. Stays light in both modes: it reads as a
+  physical handle above the track, not as a surface behind content.
 
 ### Background (tonal fills)
 
@@ -121,6 +148,8 @@ The accent is **app-configurable**. Whatever its hue, always go through the
 | `bg-action-primary-tint`        | Very light accent tint (row hover, 0.06 opacity) |
 | `bg-action-secondary`           | Secondary button bg (brand-50)   |
 | `bg-action-secondary-hover`     | Secondary button hover (brand-100) |
+| `bg-action-secondary-active`    | Secondary button pressed         |
+| `bg-action-destructive-active`  | Destructive button pressed       |
 
 > Secondary button text + border reuse the **primary color** token directly: `text-action-primary border-action-primary`.
 | `bg-action-ghost-hover`         | Ghost button / nav item hover    |
@@ -132,15 +161,40 @@ The accent is **app-configurable**. Whatever its hue, always go through the
 
 | Tailwind class          | Approx. value | Use case                              |
 |-------------------------|---------------|---------------------------------------|
-| `text-primary`     | slate-900     | Headings, strong labels               |
-| `text-strong`      | slate-700     | Body text, row values                 |
-| `text-secondary`   | slate-600     | Sub-labels, descriptions              |
-| `text-subtle`      | slate-500     | Helper text, timestamps               |
-| `text-muted`       | slate-400     | Placeholders, minor labels            |
-| `text-disabled`    | slate-300     | Disabled states                       |
-| `text-on-accent`   | white         | Text on primary/accent backgrounds    |
-| `text-on-inverse`  | white         | Text on inverse (dark) background     |
-| `text-placeholder` | slate-400     | Input placeholder                     |
+Four prominence levels. Every one clears **WCAG AA (4.5:1)** on all four surfaces
+in both light and dark mode — verified by `npm run audit:tokens`, which resolves
+each token to a hex and computes the ratio.
+
+| Tailwind class        | Light     | Dark      | On white | Use case                     |
+|-----------------------|-----------|-----------|----------|------------------------------|
+| `text-primary`        | slate-900 | slate-50  | 17.4:1   | Headings, strong labels      |
+| `text-strong`         | slate-700 | slate-200 | 10.1:1   | Body text, row values        |
+| `text-secondary`      | slate-600 | slate-300 | 7.4:1    | Sub-labels, descriptions     |
+| `text-subtle`         | slate-500 | slate-400 | 4.8:1    | Helper text, timestamps — **the AA floor** |
+
+**Nothing readable may sit below `text-subtle`.** `slate-400` reaches only 2.56:1 on
+white, which fails AA and even the 3:1 non-text minimum.
+
+Contextual and exempt tokens:
+
+| Tailwind class        | Value      | Notes                                          |
+|-----------------------|------------|------------------------------------------------|
+| `text-on-accent`      | white      | On `bg-action-primary` — passes AA both modes   |
+| `text-on-destructive` | white      | On `bg-action-destructive`                      |
+| `text-on-inverse`     | white      | On `bg-inverse`                                 |
+| `text-link`           | blue-600   | Inline links                                    |
+| `text-placeholder`    | slate-500  | Input placeholders — exempt from AA under WCAG 1.4.3, but set at the AA floor anyway |
+| `text-disabled`       | slate-400  | Disabled controls — exempt under WCAG 1.4.3     |
+
+**Deprecated — do not use in new code:**
+
+| Class            | Resolves to    | Why                                                 |
+|------------------|----------------|-----------------------------------------------------|
+| `text-tertiary`  | `text-subtle`  | Always duplicated `subtle`; two names, one value     |
+| `text-muted`     | `text-subtle`  | Was `slate-400` — failed AA for text                 |
+
+Both are aliases, so existing markup keeps working. They will be removed once no
+source references them.
 
 ### Border Colors
 
@@ -166,6 +220,7 @@ The accent is **app-configurable**. Whatever its hue, always go through the
 | `bg-status-warning-bg`      | Warning alert background        |
 | `text-status-info-fg`       | Info text/icon                  |
 | `bg-status-info-bg`         | Info alert background           |
+| `border-status-warning-border` | Warning alert border          |
 | `text-status-attention-fg`  | Attention text/icon (orange — overdue, retries) |
 
 ### Icon Colors

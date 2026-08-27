@@ -115,7 +115,14 @@ const sourceFiles = [
   { path: CSS, text: css },
 ];
 const allSource = sourceFiles.map((f) => f.text).join("\n");
-const docsText = readAll(DOCS, [".md"]).map((f) => f.text).join("\n");
+/* Reference docs only. Reports *about* the DS (this audit, the improvements log)
+   must not count as documentation — an audit that lists a token as undocumented
+   would otherwise mark it documented on the next run. */
+const REPORTS = ["DS-AUDIT.md", "DS-IMPROVEMENTS-LOG.md"];
+const docsText = readAll(DOCS, [".md"])
+  .filter((f) => !REPORTS.includes(path.basename(f.path)))
+  .map((f) => f.text)
+  .join("\n");
 
 /* ── report ────────────────────────────────────────────────── */
 const R = { inventory: {}, findings: [] };
