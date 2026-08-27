@@ -17,7 +17,7 @@ const Slider = React.forwardRef<
     <SliderPrimitive.Thumb
       className={cn(
         "block h-5 w-5 rounded-pill border-2 border-action-primary",
-        "bg-white shadow-control",
+        "bg-thumb shadow-control",
         "transition-[box-shadow] duration-fast",
         "focus-visible:outline-none focus-visible:shadow-focus",
         "disabled:pointer-events-none disabled:opacity-50"

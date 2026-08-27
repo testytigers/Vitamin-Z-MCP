@@ -90,6 +90,7 @@ const config: Config = {
         "tertiary": "var(--color-bg-tertiary)",
         "disabled": "var(--color-bg-disabled)",
         "inverse": "var(--color-bg-inverse)",
+        "thumb": "var(--color-control-thumb)",
       },
 
       borderColor: {

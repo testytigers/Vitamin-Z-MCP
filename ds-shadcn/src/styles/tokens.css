@@ -288,6 +288,10 @@
   --color-icon-interactive: var(--_color-slate-600);
   --color-icon-disabled: var(--_color-slate-300);
 
+  /* Control thumb — the knob on a switch or slider. Stays light in both modes:
+     it reads as a physical handle sitting above the track, not as a surface. */
+  --color-control-thumb: var(--_color-white);
+
   /* Shadow — light mode */
   --shadow-control: var(--_shadow-xs);
   --shadow-card: var(--_shadow-sm);
@@ -443,6 +447,7 @@
   --color-icon-on-inverse: var(--_color-slate-900);
   --color-icon-interactive: var(--_color-slate-300);
   --color-icon-disabled: var(--_color-slate-600);
+  --color-control-thumb: var(--_color-slate-100);
 
   /* Shadow — dark mode (v1.2 fix) */
   --shadow-control: var(--_shadow-dark-xs);
@@ -653,7 +658,7 @@
 
   /* Switch */
   --switch-radius: var(--radius-pill);
-  --switch-thumb-bg: #ffffff;
+  --switch-thumb-bg: var(--color-control-thumb);
 
   /* Slider */
   --slider-thumb-bg: #ffffff;

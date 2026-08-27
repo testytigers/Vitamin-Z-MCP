@@ -17,7 +17,10 @@
     "docs:serve": "node docs/site/serve.mjs",
     "verify": "node scripts/verify-ds.mjs",
     "smoke": "node scripts/smoke-tools.mjs",
-    "test": "npm run build && npm run verify && npm run smoke"
+    "test": "npm run build && npm run verify && npm run smoke",
+    "audit:tokens": "node scripts/audit-tokens.mjs",
+    "audit:components": "node scripts/audit-components.mjs",
+    "audit": "npm run audit:tokens && npm run audit:components"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
