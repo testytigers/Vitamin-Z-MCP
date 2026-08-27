@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en" data-appearance="light" data-brand="default" data-density="default">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DS v1.2 — visual verification</title>
+
+<!--
+  Visual verification surface.
+
+  Unlike showcase.html, this page does NOT redefine tokens. It imports
+  src/styles/tokens.css and the compiled Tailwind utilities, so what renders
+  here is exactly what ships. showcase.html forked the token layer into its own
+  abbreviated names (--txt-1, --act-p, --srf) and drifted: it still shows
+  sunken as slate-100, text-muted as slate-400 and status foregrounds at -600,
+  all of which were changed to fix WCAG failures. Never copy tokens into a
+  preview; import them, or the preview lies.
+
+  Build the CSS first:
+    npm run verify:css
+-->
+<link rel="stylesheet" href="./src/styles/tokens.css" />
+<link rel="stylesheet" href="./verify.css" />
+<style>
+  body { font-family: var(--_font-sans); }
+  .swatch { width: 100%; height: 44px; border-radius: var(--radius-control); }
+  .grid-swatch { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  code { font-family: var(--_font-mono); font-size: 12px; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+</style>
+</head>
+<body class="bg-sunken text-primary">
+
+<!-- ── Mode switcher ─────────────────────────────────────────── -->
+<header class="bg-elevated border-b border-chrome px-6 py-4 flex flex-wrap gap-inline-lg items-center sticky top-0 z-sticky">
+  <strong class="text-base">DS v1.2 — verification</strong>
+  <div class="row">
+    <label class="text-sm text-secondary">appearance
+      <select id="appearance" class="ms-2 h-9 rounded-control border border-control bg-canvas text-primary px-2 text-sm">
+        <option value="light">light</option><option value="dark">dark</option>
+      </select>
+    </label>
+    <label class="text-sm text-secondary">brand
+      <select id="brand" class="ms-2 h-9 rounded-control border border-control bg-canvas text-primary px-2 text-sm">
+        <option value="default">default</option><option value="brand">brand</option>
+      </select>
+    </label>
+    <label class="text-sm text-secondary">density
+      <select id="density" class="ms-2 h-9 rounded-control border border-control bg-canvas text-primary px-2 text-sm">
+        <option value="default">default</option><option value="compact">compact</option>
+      </select>
+    </label>
+    <button id="reduce" class="h-9 px-comp-px rounded-control border border-control bg-canvas text-primary text-sm">
+      simulate reduced-motion
+    </button>
+  </div>
+  <span id="state" class="text-xs text-subtle font-mono"></span>
+</header>
+
+<main class="p-8 max-w-screen-xl mx-auto space-y-stack-2xl">
+
+  <!-- ── Text ladder: every level must be legible on every surface ── -->
+  <section>
+    <h2 class="text-xl font-semibold mb-stack-lg">Text ladder on all four surfaces</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-stack-lg">
+      <div class="bg-canvas p-5 rounded-card border border-default">
+        <p class="text-xs text-subtle mb-2 font-mono">bg-canvas</p>
+        <p class="text-primary text-sm">text-primary</p>
+        <p class="text-strong text-sm">text-strong</p>
+        <p class="text-secondary text-sm">text-secondary</p>
+        <p class="text-subtle text-sm">text-subtle (AA floor)</p>
+        <p class="text-disabled text-sm">text-disabled (exempt)</p>
+      </div>
+      <div class="bg-elevated p-5 rounded-card border border-default">
+        <p class="text-xs text-subtle mb-2 font-mono">bg-elevated</p>
+        <p class="text-primary text-sm">text-primary</p>
+        <p class="text-strong text-sm">text-strong</p>
+        <p class="text-secondary text-sm">text-secondary</p>
+        <p class="text-subtle text-sm">text-subtle</p>
+        <p class="text-disabled text-sm">text-disabled</p>
+      </div>
+      <div class="bg-sunken p-5 rounded-card border border-default">
+        <p class="text-xs text-subtle mb-2 font-mono">bg-sunken</p>
+        <p class="text-primary text-sm">text-primary</p>
+        <p class="text-strong text-sm">text-strong</p>
+        <p class="text-secondary text-sm">text-secondary</p>
+        <p class="text-subtle text-sm">text-subtle</p>
+        <p class="text-disabled text-sm">text-disabled</p>
+      </div>
+      <div class="bg-overlay p-5 rounded-card border border-default shadow-overlay">
+        <p class="text-xs text-subtle mb-2 font-mono">bg-overlay</p>
+        <p class="text-primary text-sm">text-primary</p>
+        <p class="text-strong text-sm">text-strong</p>
+        <p class="text-secondary text-sm">text-secondary</p>
+        <p class="text-subtle text-sm">text-subtle</p>
+        <p class="text-disabled text-sm">text-disabled</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Borders: control vs decorative vs chrome ─────────────── -->
+  <section>
+    <h2 class="text-xl font-semibold mb-stack-lg">Borders — control (3:1) vs decorative</h2>
+    <div class="row">
+      <div class="bg-elevated p-4 rounded-card border-2 border-control"><code>border-control</code><br><span class="text-xs text-subtle">inputs — WCAG 1.4.11</span></div>
+      <div class="bg-elevated p-4 rounded-card border-2 border-chrome"><code>border-chrome</code><br><span class="text-xs text-subtle">sidebar / header, brand-invariant</span></div>
+      <div class="bg-elevated p-4 rounded-card border-2 border-default"><code>border-default</code><br><span class="text-xs text-subtle">cards (decorative)</span></div>
+      <div class="bg-elevated p-4 rounded-card border-2 border-subtle"><code>border-subtle</code><br><span class="text-xs text-subtle">dividers</span></div>
+    </div>
+  </section>
+
+  <!-- ── Inputs: the control border must be findable ──────────── -->
+  <section>
+    <h2 class="text-xl font-semibold mb-stack-lg">Controls — focus ring &amp; control border</h2>
+    <div class="row">
+      <input class="h-control-md rounded-control border border-control bg-canvas text-primary placeholder:text-placeholder px-comp-px text-sm focus-visible:outline-none focus-visible:border-focus focus-visible:shadow-focus" placeholder="click to focus…" />
+      <input class="h-control-md rounded-control border border-error bg-canvas text-primary px-comp-px text-sm" value="invalid state" aria-invalid="true" />
+      <input class="h-control-md rounded-control border border-control bg-disabled text-disabled px-comp-px text-sm" value="disabled" disabled />
+      <button class="h-control-md px-comp-px rounded-control bg-action-primary text-on-accent text-sm font-medium focus-visible:outline-none focus-visible:shadow-focus">Primary</button>
+      <button class="h-control-md px-comp-px rounded-control bg-action-secondary text-primary text-sm font-medium border border-default">Secondary</button>
+      <button class="h-control-md px-comp-px rounded-control bg-action-destructive text-on-destructive text-sm font-medium">Destructive</button>
+    </div>
+    <p class="text-xs text-subtle mt-stack-sm">Tab through these — the ring is composed from
+      <code>--focus-ring-width/offset/color/halo</code>.</p>
+  </section>
+
+  <!-- ── Status: colour must NOT be the only signal ───────────── -->
+  <section>
+    <h2 class="text-xl font-semibold mb-stack-lg">Status — colour + icon (WCAG 1.4.1)</h2>
+    <p class="text-sm text-secondary mb-stack-md">
+      Squint, or view in greyscale: the icons must still tell these apart.
+      error vs success is ΔE 8.7 under deuteranopia by colour alone.
+    </p>
+    <div class="row" id="badges">
+      <span class="inline-flex items-center gap-inline-xs rounded-pill px-2.5 py-0.5 text-xs font-medium bg-status-success-bg text-status-success-fg border border-status-success-border">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>Delivered</span>
+      <span class="inline-flex items-center gap-inline-xs rounded-pill px-2.5 py-0.5 text-xs font-medium bg-status-warning-bg text-status-warning-fg border border-status-warning-border">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>Pending</span>
+      <span class="inline-flex items-center gap-inline-xs rounded-pill px-2.5 py-0.5 text-xs font-medium bg-status-error-bg text-status-error-fg border border-status-error-border">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>Failed</span>
+      <span class="inline-flex items-center gap-inline-xs rounded-pill px-2.5 py-0.5 text-xs font-medium bg-status-info-bg text-status-info-fg border border-status-info-border">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>In review</span>
+      <span class="inline-flex items-center rounded-pill px-2.5 py-0.5 text-xs font-medium bg-secondary text-primary">default</span>
+      <span class="inline-flex items-center rounded-pill px-2.5 py-0.5 text-xs font-medium border border-default text-primary">outline</span>
+    </div>
+    <div class="mt-stack-lg space-y-stack-sm">
+      <div role="alert" class="rounded-card border border-status-success-border bg-status-success-bg text-status-success-fg p-4 text-sm">Alert — success, with icon</div>
+      <div role="alert" class="rounded-card border border-status-error-border bg-status-error-bg text-status-error-fg p-4 text-sm">Alert — error, with icon</div>
+    </div>
+  </section>
+
+  <!-- ── Chart palette: the CVD-critical one ──────────────────── -->
+  <section>
+    <h2 class="text-xl font-semibold mb-stack-lg">Chart palette</h2>
+    <p class="text-sm text-secondary mb-stack-md">
+      Categorical 1–6 are colourblind-verified (min ΔE 21.4). 7–8 fall below the
+      threshold and need a second cue. Use the greyscale toggle to sanity-check.
+    </p>
+    <div class="grid-swatch mb-stack-lg" id="cats"></div>
+    <p class="text-sm text-secondary mb-stack-sm">Sequential (low → high, inverts in dark):</p>
+    <div class="grid-swatch" id="seqs"></div>
+  </section>
+
+  <!-- ── Density: spacing + control heights ──────────────────── -->
+  <section>
+    <h2 class="text-xl font-semibold mb-stack-lg">Density</h2>
+    <div class="bg-elevated rounded-card border border-default p-cont-px">
+      <div class="flex flex-col gap-stack-xs mb-stack-md">
+        <div class="bg-tertiary rounded-control" style="height:8px"></div>
+        <div class="bg-tertiary rounded-control" style="height:8px"></div>
+        <div class="bg-tertiary rounded-control" style="height:8px"></div>
+      </div>
+      <div class="row">
+        <button class="h-control-sm px-comp-px rounded-control bg-action-secondary text-primary text-xs border border-default">sm</button>
+        <button class="h-control-md px-comp-px rounded-control bg-action-secondary text-primary text-sm border border-default">md</button>
+        <button class="h-control-lg px-comp-px rounded-control bg-action-secondary text-primary text-sm border border-default">lg</button>
+      </div>
+      <p class="text-xs text-subtle mt-stack-sm">Switch density above — gaps and heights shrink, colours and radii do not.</p>
+    </div>
+  </section>
+
+  <!-- ── Computed-value readout, so numbers can be checked ───── -->
+  <section>
+    <h2 class="text-xl font-semibold mb-stack-lg">Computed values &amp; contrast</h2>
+    <div class="bg-elevated rounded-card border border-default overflow-hidden">
+      <table class="w-full text-sm">
+        <thead class="bg-secondary text-secondary text-xs uppercase">
+          <tr><th class="text-start p-3">token</th><th class="text-start p-3">computed</th><th class="text-start p-3">vs canvas</th><th class="text-start p-3">verdict</th></tr>
+        </thead>
+        <tbody id="readout"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<script>
+const html = document.documentElement;
+const set = (attr, val) => { html.setAttribute(attr, val); render(); };
+document.getElementById("appearance").onchange = (e) => set("data-appearance", e.target.value);
+document.getElementById("brand").onchange = (e) => set("data-brand", e.target.value);
+document.getElementById("density").onchange = (e) => set("data-density", e.target.value);
+let grey = false;
+document.getElementById("reduce").onclick = () => {
+  grey = !grey;
+  document.body.style.filter = grey ? "grayscale(1)" : "";
+  document.getElementById("reduce").textContent = grey ? "colour on" : "greyscale (CVD proxy)";
+};
+
+const cssVar = (n) => getComputedStyle(html).getPropertyValue(n).trim();
+function hexOf(v) {
+  const d = document.createElement("div");
+  d.style.color = v; document.body.appendChild(d);
+  const c = getComputedStyle(d).color; d.remove();
+  const m = /rgba?\((\d+),\s*(\d+),\s*(\d+)/.exec(c);
+  return m ? [+m[1], +m[2], +m[3]] : null;
+}
+const lum = (r) => { const f=(c)=>{c/=255;return c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4);};
+  return 0.2126*f(r[0])+0.7152*f(r[1])+0.0722*f(r[2]); };
+const contrast = (a,b) => { const [x,y]=[lum(a),lum(b)]; return (Math.max(x,y)+0.05)/(Math.min(x,y)+0.05); };
+const toHex = (r) => "#" + r.map((v)=>v.toString(16).padStart(2,"0")).join("");
+
+function render() {
+  document.getElementById("state").textContent =
+    `${html.getAttribute("data-appearance")} · ${html.getAttribute("data-brand")} · ${html.getAttribute("data-density")}`;
+
+  const cats = document.getElementById("cats");
+  cats.innerHTML = "";
+  for (let i = 1; i <= 8; i++) {
+    const v = cssVar(`--color-chart-cat-${i}`);
+    const safe = i <= 6;
+    cats.insertAdjacentHTML("beforeend",
+      `<div><div class="swatch" style="background:${v}"></div>
+       <code class="text-subtle">cat-${i}</code>
+       <span class="text-xs ${safe ? "text-secondary" : "text-status-warning-fg"}">${safe ? "CVD-safe" : "needs 2nd cue"}</span></div>`);
+  }
+  const seqs = document.getElementById("seqs");
+  seqs.innerHTML = "";
+  for (let i = 1; i <= 5; i++)
+    seqs.insertAdjacentHTML("beforeend",
+      `<div><div class="swatch" style="background:${cssVar(`--color-chart-seq-${i}`)}"></div><code class="text-subtle">seq-${i}</code></div>`);
+
+  // contrast readout against the page canvas
+  const canvas = hexOf(cssVar("--color-surface-canvas"));
+  const rows = [
+    ["--color-text-primary", 4.5], ["--color-text-strong", 4.5],
+    ["--color-text-secondary", 4.5], ["--color-text-subtle", 4.5],
+    ["--color-border-control", 3], ["--color-icon-muted", 3],
+    ["--color-focus-ring-color", 3], ["--focus-ring-color", 3],
+  ];
+  const tb = document.getElementById("readout");
+  tb.innerHTML = "";
+  for (const [tok, min] of rows) {
+    const v = cssVar(tok); if (!v) continue;
+    const rgb = hexOf(v); if (!rgb || !canvas) continue;
+    const c = contrast(rgb, canvas);
+    const ok = c >= min;
+    tb.insertAdjacentHTML("beforeend",
+      `<tr class="border-t border-subtle">
+         <td class="p-3"><code>${tok.replace("--color-","")}</code></td>
+         <td class="p-3"><code>${toHex(rgb)}</code></td>
+         <td class="p-3">${c.toFixed(2)}:1</td>
+         <td class="p-3 ${ok ? "text-status-success-fg" : "text-status-error-fg"}">${ok ? "PASS" : "FAIL (needs " + min + ")"}</td>
+       </tr>`);
+  }
+}
+render();
+</script>
+</body>
+</html>

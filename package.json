@@ -21,7 +21,8 @@
     "audit:tokens": "node scripts/audit-tokens.mjs",
     "audit:components": "node scripts/audit-components.mjs",
     "audit": "npm run audit:tokens && npm run audit:components && npm run audit:full",
-    "audit:full": "node scripts/audit-full.mjs"
+    "audit:full": "node scripts/audit-full.mjs",
+    "verify:css": "tailwindcss -c ds-shadcn/tailwind.config.ts -i /dev/stdin -o ds-shadcn/verify.css --content ds-shadcn/verify.html <<< \"@tailwind base;@tailwind components;@tailwind utilities;\""
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",

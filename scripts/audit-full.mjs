@@ -57,6 +57,17 @@ const MODES = {
   "dark+brand": '[data-appearance="dark"][data-brand="brand"]',
   compact: '[data-density="compact"]',
 };
+
+/* Effective cascade per rendered combination. Checking only `light` and `dark`
+   missed light/brand entirely — brand tints the sunken surface, which dropped
+   text-subtle to 4.37:1. A mode block is a *diff*, so contrast has to be
+   measured on the merged result, not on the block. */
+const COMBOS = {
+  "light/default": ["light"],
+  "light/brand": ["light", "brand"],
+  "dark/default": ["light", "dark"],
+  "dark/brand": ["light", "dark", "brand", "dark+brand"],
+};
 const modeDefs = {};
 for (const [k, sel] of Object.entries(MODES)) {
   const b = block(sel);
@@ -229,6 +240,55 @@ const docText = (() => {
 }
 
 /* ═══════════════ C. ACCESSIBILITY ═══════════════ */
+
+// C0 — contrast across every rendered mode combination
+{
+  function resolveIn(tok, layerNames, seen = new Set()) {
+    if (seen.has(tok)) return null;
+    seen.add(tok);
+    let v;
+    for (const n of layerNames) if (modeDefs[n]?.[tok] !== undefined) v = modeDefs[n][tok];
+    if (v === undefined) v = allDefs[tok];
+    if (v === undefined) return null;
+    const ref = /^var\((--[a-zA-Z0-9_-]+)\)$/.exec(String(v).trim());
+    return ref ? resolveIn(ref[1], layerNames, seen) : String(v).trim();
+  }
+  const BODY = ["primary", "strong", "secondary", "subtle"];
+  const SURF = ["canvas", "elevated", "sunken", "overlay"];
+  for (const [combo, layers] of Object.entries(COMBOS)) {
+    for (const t of BODY) {
+      const tv = resolveIn(`--color-text-${t}`, layers);
+      if (!tv || !/^#/.test(tv)) continue;
+      for (const s2 of SURF) {
+        const sv = resolveIn(`--color-surface-${s2}`, layers);
+        if (!sv || !/^#/.test(sv)) continue;
+        const c = cr(tv, sv);
+        if (c && c < 4.5)
+          A("error", "a11y", `text-${t} on ${s2} fails AA in ${combo}`, `${tv} on ${sv} = ${c.toFixed(2)}:1`);
+      }
+    }
+    for (const [tok, min, label] of [["--color-border-control", 3, "border-control"],
+                                     ["--color-icon-muted", 3, "icon-muted"],
+                                     ["--focus-ring-color", 3, "focus ring"]]) {
+      const v = resolveIn(tok, layers);
+      if (!v || !/^#/.test(v)) continue;
+      for (const s2 of SURF) {
+        const sv = resolveIn(`--color-surface-${s2}`, layers);
+        if (!sv || !/^#/.test(sv)) continue;
+        const c = cr(v, sv);
+        if (c && c < min)
+          A("error", "a11y", `${label} below ${min}:1 on ${s2} in ${combo}`, `${c.toFixed(2)}:1`);
+      }
+    }
+    for (const [t, bg, label] of [["--color-text-on-accent", "--color-action-primary-bg", "on-accent/primary"],
+                                  ["--color-text-on-destructive", "--color-action-destructive-bg", "on-destructive/destructive"]]) {
+      const tv = resolveIn(t, layers), bv = resolveIn(bg, layers);
+      if (!tv || !bv || !/^#/.test(tv) || !/^#/.test(bv)) continue;
+      const c = cr(tv, bv);
+      if (c && c < 4.5) A("error", "a11y", `${label} fails AA in ${combo}`, `${c.toFixed(2)}:1`);
+    }
+  }
+}
 
 // C1 — status colours must be distinguishable from each other under CVD
 {
@@ -435,6 +495,21 @@ for (const file of components) {
     }
   if (suspicious.size)
     A("error", "docs", `${suspicious.size} class(es) in doc code samples don't exist or are forbidden`, [...suspicious].join(", "));
+}
+
+// E3 — a preview page must import tokens.css, never redefine tokens
+{
+  for (const f of ["showcase.html", "verify.html"]) {
+    const fp = path.join(ROOT, "ds-shadcn", f);
+    if (!fs.existsSync(fp)) continue;
+    const t = fs.readFileSync(fp, "utf8");
+    const importsTokens = /tokens\.css/.test(t);
+    const redefines = (t.match(/^\s*--[a-zA-Z0-9_-]+\s*:/gm) || []).length;
+    if (!importsTokens && redefines > 20)
+      A(/STALE/.test(t.slice(0, 2000)) ? "info" : "error", "docs",
+        `${f} defines ${redefines} tokens of its own and never imports tokens.css`,
+        "A preview that copies tokens will drift and then lie about what ships. Import them.");
+  }
 }
 
 /* ═══════════════ OUTPUT ═══════════════ */

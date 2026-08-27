@@ -20,6 +20,10 @@
   --_color-slate-900: #0f172a;
   --_color-slate-950: #020617;
 
+  /* A lighter tint than blue-50 for the brand canvas: blue-50 is darker in
+     luminance than slate-50, which pushed text-subtle to 4.37:1 in light/brand
+     — the only combination nothing had ever measured. */
+  --_color-blue-25: #f7fbff;
   --_color-blue-50: #eff6ff;
   --_color-blue-100: #dbeafe;
   --_color-blue-200: #bfdbfe;
@@ -377,7 +381,7 @@
    SEMANTIC TOKENS — Light / Brand override
    ============================================================ */
 [data-brand="brand"] {
-  --color-surface-sunken: var(--_color-blue-50);
+  --color-surface-sunken: var(--_color-blue-25); /* 4.58:1 for text-subtle */
   --color-bg-primary: var(--_color-white);
   --color-bg-secondary: var(--_color-blue-50);
   --color-bg-tertiary: var(--_color-blue-100);
