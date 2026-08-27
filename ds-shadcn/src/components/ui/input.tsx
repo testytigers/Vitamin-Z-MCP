@@ -3,14 +3,28 @@ import { cn } from "@/lib/utils";
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   size?: "sm" | "md" | "lg";
+  /**
+   * Marks the field invalid. Sets `aria-invalid` as well as the error border —
+   * previously this prop only changed the colour, so assistive tech had no way
+   * to know the field had failed (WCAG 3.3.1, Error Identification).
+   */
   error?: boolean;
+  /**
+   * id(s) of the elements describing this field — helper text, error message.
+   * Merged with any `aria-describedby` the caller passes.
+   */
+  describedBy?: string;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, size = "md", error, ...props }, ref) => (
+  ({ className, type, size = "md", error, describedBy, ...props }, ref) => (
     <input
       type={type}
       ref={ref}
+      aria-invalid={error || undefined}
+      aria-describedby={
+        [describedBy, props["aria-describedby"]].filter(Boolean).join(" ") || undefined
+      }
       className={cn(
         "flex w-full rounded-control",
         "border border-control bg-canvas",

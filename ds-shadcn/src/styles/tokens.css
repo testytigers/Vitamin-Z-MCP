@@ -262,17 +262,17 @@
   /* Status */
   --color-status-error-fg: var(--_color-red-700);   /* 5.91:1 on error-bg */
   --color-status-error-bg: var(--_color-red-50);
-  --color-status-error-border: var(--_color-red-200);
+  --color-status-error-border: var(--_color-red-300);
   --color-status-success-fg: var(--_color-green-700); /* 4.79:1 on success-bg */
   --color-status-success-bg: var(--_color-green-50);
-  --color-status-success-border: var(--_color-green-200);
+  --color-status-success-border: var(--_color-green-300);
   --color-status-warning-fg: var(--_color-yellow-700); /* 4.76:1 on warning-bg */
   --color-status-warning-bg: var(--_color-yellow-50);
-  --color-status-warning-border: var(--_color-yellow-200);
+  --color-status-warning-border: var(--_color-yellow-300);
   --color-status-info-fg: var(--_color-blue-600);
   --color-status-attention-fg: var(--_color-orange-600);
   --color-status-info-bg: var(--_color-blue-50);
-  --color-status-info-border: var(--_color-blue-200);
+  --color-status-info-border: var(--_color-blue-300);
 
   /* Text */
   /* Text ladder — four prominence levels, every one clearing WCAG AA (4.5:1)
@@ -302,6 +302,12 @@
      1.23:1 — fine for decorative card borders and dividers (exempt), not for
      an input outline. Use border-control on anything the user operates. */
   --color-border-control: var(--_color-slate-500);
+  /* App chrome — the sidebar edge and header rule. Deliberately NOT overridden
+     by brand mode: structural chrome stays neutral while accents change. This
+     token exists because TEMPLATE_STYLE.md previously told authors to hardcode
+     `border-slate-200` "to avoid brand blue", which broke the no-raw-colour rule
+     to work around a missing concept. */
+  --color-border-chrome: var(--_color-slate-200);
   --color-border-hover: var(--_color-slate-300);
   --color-border-focus: var(--_color-blue-500);
   --color-border-disabled: var(--_color-slate-200);
@@ -381,6 +387,7 @@
   --color-action-primary-bg-hover: var(--_color-blue-500);
   --color-action-primary-bg-active: var(--_color-blue-700);
   --color-action-primary-bg-subtle: rgba(37, 99, 235, 0.12);
+  --color-action-primary-bg-tint: rgba(37, 99, 235, 0.06);
 
   --color-action-secondary-bg: var(--_color-blue-50);
   --color-action-secondary-bg-hover: var(--_color-blue-100);
@@ -474,6 +481,7 @@
   --color-border-subtle: var(--_color-slate-800);
   --color-border-default: var(--_color-slate-700);
   --color-border-control: var(--_color-slate-500); /* 3.75:1 on elevated */
+  --color-border-chrome: var(--_color-slate-700);
   --color-border-hover: var(--_color-slate-600);
   --color-border-focus: var(--_color-blue-400);
   --color-border-disabled: var(--_color-slate-800);
@@ -545,6 +553,17 @@
   --color-action-secondary-bg-hover: var(--_color-blue-800);
   --color-action-ghost-bg-hover: var(--_color-blue-900);
   --color-action-ghost-bg-active: var(--_color-blue-800);
+  /* Re-derived for dark+brand: brand mode overrides these, and without repeating
+     them here the combination silently fell back to the neutral dark values. */
+  --color-action-primary-bg-subtle: rgba(96, 165, 250, 0.18);
+  --color-action-primary-bg-tint: rgba(96, 165, 250, 0.10);
+  --color-action-secondary-bg-active: var(--_color-blue-700);
+  --color-action-link-text: var(--_color-blue-300);
+  --color-action-link-text-hover: var(--_color-blue-200);
+  --color-border-default: var(--_color-blue-800);
+  --color-border-hover: var(--_color-blue-700);
+  --color-border-focus: var(--_color-blue-400);
+  --color-icon-interactive: var(--_color-blue-400);
 
   --focus-ring-color: var(--_color-blue-400);
   --focus-ring-halo: var(--_color-slate-950);

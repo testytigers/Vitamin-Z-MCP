@@ -121,7 +121,7 @@ export function Header({
           "px-6",
           // Colours — white bar on the same plane as the sidebar
           "bg-elevated text-primary",
-          "border-b border-default",
+          "border-b border-chrome",
           // Stacking
           "z-sticky",
           className
@@ -187,7 +187,7 @@ export function Header({
               className={cn(
                 "h-9 w-56 lg:w-72 rounded-control",
                 "border border-default bg-sunken",
-                "pl-9 pr-10 text-sm",
+                "ps-9 pe-10 text-sm",
                 "text-primary placeholder:text-placeholder",
                 "focus:outline-none focus:ring-1 focus:ring-focus focus:border-hover",
                 "transition-colors duration-fast"
@@ -244,7 +244,7 @@ export function Header({
               <DropdownMenuTrigger asChild>
                 <button
                   aria-label="User menu"
-                  className="flex items-center gap-inline-sm ml-1 rounded-control hover:opacity-80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-focus transition-opacity duration-fast"
+                  className="flex items-center gap-inline-sm ms-1 rounded-control hover:opacity-80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-focus transition-opacity duration-fast"
                 >
                   <Avatar className="w-8 h-8 border border-default">
                     <AvatarImage src={user.avatarUrl} alt={user.name} />
@@ -268,19 +268,19 @@ export function Header({
                 <DropdownMenuGroup>
                   <DropdownMenuItem asChild>
                     <Link href="/profile">
-                      <User className="w-4 h-4 mr-2" />
+                      <User className="w-4 h-4 me-2" />
                       Profile
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/billing">
-                      <CreditCard className="w-4 h-4 mr-2" />
+                      <CreditCard className="w-4 h-4 me-2" />
                       Billing
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/settings">
-                      <Settings className="w-4 h-4 mr-2" />
+                      <Settings className="w-4 h-4 me-2" />
                       Settings
                     </Link>
                   </DropdownMenuItem>
@@ -288,7 +288,7 @@ export function Header({
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="/support">
-                    <LifeBuoy className="w-4 h-4 mr-2" />
+                    <LifeBuoy className="w-4 h-4 me-2" />
                     Support
                   </Link>
                 </DropdownMenuItem>
@@ -297,7 +297,7 @@ export function Header({
                   className="text-status-error-fg focus:text-status-error-fg focus:bg-status-error-bg"
                   onClick={onSignOut}
                 >
-                  <LogOut className="w-4 h-4 mr-2" />
+                  <LogOut className="w-4 h-4 me-2" />
                   Sign out
                 </DropdownMenuItem>
               </DropdownMenuContent>

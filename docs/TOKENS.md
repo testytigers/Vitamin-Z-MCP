@@ -203,6 +203,7 @@ source references them.
 | `border-subtle`  | slate-100     | Section dividers, very light separators |
 | `border-default` | slate-200     | Card / panel borders — **decorative only** |
 | `border-control` | slate-500     | **Any control's visible boundary** — inputs, selects, textareas, checkboxes |
+| `border-chrome`  | slate-200     | **App chrome** — sidebar edge, header rule. Brand-invariant. |
 | `border-hover`   | slate-300     | Hovered border                  |
 | `border-focus`   | brand-500 (#156a52) | Focused input ring        |
 | `border-error`   | red-500       | Error state                     |

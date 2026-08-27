@@ -95,6 +95,7 @@ const config: Config = {
 
       borderColor: {
         "control": "var(--color-border-control)",
+        "chrome": "var(--color-border-chrome)",
         "subtle": "var(--color-border-subtle)",
         "default": "var(--color-border-default)",
         "hover": "var(--color-border-hover)",

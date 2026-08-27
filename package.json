@@ -20,7 +20,8 @@
     "test": "npm run build && npm run verify && npm run smoke",
     "audit:tokens": "node scripts/audit-tokens.mjs",
     "audit:components": "node scripts/audit-components.mjs",
-    "audit": "npm run audit:tokens && npm run audit:components"
+    "audit": "npm run audit:tokens && npm run audit:components && npm run audit:full",
+    "audit:full": "node scripts/audit-full.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",

@@ -30,11 +30,11 @@ const ContextMenuSubTrigger = React.forwardRef<
 >(({ className, inset, children, ...props }, ref) => (
   <ContextMenuPrimitive.SubTrigger
     ref={ref}
-    className={cn(itemClass, "data-[state=open]:bg-action-ghost-hover", inset && "pl-8", className)}
+    className={cn(itemClass, "data-[state=open]:bg-action-ghost-hover", inset && "ps-8", className)}
     {...props}
   >
     {children}
-    <ChevronRight className="ml-auto h-4 w-4 text-icon-muted" />
+    <ChevronRight className="ms-auto h-4 w-4 text-icon-muted" />
   </ContextMenuPrimitive.SubTrigger>
 ));
 ContextMenuSubTrigger.displayName = ContextMenuPrimitive.SubTrigger.displayName;
@@ -63,7 +63,7 @@ const ContextMenuItem = React.forwardRef<
 >(({ className, inset, destructive, ...props }, ref) => (
   <ContextMenuPrimitive.Item
     ref={ref}
-    className={cn(itemClass, destructive && "text-status-error-fg hover:bg-status-error-bg focus:bg-status-error-bg", inset && "pl-8", className)}
+    className={cn(itemClass, destructive && "text-status-error-fg hover:bg-status-error-bg focus:bg-status-error-bg", inset && "ps-8", className)}
     {...props}
   />
 ));
@@ -73,7 +73,7 @@ const ContextMenuCheckboxItem = React.forwardRef<
   React.ElementRef<typeof ContextMenuPrimitive.CheckboxItem>,
   React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.CheckboxItem>
 >(({ className, children, checked, ...props }, ref) => (
-  <ContextMenuPrimitive.CheckboxItem ref={ref} className={cn(itemClass, "pl-8", className)} checked={checked} {...props}>
+  <ContextMenuPrimitive.CheckboxItem ref={ref} className={cn(itemClass, "ps-8", className)} checked={checked} {...props}>
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <ContextMenuPrimitive.ItemIndicator><Check className="h-4 w-4" /></ContextMenuPrimitive.ItemIndicator>
     </span>
@@ -86,7 +86,7 @@ const ContextMenuRadioItem = React.forwardRef<
   React.ElementRef<typeof ContextMenuPrimitive.RadioItem>,
   React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.RadioItem>
 >(({ className, children, ...props }, ref) => (
-  <ContextMenuPrimitive.RadioItem ref={ref} className={cn(itemClass, "pl-8", className)} {...props}>
+  <ContextMenuPrimitive.RadioItem ref={ref} className={cn(itemClass, "ps-8", className)} {...props}>
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <ContextMenuPrimitive.ItemIndicator><Circle className="h-2 w-2 fill-current" /></ContextMenuPrimitive.ItemIndicator>
     </span>
@@ -99,7 +99,7 @@ const ContextMenuLabel = React.forwardRef<
   React.ElementRef<typeof ContextMenuPrimitive.Label>,
   React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Label> & { inset?: boolean }
 >(({ className, inset, ...props }, ref) => (
-  <ContextMenuPrimitive.Label ref={ref} className={cn("px-2 py-1.5 text-xs font-semibold text-muted", inset && "pl-8", className)} {...props} />
+  <ContextMenuPrimitive.Label ref={ref} className={cn("px-2 py-1.5 text-xs font-semibold text-muted", inset && "ps-8", className)} {...props} />
 ));
 ContextMenuLabel.displayName = ContextMenuPrimitive.Label.displayName;
 
@@ -112,7 +112,7 @@ const ContextMenuSeparator = React.forwardRef<
 ContextMenuSeparator.displayName = ContextMenuPrimitive.Separator.displayName;
 
 const ContextMenuShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => (
-  <span className={cn("ml-auto text-xs tracking-widest text-muted", className)} {...props} />
+  <span className={cn("ms-auto text-xs tracking-widest text-muted", className)} {...props} />
 );
 ContextMenuShortcut.displayName = "ContextMenuShortcut";
 

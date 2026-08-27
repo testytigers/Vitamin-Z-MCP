@@ -33,11 +33,11 @@ const DropdownMenuSubTrigger = React.forwardRef<
 >(({ className, inset, children, ...props }, ref) => (
   <DropdownMenuPrimitive.SubTrigger
     ref={ref}
-    className={cn(itemClass, "data-[state=open]:bg-action-ghost-hover", inset && "pl-8", className)}
+    className={cn(itemClass, "data-[state=open]:bg-action-ghost-hover", inset && "ps-8", className)}
     {...props}
   >
     {children}
-    <ChevronRight className="ml-auto h-4 w-4 text-icon-muted" />
+    <ChevronRight className="ms-auto h-4 w-4 text-icon-muted" />
   </DropdownMenuPrimitive.SubTrigger>
 ));
 DropdownMenuSubTrigger.displayName = DropdownMenuPrimitive.SubTrigger.displayName;
@@ -71,7 +71,7 @@ const DropdownMenuItem = React.forwardRef<
 >(({ className, inset, destructive, ...props }, ref) => (
   <DropdownMenuPrimitive.Item
     ref={ref}
-    className={cn(itemClass, destructive && "text-status-error-fg hover:bg-status-error-bg focus:bg-status-error-bg", inset && "pl-8", className)}
+    className={cn(itemClass, destructive && "text-status-error-fg hover:bg-status-error-bg focus:bg-status-error-bg", inset && "ps-8", className)}
     {...props}
   />
 ));
@@ -81,7 +81,7 @@ const DropdownMenuCheckboxItem = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.CheckboxItem>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.CheckboxItem>
 >(({ className, children, checked, ...props }, ref) => (
-  <DropdownMenuPrimitive.CheckboxItem ref={ref} className={cn(itemClass, "pl-8", className)} checked={checked} {...props}>
+  <DropdownMenuPrimitive.CheckboxItem ref={ref} className={cn(itemClass, "ps-8", className)} checked={checked} {...props}>
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <DropdownMenuPrimitive.ItemIndicator><Check className="h-4 w-4" /></DropdownMenuPrimitive.ItemIndicator>
     </span>
@@ -94,7 +94,7 @@ const DropdownMenuRadioItem = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.RadioItem>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.RadioItem>
 >(({ className, children, ...props }, ref) => (
-  <DropdownMenuPrimitive.RadioItem ref={ref} className={cn(itemClass, "pl-8", className)} {...props}>
+  <DropdownMenuPrimitive.RadioItem ref={ref} className={cn(itemClass, "ps-8", className)} {...props}>
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <DropdownMenuPrimitive.ItemIndicator><Circle className="h-2 w-2 fill-current" /></DropdownMenuPrimitive.ItemIndicator>
     </span>
@@ -107,7 +107,7 @@ const DropdownMenuLabel = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Label>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Label> & { inset?: boolean }
 >(({ className, inset, ...props }, ref) => (
-  <DropdownMenuPrimitive.Label ref={ref} className={cn("px-2 py-1.5 text-xs font-semibold text-muted", inset && "pl-8", className)} {...props} />
+  <DropdownMenuPrimitive.Label ref={ref} className={cn("px-2 py-1.5 text-xs font-semibold text-muted", inset && "ps-8", className)} {...props} />
 ));
 DropdownMenuLabel.displayName = DropdownMenuPrimitive.Label.displayName;
 
@@ -120,7 +120,7 @@ const DropdownMenuSeparator = React.forwardRef<
 DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName;
 
 const DropdownMenuShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => (
-  <span className={cn("ml-auto text-xs tracking-widest text-muted", className)} {...props} />
+  <span className={cn("ms-auto text-xs tracking-widest text-muted", className)} {...props} />
 );
 DropdownMenuShortcut.displayName = "DropdownMenuShortcut";
 

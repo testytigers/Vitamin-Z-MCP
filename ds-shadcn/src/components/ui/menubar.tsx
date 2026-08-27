@@ -63,11 +63,11 @@ const MenubarSubTrigger = React.forwardRef<
 >(({ className, inset, children, ...props }, ref) => (
   <MenubarPrimitive.SubTrigger
     ref={ref}
-    className={cn(itemClass, "data-[state=open]:bg-action-ghost-hover", inset && "pl-8", className)}
+    className={cn(itemClass, "data-[state=open]:bg-action-ghost-hover", inset && "ps-8", className)}
     {...props}
   >
     {children}
-    <ChevronRight className="ml-auto h-4 w-4 text-icon-muted" />
+    <ChevronRight className="ms-auto h-4 w-4 text-icon-muted" />
   </MenubarPrimitive.SubTrigger>
 ));
 MenubarSubTrigger.displayName = MenubarPrimitive.SubTrigger.displayName;
@@ -103,7 +103,7 @@ const MenubarItem = React.forwardRef<
 >(({ className, inset, destructive, ...props }, ref) => (
   <MenubarPrimitive.Item
     ref={ref}
-    className={cn(itemClass, destructive && "text-status-error-fg hover:bg-status-error-bg", inset && "pl-8", className)}
+    className={cn(itemClass, destructive && "text-status-error-fg hover:bg-status-error-bg", inset && "ps-8", className)}
     {...props}
   />
 ));
@@ -113,7 +113,7 @@ const MenubarCheckboxItem = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.CheckboxItem>,
   React.ComponentPropsWithoutRef<typeof MenubarPrimitive.CheckboxItem>
 >(({ className, children, checked, ...props }, ref) => (
-  <MenubarPrimitive.CheckboxItem ref={ref} className={cn(itemClass, "pl-8", className)} checked={checked} {...props}>
+  <MenubarPrimitive.CheckboxItem ref={ref} className={cn(itemClass, "ps-8", className)} checked={checked} {...props}>
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <MenubarPrimitive.ItemIndicator><Check className="h-4 w-4" /></MenubarPrimitive.ItemIndicator>
     </span>
@@ -126,7 +126,7 @@ const MenubarRadioItem = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.RadioItem>,
   React.ComponentPropsWithoutRef<typeof MenubarPrimitive.RadioItem>
 >(({ className, children, ...props }, ref) => (
-  <MenubarPrimitive.RadioItem ref={ref} className={cn(itemClass, "pl-8", className)} {...props}>
+  <MenubarPrimitive.RadioItem ref={ref} className={cn(itemClass, "ps-8", className)} {...props}>
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <MenubarPrimitive.ItemIndicator><Circle className="h-2 w-2 fill-current" /></MenubarPrimitive.ItemIndicator>
     </span>
@@ -139,7 +139,7 @@ const MenubarLabel = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Label>,
   React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Label> & { inset?: boolean }
 >(({ className, inset, ...props }, ref) => (
-  <MenubarPrimitive.Label ref={ref} className={cn("px-2 py-1.5 text-xs font-semibold text-muted", inset && "pl-8", className)} {...props} />
+  <MenubarPrimitive.Label ref={ref} className={cn("px-2 py-1.5 text-xs font-semibold text-muted", inset && "ps-8", className)} {...props} />
 ));
 MenubarLabel.displayName = MenubarPrimitive.Label.displayName;
 
@@ -152,7 +152,7 @@ const MenubarSeparator = React.forwardRef<
 MenubarSeparator.displayName = MenubarPrimitive.Separator.displayName;
 
 const MenubarShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => (
-  <span className={cn("ml-auto text-xs tracking-widest text-muted", className)} {...props} />
+  <span className={cn("ms-auto text-xs tracking-widest text-muted", className)} {...props} />
 );
 MenubarShortcut.displayName = "MenubarShortcut";
 

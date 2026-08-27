@@ -133,7 +133,7 @@ function SidebarNavItem({ item, isActive }: NavItemProps) {
       {item.badge !== undefined && (
         <Badge
           variant={isActive ? "default" : "outline"}
-          className="ml-auto text-xs tabular-nums"
+          className="ms-auto text-xs tabular-nums"
         >
           {item.badge}
         </Badge>
@@ -176,7 +176,7 @@ export function Sidebar({ nav, upsell, footer, className }: SidebarProps) {
         "w-64 shrink-0 flex flex-col overflow-y-auto",
         // Colours
         "bg-elevated",
-        "border-r border-default",
+        "border-r border-chrome",
         className
       )}
     >

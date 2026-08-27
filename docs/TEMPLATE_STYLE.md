@@ -352,7 +352,7 @@ This keeps indigo for: primary buttons, active nav (`bg-action-primary-subtle`),
   <div className="flex flex-1 overflow-hidden">
 
     {/* Sidebar — WHITE, nav only — NO logo here */}
-    <aside className="w-64 shrink-0 border-r border-slate-200 bg-white flex flex-col justify-between overflow-y-auto">
+    <aside className="w-64 shrink-0 border-r border-chrome bg-elevated flex flex-col justify-between overflow-y-auto">
       {/* Nav sections only */}
     </aside>
 
@@ -382,9 +382,11 @@ Before submitting any dashboard code, verify every point:
 - [ ] Header text is `text-primary`; icons `text-icon-default`
 - [ ] **Logo mark + wordmark are in the header** (left side) — NOT in the sidebar
 - [ ] Sidebar starts directly with nav sections — no logo inside the sidebar
-- [ ] Sidebar background is `bg-white` (literal, not token, to avoid brand tint)
-- [ ] Sidebar border is `border-r border-slate-200` (literal, to avoid brand blue)
-- [ ] Main background is `bg-sunken` (resolves to slate-100 after override)
+- [ ] Sidebar background is `bg-elevated` — brand mode does **not** override
+      `surface-elevated`, so no literal is needed
+- [ ] Sidebar border is `border-r border-chrome` — the brand-invariant chrome
+      token, **not** a raw `border-slate-200`
+- [ ] Main background is `bg-sunken` (slate-50)
 - [ ] Cards use `<Card>` component — `bg-elevated border-default rounded-card shadow-card`
 - [ ] Active nav item uses `bg-action-primary-subtle text-action-primary` (indigo)
 - [ ] Inactive nav hover uses `hover:bg-slate-100 hover:text-primary` (neutral gray)
