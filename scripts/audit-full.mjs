@@ -385,6 +385,34 @@ for (const mode of ["light", "dark"]) {
     A("warn", "a11y", "label.tsx does not associate with a control", "needs htmlFor or the Radix Label root");
 }
 
+// C6 — greyscale separation: can the statuses be told apart without hue?
+{
+  const lumOf = (hex) => { const r = hex2rgb(hex); return r ? lum(r) : null; };
+  for (const mode of ["light", "dark"]) {
+    const ls = {};
+    for (const s of ["error", "success", "warning", "info"]) {
+      const v = resolve(`--color-status-${s}-fg`, mode).value;
+      if (v && /^#/.test(v)) ls[s] = lumOf(v);
+    }
+    const keys = Object.keys(ls);
+    const close = [];
+    for (let i = 0; i < keys.length; i++)
+      for (let j = i + 1; j < keys.length; j++)
+        if (Math.abs(ls[keys[i]] - ls[keys[j]]) < 0.03)
+          close.push(`${keys[i]}/${keys[j]} Δlum ${Math.abs(ls[keys[i]] - ls[keys[j]]).toFixed(3)}`);
+    if (close.length) {
+      const badge = fs.existsSync(path.join(UI, "badge.tsx")) && /lucide-react/.test(fs.readFileSync(path.join(UI, "badge.tsx"), "utf8"));
+      const alert = fs.existsSync(path.join(UI, "alert.tsx")) && /lucide-react/.test(fs.readFileSync(path.join(UI, "alert.tsx"), "utf8"));
+      A(badge && alert ? "info" : "error", "a11y",
+        `status colours are near-identical in greyscale (${mode})${badge && alert ? " — icons are load-bearing" : " AND the icons are gone"}`,
+        `${close.join(", ")}. Measured in Chrome. This cannot be fixed by recolouring: ` +
+        `the best achievable spread across four statuses that all clear 4.5:1 on their pale tints is Δlum 0.025, ` +
+        `and ~0.05 is needed to be distinguishable. The icon in Badge and Alert is therefore the ONLY channel ` +
+        `for monochromacy and greyscale print. Removing it is a regression, not a simplification.`);
+    }
+  }
+}
+
 /* ═══════════════ D. COMPONENT CONTRACTS ═══════════════ */
 for (const file of components) {
   const name = path.basename(file, ".tsx");

@@ -216,6 +216,21 @@ source references them.
 
 ### Status Colors
 
+> **The status icons are load-bearing — do not remove them.**
+>
+> Measured in Chrome: the four status foregrounds sit within Δluminance 0.01 of
+> each other (`success` 0.159, `warning` 0.163, `info` 0.153), so in greyscale,
+> on a monochrome print, or for a user with achromatopsia they are the same
+> colour. This is not a tuning oversight and cannot be fixed by recolouring:
+> every status must clear 4.5:1 against its own pale tint, which pins all four
+> into a narrow luminance band. The best achievable spread is Δlum 0.025 and
+> roughly 0.05 is needed to be distinguishable.
+>
+> `Badge` and `Alert` therefore supply an icon per status variant. That icon is
+> the only non-colour channel these components have, and `audit:full` fails if
+> it disappears.
+
+
 | Tailwind class              | Use case                        |
 |-----------------------------|---------------------------------|
 | `text-status-error-fg`      | Error text/icon                 |
