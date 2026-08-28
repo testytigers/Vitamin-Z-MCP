@@ -240,7 +240,7 @@ export function PageHeader({
         )}
       </div>
       {actions && (
-        <div className="flex items-center gap-inline-sm shrink-0 ml-stack-xl">
+        <div className="flex items-center gap-inline-sm shrink-0 ms-stack-xl">
           {actions}
         </div>
       )}
