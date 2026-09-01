@@ -3,10 +3,11 @@
     "vitamin-z": {
       "command": "node",
       "args": [
-        "/Users/macbook/Desktop/ds-shadcn-v1.2/vitamin-z/dist/index.js"
+        "/Users/macbook/Documents/vitamin-z/dist/index.js"
       ],
       "env": {
-        "DS_PROJECT_DIR": "/Users/macbook/Desktop/ds-shadcn-v1.2/coliix"
+        "DS_PROJECT_DIR": "/Users/macbook/Desktop/ds-shadcn-v1.2/coliix",
+        "DS_APP_DIR": "/Users/macbook/Desktop/ds-shadcn-v1.2/coliix/src"
       }
     }
   }

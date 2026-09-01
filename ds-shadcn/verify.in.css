@@ -1,0 +1,8 @@
+/* Tailwind entry for the verification page only.
+   verify.html imports src/styles/tokens.css directly for the token layer;
+   this file supplies the utility classes it uses. Kept as a committed file
+   rather than generated at build time so `npm run verify:css` needs no
+   temp-file cleanup. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

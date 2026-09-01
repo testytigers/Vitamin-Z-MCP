@@ -17,7 +17,14 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const UI = path.join(ROOT, "ds-shadcn/src/components/ui");
 const LAYOUT = path.join(ROOT, "ds-shadcn/src/components/layout");
 const DOCS_COMPONENTS = path.join(ROOT, "docs/COMPONENTS.md");
-const APP = path.resolve(ROOT, "../coliix/src");
+/* The consuming app is scanned to spot tokens the app uses that the DS lacks.
+   It used to be assumed to sit at ../coliix, which broke the moment the design
+   system moved out of that folder. Point DS_APP_DIR at an app to re-enable the
+   scan; when it is unset or missing, app-usage checks are simply skipped and the
+   DS-only checks still run. */
+const APP = process.env.DS_APP_DIR
+  ? path.resolve(process.env.DS_APP_DIR)
+  : (fs.existsSync(path.resolve(ROOT, "../coliix/src")) ? path.resolve(ROOT, "../coliix/src") : null);
 
 const verbose = process.argv.includes("--verbose");
 const doc = fs.readFileSync(DOCS_COMPONENTS, "utf8");
@@ -33,14 +40,14 @@ const files = [...listFiles(UI), ...listFiles(LAYOUT)];
 const appText = (() => {
   const out = [];
   const walk = (d) => {
-    if (!fs.existsSync(d)) return;
+    if (!d || !fs.existsSync(d)) return;
     for (const e of fs.readdirSync(d, { withFileTypes: true })) {
       const p = path.join(d, e.name);
       if (e.isDirectory()) walk(p);
       else if (/\.tsx?$/.test(e.name)) out.push(fs.readFileSync(p, "utf8"));
     }
   };
-  walk(APP);
+  if (APP) walk(APP);
   return out.join("\n");
 })();
 

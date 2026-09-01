@@ -1,3 +1,9 @@
+/* Tailwind entry for the verification page only.
+   verify.html imports src/styles/tokens.css directly for the token layer;
+   this file supplies the utility classes it uses. Kept as a committed file
+   rather than generated at build time so `npm run verify:css` needs no
+   temp-file cleanup. */
+
 *, ::before, ::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -106,9 +112,7 @@
   --tw-contain-style:  ;
 }
 
-/*
-! tailwindcss v3.4.19 | MIT License | https://tailwindcss.com
-*/
+/* ! tailwindcss v3.4.19 | MIT License | https://tailwindcss.com */
 
 /*
 1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)

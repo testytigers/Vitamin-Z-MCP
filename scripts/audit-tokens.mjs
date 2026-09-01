@@ -17,7 +17,14 @@ const CSS = path.join(ROOT, "ds-shadcn/src/styles/tokens.css");
 const TW = path.join(ROOT, "ds-shadcn/tailwind.config.ts");
 const DOCS = path.join(ROOT, "docs");
 const COMPONENTS = path.join(ROOT, "ds-shadcn/src/components");
-const APP = path.resolve(ROOT, "../coliix/src");
+/* The consuming app is scanned to spot tokens the app uses that the DS lacks.
+   It used to be assumed to sit at ../coliix, which broke the moment the design
+   system moved out of that folder. Point DS_APP_DIR at an app to re-enable the
+   scan; when it is unset or missing, app-usage checks are simply skipped and the
+   DS-only checks still run. */
+const APP = process.env.DS_APP_DIR
+  ? path.resolve(process.env.DS_APP_DIR)
+  : (fs.existsSync(path.resolve(ROOT, "../coliix/src")) ? path.resolve(ROOT, "../coliix/src") : null);
 
 const css = fs.readFileSync(CSS, "utf8");
 const tw = fs.readFileSync(TW, "utf8");
@@ -110,7 +117,7 @@ function readAll(dir, exts) {
 
 const sourceFiles = [
   ...readAll(COMPONENTS, [".tsx", ".ts"]),
-  ...readAll(APP, [".tsx", ".ts"]),
+  ...(APP ? readAll(APP, [".tsx", ".ts"]) : []),
   { path: TW, text: tw },
   { path: CSS, text: css },
 ];
