@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 const badgeVariants = cva(
   [
     "inline-flex items-center gap-inline-xs rounded-pill",
-    "px-[var(--_size-2_5)] py-[var(--_size-0_5)]",
+    "px-[var(--spacing-chip-px)] py-[var(--spacing-chip-py)]",
     "text-xs font-medium leading-none",
     "transition-colors duration-fast",
   ],

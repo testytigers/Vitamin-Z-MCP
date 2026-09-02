@@ -107,7 +107,7 @@ const SelectItem = React.forwardRef<
     ref={ref}
     className={cn(
       "relative flex w-full cursor-default select-none items-center rounded-sm",
-      "py-[var(--_size-1_5)] ps-2 pe-8",
+      "py-[var(--control-py-sm)] ps-2 pe-8",
       "text-sm text-primary outline-none",
       "hover:bg-action-ghost-hover focus:bg-action-ghost-hover",
       "data-[disabled]:pointer-events-none data-[disabled]:text-disabled",
@@ -115,7 +115,7 @@ const SelectItem = React.forwardRef<
     )}
     {...props}
   >
-    <span className="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
+    <span className="absolute end-2 flex h-3.5 w-3.5 items-center justify-center">
       <SelectPrimitive.ItemIndicator>
         <Check className="h-4 w-4 text-action-primary" />
       </SelectPrimitive.ItemIndicator>

@@ -177,7 +177,7 @@ export function Header({
 
           {/* Global search */}
           <div className="relative hidden md:flex items-center">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-icon-muted pointer-events-none" />
+            <Search className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-icon-muted pointer-events-none" />
             <input
               type="search"
               value={searchValue}
@@ -193,7 +193,7 @@ export function Header({
                 "transition-colors duration-fast"
               )}
             />
-            <kbd className="absolute right-3 hidden lg:inline-flex items-center text-[10px] text-muted font-mono pointer-events-none">
+            <kbd className="absolute end-3 hidden lg:inline-flex items-center text-[10px] text-muted font-mono pointer-events-none">
               ⌘K
             </kbd>
           </div>
@@ -229,7 +229,7 @@ export function Header({
                 <Bell className="w-5 h-5" />
                 {hasNotifications && (
                   <span
-                    className="absolute top-1.5 right-1.5 w-2 h-2 rounded-pill bg-action-destructive"
+                    className="absolute top-1.5 end-1.5 w-2 h-2 rounded-pill bg-action-destructive"
                     aria-hidden
                   />
                 )}

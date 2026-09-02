@@ -49,7 +49,7 @@ const DialogContent = React.forwardRef<
     >
       {children}
       <DialogPrimitive.Close className={cn(
-        "absolute right-4 top-4 rounded-sm",
+        "absolute end-4 top-4 rounded-sm",
         "text-icon-muted hover:text-icon-default",
         "transition-colors duration-fast",
         "focus-visible:outline-none focus-visible:shadow-focus",

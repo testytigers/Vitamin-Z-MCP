@@ -7,7 +7,7 @@ const alertVariants = cva(
   [
     "relative w-full rounded-card border p-[var(--spacing-component-px)]",
     "[&>svg~*]:ps-7 [&>svg+div]:translate-y-[-3px]",
-    "[&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4",
+    "[&>svg]:absolute [&>svg]:start-4 [&>svg]:top-4",
   ],
   {
     variants: {

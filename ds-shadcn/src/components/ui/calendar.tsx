@@ -29,8 +29,8 @@ function Calendar({
           "disabled:pointer-events-none disabled:text-disabled",
           "transition-colors duration-fast"
         ),
-        nav_button_previous: "absolute left-1",
-        nav_button_next:     "absolute right-1",
+        nav_button_previous: "absolute start-1",
+        nav_button_next:     "absolute end-1",
         table:     "w-full border-collapse",
         head_row:  "flex",
         head_cell: "text-muted rounded-control w-9 font-normal text-xs flex items-center justify-center",

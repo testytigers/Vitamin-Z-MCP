@@ -34,6 +34,9 @@ const sheetVariants = cva(
     "data-[state=open]:animate-in data-[state=closed]:animate-out",
   ],
   {
+    /* rtl-exempt: the `side` prop names a physical edge, so these insets and
+       the slide keyframes paired with them are physical on purpose. A caller
+       that wants mirroring passes side={isRTL ? "right" : "left"}. */
     variants: {
       side: {
         top:    "inset-x-0 top-0 border-b data-[state=closed]:slide-out-to-top    data-[state=open]:slide-in-from-top",
@@ -62,7 +65,7 @@ const SheetContent = React.forwardRef<
       {...props}
     >
       <DrawerPrimitive.Close className={cn(
-        "absolute right-4 top-4 rounded-sm",
+        "absolute end-4 top-4 rounded-sm",
         "text-icon-muted hover:text-icon-default",
         "transition-colors duration-fast",
         "focus-visible:outline-none focus-visible:shadow-focus"
