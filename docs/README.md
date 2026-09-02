@@ -23,6 +23,7 @@ The design language matches the Gemini SaaS dashboard template: dark top bar, wh
 |------|---------|
 | `TEMPLATE_STYLE.md` | ⚠️ **START HERE.** The canonical visual law — line-by-line mapping of the reference HTML template to DS tokens. Every agent must pass this checklist before shipping code. |
 | `TOKENS.md` | Complete token reference — colors, typography, spacing, radius, shadow, z-index, motion. |
+| `tasks/` | One executable file per unit of work from `TEST-PLAN.md`, each with acceptance criteria and a deliberate-failure proof. Say "do T0.1". |
 | `TEST-PLAN.md` | What is still unverified and the tests that would close it, ranked by risk x cost. Start at Tier 0. |
 | `COMPONENTS.md` | Every shadcn component with props, variants, and copy-paste TSX examples. Includes layout components (Header, Sidebar, AppShell). |
 | `DASHBOARD_PATTERNS.md` | Canonical composition blueprints — AppShell, TopBar, Sidebar, StatCards, DataTable, Charts, EmptyState, Full page template. |

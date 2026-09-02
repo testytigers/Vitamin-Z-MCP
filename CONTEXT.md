@@ -303,6 +303,10 @@ rather than reading the comments:
 
 ## 7. What's actually left
 
+> Rules for anyone (or anything) writing code here live in the root `CLAUDE.md`, which
+> `docs/ENFORCEMENT.md` specifies as "Layer 2" of the enforcement strategy and which was
+> missing until 2026-09-02. Executable units of work live in `docs/tasks/`.
+>
 > The full, ranked version of this section now lives in `docs/TEST-PLAN.md` — what is
 > unverified, the tests that would close it, and what each would have caught. The
 > highest-leverage item there is that **CI does not run `npm run audit`**: every rule in

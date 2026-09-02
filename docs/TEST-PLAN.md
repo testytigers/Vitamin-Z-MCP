@@ -11,6 +11,11 @@ ranked lower on purpose.
 Companion docs: `CONTEXT.md` (state and decisions), `HUMAN-TEST.md` (the human visual
 checklist, already written and still the best 15 minutes available).
 
+**To act on this rather than read it**, use `tasks/` — one self-contained file per item,
+each with acceptance criteria, a verification command and a deliberate-failure proof. The
+rules themselves live in the root `CLAUDE.md`, which Claude Code loads automatically, so a
+session has the token contract in context before it writes a line.
+
 Worth noting how this file was proofread: the first draft failed `npm run verify` twice.
 It referenced two files that do not exist yet and spelled out an invalid class name as an
 example, and `doc file paths` and `documented classes` both caught it. The prose was
