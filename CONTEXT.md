@@ -1,7 +1,9 @@
 # CONTEXT.md
 
 Handoff state for **Vitamin-Z** — an MCP server and the design system it serves,
-in one repository. Written 2026-08-24 at the end of a long working session.
+in one repository. Written 2026-08-24; revised 2026-09-02 after an external review
+that re-derived every number rather than reading the comments, and after the 21
+commits finally reached `origin/main`.
 
 Read this before changing anything. Several decisions here look wrong at first
 glance and were made deliberately; the reasoning is recorded so it doesn't get
@@ -43,12 +45,13 @@ undone by someone tidying up.
 | | |
 |---|---|
 | `npm test` | 6 verify checks + 35 smoke assertions, all passing |
-| `npm run audit:full` | **0 errors, 0 warnings**, 30 informational (was 8 — C0 got much wider, see §6) |
-| `npm run audit:tokens` | 0 / 0 / 3 notes |
+| `npm run audit:full` | **0 errors, 0 warnings**, 31 informational (was 8 — C0 got much wider, see §6) |
+| `npm run audit:tokens` | 0 / 0 / 4 notes |
 | `npm run audit:components` | 0 errors, 5 warnings (arbitrary values, all reviewed and accepted) |
 | Contrast | WCAG AA across all four rendered mode combinations — now including `text-placeholder`, `text-link`, `popover`, every `bg-*` fill, and rest/hover/active on primary, secondary and destructive |
 | Chart palette | protan/deutan min ΔE 20.3, worst case across two simulators; tritan unverifiable, reported not gated |
-| Unpushed commits | **17** — blocked, see §4 |
+| Unpushed commits | **0** — everything is on `origin/main`. §4 is closed |
+| Typechecked | **the 45 DS components are compiled by nothing.** `tsconfig.json` is `include: ["src/**/*"]`, i.e. the MCP server only. See §7 |
 
 ```bash
 npm test          # build + verify + smoke      (CI runs this)
@@ -167,21 +170,32 @@ in light/brand — the only combination nothing had ever measured.
 
 ---
 
-## 4. Blocked
+## 4. Unblocked — but two credentials still need revoking
 
-**The 16 commits cannot be pushed.** GitHub rejected the PAT that was embedded in the
-remote URL: `Invalid username or token`. Network is fine. The token has been **removed
-from both remotes** in this copy — it was invalid and had been exposed, so revoke it at
-`github.com/settings/tokens` regardless.
+**Resolved 2026-09-02.** `origin/main` went from `0684162` to carrying the 17 commits
+that had been stuck plus the 4 review commits, as a clean fast-forward with no merge
+commit. Working tree clean, nothing unpushed. The push used a
+fresh PAT supplied for the purpose and passed as an `http.extraHeader` for the single
+command, deliberately **not** `git remote set-url` — embedding it in the remote URL is
+what leaked the previous one into `.git/config`. Confirm before trusting this:
 
 ```bash
 cd ~/Documents/vitamin-z
-git remote set-url origin https://<NEW_TOKEN>@github.com/testytigers/Vitamin-Z-MCP.git
-git push origin main
+grep -riE 'ghp_|extraheader|password' .git/config   # expect no match
+git rev-list --count origin/main..main              # expect 0
 ```
 
-The old Desktop copy still contains the exposed token in `.git/config` — another reason
-to delete it.
+**TWO tokens are outstanding, neither revoked:**
+
+1. The **new** PAT used for this push was pasted in plaintext into a chat transcript, so
+   treat it as public. It has push access to this repo. Revoke at
+   `github.com/settings/tokens`.
+2. The **old** PAT is still sitting in `~/Desktop/ds-shadcn-v1.2/vitamin-z/.git/config`.
+   That copy is superseded and marked safe to delete; deleting the folder removes the
+   credential and the misleading duplicate in one action.
+
+Never restore the `remote set-url` form. Use a credential helper, `gh auth`, or a
+per-command header.
 
 ---
 
@@ -289,14 +303,51 @@ rather than reading the comments:
 
 ## 7. What's actually left
 
-**Verified but never seen by a human.** Nothing has been rendered and reviewed. Dark
-mode, the chart palette, the badge icons, the darker input borders — all confirmed
-numerically, none looked at. `docs/HUMAN-TEST.md` is the checklist; §1 is the
-highest-risk 15 minutes.
+**Verified but never seen by a human.** Still true, and now the most valuable 15 minutes
+in the repo. Nothing has been rendered and reviewed: dark mode, the badge icons, the
+darker input borders — all confirmed numerically, none looked at. `docs/HUMAN-TEST.md` is
+the checklist; §1 is the highest-risk part.
+
+Two things moved on 2026-09-02 and should be looked at *first*, because they are the
+newest numerically-verified-but-unseen changes:
+
+1. **The categorical chart palette was re-stepped in both modes** (§3). Every `cat-*`
+   value changed. It is verified for protan/deutan at min ΔE 20.3 across two simulators
+   and clears 3:1 on canvas and overlay — but nobody has seen eight series drawn together,
+   and aesthetic coherence is not something ΔE measures.
+2. **Compact density no longer shrinks control type** (§7). Button and Input now hold 14px
+   text in a 32px box; `audit-full` B7 proves it fits with 11px of room, which is
+   geometry, not taste. Look at a compact form and confirm it reads as dense rather than
+   cramped.
 
 **The original goal is untested.** The MCP has never run against a real local model.
 `clients/lmstudio-mcp.json` is configured and the 10 tools work over stdio, but nobody
 has spoken a page into existence. `HUMAN-TEST.md` §9.
+
+**Nothing compiles the 45 components — this is the largest unverified surface in the
+repo.** `tsconfig.json` is `include: ["src/**/*"]` with `rootDir: "src"`: that is the MCP
+server. `npm test`'s build step is `tsc` over that, and CI runs `npm test`, so the design
+system has never been typechecked by anything. Concretely:
+
+- 44 of 45 components `import { cn } from "@/lib/utils"`. There is no `src/lib/`, no
+  `utils.ts` anywhere in the repo, and no `@/*` path alias in any config.
+- 0 of the DS's 37 declared dependencies are installed here.
+- Every check that validates those components — `audit:components` included — is regex
+  over source text. A type error, a wrong prop, a broken import sails through green.
+
+The missing `@/lib/utils` is *probably* deliberate: shadcn distributes components as
+copy-in source that relies on the consuming app's helper. But nothing records that intent,
+nothing checks it, and the app that would supply it (`coliix`) lives outside this repo and
+is described in §1 as a diverged fork. It also explains "0 of 45 used by the app" more
+bluntly than that line does: in this tree they *cannot* be.
+
+All 45 do parse cleanly (`tsc --noResolve`, 0 syntax errors), so this is an absence of
+verification, not a known breakage. Closing it is the highest-value remaining work after
+`HUMAN-TEST.md` §1, and it needs one decision first: **is the DS a copy-in source
+distribution where the app supplies `@/lib/utils`, or a self-contained package that ships
+its own?** That answer determines whether the fix is adding `src/lib/utils.ts` or
+documenting a peer requirement. Then: a `ds-shadcn/tsconfig.json` with the `@/*` alias,
+`npm install` in `ds-shadcn/`, and `tsc --noEmit` wired into `npm test`.
 
 **25 of 42 components have never run in production.** That is exactly where `avatar` and
 `carousel` sat broken — both used React state with no `"use client"`, so importing either
@@ -341,18 +392,40 @@ unused primitives are harmless cruft. Five `arbitrary-value` warnings in
 `audit:components` are reviewed and accepted. `status-success`/`status-warning` borders are
 ~1.3:1 on their own tints — reported as INFO, not yet decided.
 
-**Score, honestly: 7/10 before this session's fixes, and the reason matters.** The old
-8.5 said the weakness was all downstream. It wasn't: the token layer rated "strong" had
-verifiable AA failures in four independent categories (placeholder, tonal fills,
-interaction states, and an unmeasured CVD axis), plus dead tokens and an undetected
-`use client` class of bug. Those are now fixed and, more importantly, each one is now a
-check rather than a claim — which is the only reason to believe the next number.
+**Score, honestly: 7.5/10 — and the small movement is the point.**
 
-What still holds it back is genuinely downstream, and unchanged: **nothing has been
-rendered and reviewed by a human**, 0 of 45 components are used by any app, the MCP has
-never run against a real local model, and 17 commits are unpushed behind a revoked token.
-Do not raise the score on the strength of a green audit alone — that is precisely the
-mistake the 8.5 encoded.
+It was 8.5 before the review, which was wrong: that number said the weakness was all
+downstream, and the token layer it rated "strong" had verifiable AA failures in four
+independent categories, dead tokens, an undetected `use client` bug class, and three audit
+checks that were measuring the wrong thing. Re-derived honestly it was 7.
+
+Twenty-five files, four AA categories, a density bug and roughly ten new or repaired
+checks later it is 7.5. Half a point, for a lot of work, for two reasons worth
+internalising:
+
+- **The work landed where the system was already strongest.** The token layer went from
+  ~7 to ~9.5 and is now genuinely self-enforcing. But the token layer was never the
+  ceiling.
+- **The review also *found* a gap, which offsets part of the gain.** The 45 components are
+  typechecked by nothing (above). The old 7 quietly assumed CI covered them. So some of
+  what looks like progress is discovering the baseline was worse than scored.
+
+By layer, so the next person can argue with the weighting rather than the number:
+
+| | |
+|---|---|
+| Token architecture + enforcement | ~9.5 — the real gain, and defensible |
+| Documentation, now drift-checked by E4 | ~8 |
+| Component quality | **unscorable** — never compiled, never rendered, 0 of 45 in production |
+| Consumable as a package | ~3 — no tsconfig, no deps, no documented install path |
+| MCP server | smoke tests only; `src/` has never been audited, never run against a real model |
+
+Two things move this number, and **neither is more token work**: render it and look at it
+(`HUMAN-TEST.md` §1 — if dark mode and the re-stepped chart palette hold up, ~8.5), and
+put `tsc --noEmit` over `ds-shadcn/` in CI (~9, because it closes the one layer nothing
+checks). Do not raise it on the strength of a green audit alone — that is exactly the
+mistake the 8.5 encoded, and the audit is now wide enough to be far more convincing while
+still saying nothing about 45 unrendered components.
 
 ---
 
@@ -364,3 +437,16 @@ counted as documentation, and a contrast failure in a mode combination nobody ha
 to measure. When you find a defect, the question to ask is **"why didn't a script catch
 this?"** — and then add the check. That is why `HUMAN-TEST.md` exists and is expected to
 shrink over time.
+
+The 2026-09-02 review is the strongest evidence for this principle and the sharpest
+warning about it. Every defect it found was invisible to a green audit, and four of the
+bugs were **in the checks themselves**: `verify-ds`'s `blockOf()` resolved to a comment,
+`audit-tokens`' classifier had no fallback bucket so twelve tokens belonged to no layer,
+and `B5` both no-op'd on compact and reported the compact value in its default column.
+Two more were introduced *while* fixing those and caught only by self-testing.
+
+So the principle needs a second half: **a check you have never seen fail is not yet a
+check.** Every check added or repaired in that session was verified by reintroducing the
+original defect and confirming it fires — including which mode column it fires in. Adopt
+that habit; three of the four pre-existing bugs above would have been caught on the day
+they were written by one deliberate failure.
