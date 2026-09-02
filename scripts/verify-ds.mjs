@@ -71,11 +71,20 @@ function checkTokenRoundTrip() {
 // 2. Mode parity: tokens defined in light must also be defined in dark
 // ──────────────────────────────────────────────────────────────
 function blockOf(css, selector) {
-  const i = css.indexOf(selector);
+  /* Strip comments before locating the selector. A plain indexOf matched the
+     first textual occurrence anywhere in the file, so the moment tokens.css
+     mentioned `[data-appearance="dark"]` inside a documentation comment, this
+     resolved to that comment, took the NEXT `{` — the primitives :root — and
+     reported all 88 colour tokens as missing from dark mode. The check was
+     measuring a comment. Comments are also removed from the returned slice so a
+     token name quoted in prose can never be read as a declaration. */
+  const bare = css.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, " "));
+  const i = bare.indexOf(selector);
   if (i < 0) return null;
-  const open = css.indexOf("{", i);
-  const close = css.indexOf("\n}", open);
-  return css.slice(open, close);
+  const open = bare.indexOf("{", i);
+  if (open < 0) return null;
+  const close = bare.indexOf("\n}", open);
+  return bare.slice(open, close === -1 ? undefined : close);
 }
 
 function checkModeParity() {

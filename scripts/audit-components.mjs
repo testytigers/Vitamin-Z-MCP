@@ -80,6 +80,37 @@ const RULES = [
     allow: /var\(--/,   // arbitrary values that reference a token are fine
   },
   {
+    /* The `_` prefix marks a primitive as private to tokens.css. A component
+       that reads one bypasses every axis layered above it: badge, select and
+       toggle-group read --_size-* and so kept default padding under
+       data-density="compact", because primitives are density-invariant. The
+       arbitrary-value rule below could never catch this — its `allow: /var\(--/`
+       treats any token reference as fine, and cannot tell --control-px-md
+       (correct) from --_size-2_5 (a layer violation). */
+    id: "primitive-escape",
+    sev: "error",
+    desc: "reads a private --_ primitive — use the semantic or density token",
+    re: /var\(\s*--_[\w-]+\s*\)/g,
+  },
+  {
+    /* RTL. 21 physical inset utilities were converted to logical ones
+       (start- and end- variants); CONTEXT.md claimed 24 remained when the real count
+       was 34. Spacing had been converted long before and positioning never was,
+       so nothing flagged the gap. Three shapes stay legitimately physical and
+       are allowed below:
+         · centring — left-1/2 / left-[50%] paired with -translate-x-1/2 is
+           symmetric, so mirroring it is a no-op
+         · tailwindcss-animate keyframe names (slide-in-from-left, …), which
+           have no logical form; they read as `-left`, never `left-`
+         · a component whose own API names a physical side (Sheet side="left"),
+           marked with an explicit `rtl-exempt` comment
+       Anything else must use start-/end- so the component mirrors. */
+    id: "physical-inset",
+    sev: "warn",
+    desc: "physical left-/right- inset — use start-/end- so it mirrors in RTL",
+    re: /(?<![\w-])(?:-)?(?:left|right)-(?!1\/2(?![\w\/])|\[50%\])[a-z0-9./\[\]%-]+/g,
+  },
+  {
     id: "bg-white",
     sev: "error",
     desc: "bg-white / text-white — use bg-elevated / text-on-accent",
@@ -126,7 +157,11 @@ for (const file of files) {
   const code = text.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, ""); // strip comments
 
   const issues = [];
+  /* A component may declare `rtl-exempt` in a comment when its public API names
+     a physical side (Sheet side="left"/"right"); the directive is the contract. */
+  const rtlExempt = /rtl-exempt/.test(text);
   for (const r of RULES) {
+    if (r.id === "physical-inset" && rtlExempt) continue;
     const hits = [...code.matchAll(r.re)]
       .map((m) => m[0])
       .filter((h) => !(r.allow && r.allow.test(h)));
@@ -137,7 +172,20 @@ for (const file of files) {
     if (hits.length) issues.push({ id: a.id, sev: a.sev, desc: a.desc, hits: [...new Set(hits)] });
   }
 
-  const interactive = /useState|useEffect|onClick|onChange|onSubmit|useCallback|useRef\(/.test(code);
+  /* This check already existed and still missed form.tsx, input-otp.tsx and
+     toggle-group.tsx — all three broke on import into a server component. The
+     old list enumerated six specific hooks, so context and identity hooks
+     (createContext / useContext / useId / useReducer / useLayoutEffect /
+     useSyncExternalStore) and every on*= prop other than the three named ones
+     fell straight through. Match the actual rule instead of a sample of it:
+     any React hook call, any context creation, any event prop. */
+  const interactive =
+    /\buse[A-Z]\w*\s*\(/.test(code) ||        // any hook, incl. React.useX via the \b on "use"
+    /\bcreateContext\s*\(/.test(code) ||       // context is client-only
+    /\son(?:Click|DoubleClick|Change|Input|Submit|Reset|KeyDown|KeyUp|KeyPress|Focus|Blur|MouseEnter|MouseLeave|MouseDown|MouseUp|MouseMove|Wheel|Scroll|Drag|Drop|Touch\w*|Pointer\w*|Animation\w*|Transition\w*)\s*=/.test(code);
+  /* Only real DOM events count. Matching every /on[A-Z]/ prop flagged app-shell,
+     which merely forwards caller-supplied callbacks (onSearch, onSignOut) to a
+     child that is itself a client component — a pass-through, not a boundary. */
   const hasUseClient = /^["']use client["']/m.test(text);
   if (interactive && !hasUseClient)
     issues.push({ id: "missing-use-client", sev: "error", desc: 'interactive component without "use client"', hits: [] });

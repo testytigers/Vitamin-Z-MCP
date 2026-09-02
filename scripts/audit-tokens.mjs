@@ -63,7 +63,14 @@ const allDefs = Object.fromEntries(
   [...css.matchAll(/(--[a-zA-Z0-9_-]+)\s*:\s*([^;]+);/g)].map((m) => [m[1], m[2].trim()])
 );
 const primitives = Object.keys(allDefs).filter((k) => k.startsWith("--_"));
-const semantic = Object.keys(allDefs).filter((k) => /^--(color|shadow|radius|spacing|focus|control|motion|z)-/.test(k));
+/* `font` was missing from this list, and there is no fallback bucket, so all
+   twelve --font-* composites landed in none of primitive/semantic/component and
+   were invisible to this entire audit: absent from the inventory, never checked
+   for orphanhood, never checked for chain depth. A classifier keyed off a
+   hardcoded prefix list needs the assertion below or the next new token family
+   disappears the same way. */
+const SEMANTIC_PREFIXES = /^--(color|shadow|radius|spacing|focus|control|motion|font|z)-/;
+const semantic = Object.keys(allDefs).filter((k) => SEMANTIC_PREFIXES.test(k));
 const componentTokens = Object.keys(allDefs).filter((k) =>
   /^--(button|input|card|badge|dialog|select|switch|tooltip|avatar|table|toast)-/.test(k)
 );
@@ -143,8 +150,35 @@ R.inventory = {
   modes: Object.fromEntries(Object.entries(modeTokens).map(([k, v]) => [k, Object.keys(v).length])),
 };
 
+// 0. every token must land in a known layer — no silent fallthrough
+{
+  const classified = new Set([...primitives, ...semantic, ...componentTokens]);
+  const unclassified = Object.keys(allDefs).filter((k) => !classified.has(k));
+  if (unclassified.length)
+    add("error", "tokens", `${unclassified.length} token(s) belong to no layer`,
+      `${unclassified.join(", ")} — the classifier keys off a prefix list, so an unlisted family is invisible to every check below, not merely uncategorised`);
+}
+
+/* Tokens declared under a banner marked @public-api are a deliberate external
+   surface with no internal consumers. Before this existed the twelve --font-*
+   composites showed up as "never referenced" every run, which trains a reader to
+   ignore the orphan list — the opposite of what it is for. Exempting them by an
+   explicit marker in the stylesheet keeps the list meaningful and keeps the
+   decision next to the tokens instead of hidden in this script. */
+const publicApi = new Set();
+for (const m of css.matchAll(/@public-api/g)) {
+  const rest = css.slice(m.index);
+  const end = rest.indexOf("/* ====", 10);
+  for (const d of (end === -1 ? rest : rest.slice(0, end)).matchAll(/^\s*(--[\w-]+)\s*:/gm))
+    publicApi.add(d[1]);
+}
+if (publicApi.size)
+  add("info", "tokens", `${publicApi.size} token(s) are a declared @public-api surface`,
+    `${[...publicApi].join(", ")} — exempt from the orphan check by design; consumed externally, not by this DS`);
+
 // 1. orphan semantic tokens — defined but nothing references them
 const orphans = semantic.filter((t) => {
+  if (publicApi.has(t)) return false;
   const bare = t.replace(/^--/, "");
   const refCount = (allSource.match(new RegExp(`var\\(${t}\\)`, "g")) || []).length;
   return refCount === 0 && !new RegExp(`["']${bare.replace(/^color-/, "")}["']`).test(tw);

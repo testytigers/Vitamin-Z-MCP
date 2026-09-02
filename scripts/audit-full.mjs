@@ -56,6 +56,12 @@ const MODES = {
   brand: '[data-brand="brand"]',
   "dark+brand": '[data-appearance="dark"][data-brand="brand"]',
   compact: '[data-density="compact"]',
+  /* The DEFAULT density block was never a resolvable layer, so anything reading
+     a density token via resolve(..., "light") fell through to allDefs — which is
+     last-wins across the whole file and therefore held the COMPACT value. B5 has
+     been printing "control-height-lg (default) is 36px" for the compact 36px
+     while the real default is 40px: the default column was measuring compact. */
+  "density-default": ':root,\n[data-density="default"]',
 };
 
 /* Effective cascade per rendered combination. Checking only `light` and `dark`
@@ -117,6 +123,29 @@ const docText = (() => {
   for (const m of css.matchAll(/var\((--[a-zA-Z0-9_-]+)\)/g)) if (!(m[1] in allDefs)) bad.add(m[1]);
   for (const m of tw.matchAll(/var\((--[a-zA-Z0-9_-]+)\)/g)) if (!(m[1] in allDefs)) bad.add(m[1]);
   if (bad.size) A("error", "integrity", `${bad.size} var() reference(s) resolve to nothing`, [...bad].join(", "));
+}
+
+// A4 — colour literals outside the primitive layer
+{
+  /* --color-action-primary-bg-subtle and -bg-tint held rgba() literals spelling
+     out blue-500/600/400 by hand. A literal in the semantic layer is a copy, not
+     a reference: change the primitive and it silently does not follow. The
+     component-level `hardcoded-hex` rule only ever scanned components, so the
+     token file itself was the one place a stray literal could hide. */
+  /* Scan EVERY declaration in the file, not allDefs — a token defined once per
+     mode collapses to a single entry there, so a literal in any block but the
+     last would slip through. (It did, on the first version of this check.) */
+  const seen = new Set();
+  for (const m of css.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) {
+    const tok = m[1], v = m[2].trim();
+    if (tok.startsWith("--_")) continue;                 // primitives ARE the literals
+    if (!/#[0-9a-fA-F]{3,8}\b|\brgba?\s*\(/.test(v)) continue;
+    const key = `${tok}|${v}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    A("error", "tokens", `${tok} spells out a colour literal instead of referencing a primitive`,
+      `${v} — use var(--_color-*), or color-mix(in srgb, var(--_color-*) N%, transparent) for a tint`);
+  }
 }
 
 // A2 — circular chains, and chains deeper than 3 hops
@@ -228,13 +257,56 @@ const docText = (() => {
 // B5 — control heights vs WCAG 2.5.8 target size (24×24 min, 44 recommended)
 {
   for (const s of ["sm", "md", "lg"]) {
-    const v = px(resolve(`--control-height-${s}`, "light").value);
-    const c = px(modeDefs.compact[`--control-height-${s}`]);
+    const v = px(resolve(`--control-height-${s}`, "density-default").value);
+    /* was px(modeDefs.compact[...]) — that map holds the DECLARED value, i.e.
+       the string "var(--_size-7)", which px() cannot parse, so it returned null
+       and the compact branch below has been a silent no-op since it was written.
+       resolve() follows the chain to a real length. */
+    const c = px(resolve(`--control-height-${s}`, "compact").value);
     for (const [label, val] of [["default", v], ["compact", c]]) {
       if (val !== null && val < 24)
         A("error", "a11y", `control-height-${s} (${label}) is ${val}px — below the WCAG 2.5.8 minimum of 24px`, `${val}px`);
       else if (val !== null && val < 44 && s === "lg")
         A("info", "a11y", `control-height-lg (${label}) is ${val}px — below the 44px AAA target size`, `${val}px`);
+    }
+  }
+}
+
+// B6 — compact density is a SPACING axis: it must not touch typography
+{
+  /* The decision recorded in tokens.css, made executable. Reintroducing a
+     --control-font-* override here would recreate the 2-of-45 split silently,
+     because only button and input can follow such a token at all. */
+  const typo = Object.keys(modeDefs.compact || {}).filter((t) =>
+    /font|line-height|letter-spacing/.test(t));
+  if (typo.length)
+    A("error", "scale", `compact density redefines ${typo.length} typography token(s)`,
+      `${typo.join(", ")} — compact is a spacing axis. Only button and input read --control-font-*; ` +
+      `the other 28 text-rendering components use raw text-* utilities and cannot follow, so a ` +
+      `density-varying type token guarantees mismatched sizes in the same view.`);
+}
+
+// B7 — a control must be tall enough to contain its own text
+{
+  /* Compact no longer shrinks control type, so md keeps 14px inside a 32px box.
+     That is the assumption B6 rests on; this measures it instead of trusting it.
+     Height wins over padding when both are set (h-* is explicit on every
+     control), so the test is height vs the line box, not height vs padding. */
+  const LH = px(resolve("--_line-height-normal", "density-default").value) ?? 1.5;
+  const lead = LH > 4 ? 1.5 : LH;                       // unitless vs px guard
+  for (const s of ["sm", "md", "lg"]) {
+    for (const layer of ["density-default", "compact"]) {
+      const label = layer === "compact" ? "compact" : "default";
+      const h = px(resolve(`--control-height-${s}`, layer).value);
+      const f = px(resolve(`--control-font-${s}`, layer).value);
+      if (h === null || f === null) continue;
+      const lineBox = f * lead;
+      if (lineBox > h)
+        A("error", "scale", `control-${s} (${label}) cannot contain its own text`,
+          `${f}px x ${lead} line-height = ${lineBox.toFixed(1)}px in a ${h}px box — the label will clip`);
+      else if (h - lineBox < 4)
+        A("info", "scale", `control-${s} (${label}) is tight around its text`,
+          `${lineBox.toFixed(1)}px line box in a ${h}px box — ${(h - lineBox).toFixed(1)}px of breathing room`);
     }
   }
 }
@@ -253,8 +325,18 @@ const docText = (() => {
     const ref = /^var\((--[a-zA-Z0-9_-]+)\)$/.exec(String(v).trim());
     return ref ? resolveIn(ref[1], layerNames, seen) : String(v).trim();
   }
-  const BODY = ["primary", "strong", "secondary", "subtle"];
-  const SURF = ["canvas", "elevated", "sunken", "overlay"];
+  /* Every text token that can carry prose — not just the four-step ladder.
+     placeholder and link were absent, which is how text-placeholder sat at
+     slate-500 in dark (3.07:1 on overlay) through a green audit. */
+  const BODY = ["primary", "strong", "secondary", "subtle", "placeholder", "link"];
+  const SURF = ["canvas", "elevated", "sunken", "overlay", "popover"];
+  /* Tonal fills were never checked at all. CONTRACT (see tokens.css): text on
+     bg-secondary / bg-tertiary must be text-secondary or stronger — slate-500
+     reaches only 4.8:1 on pure white, so no tint can carry it. FILL_MIN is
+     enforced; the out-of-contract ratios are printed every run (below) so the
+     limit stays visible rather than being excluded and forgotten. */
+  const FILL = ["primary", "secondary", "tertiary"];
+  const FILL_MIN = ["primary", "strong", "secondary"];
   for (const [combo, layers] of Object.entries(COMBOS)) {
     for (const t of BODY) {
       const tv = resolveIn(`--color-text-${t}`, layers);
@@ -280,25 +362,67 @@ const docText = (() => {
           A("error", "a11y", `${label} below ${min}:1 on ${s2} in ${combo}`, `${c.toFixed(2)}:1`);
       }
     }
-    for (const [t, bg, label] of [["--color-text-on-accent", "--color-action-primary-bg", "on-accent/primary"],
-                                  ["--color-text-on-destructive", "--color-action-destructive-bg", "on-destructive/destructive"]]) {
-      const tv = resolveIn(t, layers), bv = resolveIn(bg, layers);
-      if (!tv || !bv || !/^#/.test(tv) || !/^#/.test(bv)) continue;
-      const c = cr(tv, bv);
-      if (c && c < 4.5) A("error", "a11y", `${label} fails AA in ${combo}`, `${c.toFixed(2)}:1`);
+    /* Tonal fills: enforce the in-contract tokens... */
+    for (const t of FILL_MIN) {
+      const tv = resolveIn(`--color-text-${t}`, layers);
+      if (!tv || !/^#/.test(tv)) continue;
+      for (const b of FILL) {
+        const bv = resolveIn(`--color-bg-${b}`, layers);
+        if (!bv || !/^#/.test(bv)) continue;
+        const c = cr(tv, bv);
+        if (c && c < 4.5)
+          A("error", "a11y", `text-${t} on bg-${b} fails AA in ${combo}`, `${tv} on ${bv} = ${c.toFixed(2)}:1`);
+      }
+    }
+    /* ...and report the out-of-contract ones so the ceiling is never invisible. */
+    for (const t of ["subtle", "placeholder"]) {
+      const tv = resolveIn(`--color-text-${t}`, layers);
+      if (!tv || !/^#/.test(tv)) continue;
+      const under = [];
+      for (const b of ["secondary", "tertiary"]) {
+        const bv = resolveIn(`--color-bg-${b}`, layers);
+        if (!bv || !/^#/.test(bv)) continue;
+        const c = cr(tv, bv);
+        if (c && c < 4.5) under.push(`bg-${b} ${c.toFixed(2)}:1`);
+      }
+      if (under.length)
+        A("info", "a11y", `text-${t} is out of contract on tonal fills (${combo})`,
+          `${under.join(", ")} — by design: use text-secondary or stronger on bg-secondary/bg-tertiary`);
+    }
+
+    /* Interaction states. Rest-state-only checking let brand primary hover ship
+       at 3.68:1 and dark destructive active at 2.77:1 while the audit read 0
+       errors. A state is a rendered state; it gets measured like one. */
+    for (const [t, bg, label] of [
+      ["--color-text-on-accent",      "--color-action-primary-bg",     "primary button"],
+      ["--color-text-on-destructive", "--color-action-destructive-bg", "destructive button"],
+      ["--color-text-primary",        "--color-action-secondary-bg",   "secondary button"],
+    ]) {
+      const tv = resolveIn(t, layers);
+      if (!tv || !/^#/.test(tv)) continue;
+      for (const st of ["", "-hover", "-active"]) {
+        const bv = resolveIn(`${bg}${st}`, layers);
+        if (!bv || !/^#/.test(bv)) continue;
+        const c = cr(tv, bv);
+        if (c && c < 4.5)
+          A("error", "a11y", `${label}${st || " (rest)"} fails AA in ${combo}`, `${tv} on ${bv} = ${c.toFixed(2)}:1`);
+      }
     }
   }
 }
 
-// C1 — status colours must be distinguishable from each other under CVD
+// C1 — CVD separation: status colours AND the chart categorical palette
 {
   function simCVD(hex, kind) {
     const rgb = hex2rgb(hex); if (!rgb) return null;
     const [r, g, b] = rgb.map((c) => { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); });
     let L = 0.31399022 * r + 0.63951294 * g + 0.04649755 * b;
     let M = 0.15537241 * r + 0.75789446 * g + 0.08670142 * b;
-    const S = 0.01775239 * r + 0.10944209 * g + 0.87256922 * b;
-    if (kind === "deutan") M = 0.9513092 * L + 0.04866992 * S; else L = 1.05118294 * M - 0.05116099 * S;
+    let S = 0.01775239 * r + 0.10944209 * g + 0.87256922 * b; // let: tritan reassigns S
+    /* Tritan was missing entirely, so the blue-yellow axis was never tested. */
+    if (kind === "deutan") M = 0.9513092 * L + 0.04866992 * S;
+    else if (kind === "tritan") S = -0.86744736 * L + 1.86727089 * M;
+    else L = 1.05118294 * M - 0.05116099 * S;
     return [5.47221206 * L - 4.6419601 * M + 0.16963708 * S,
             -1.1252419 * L + 2.29317094 * M - 0.1678952 * S,
             0.02980165 * L - 0.19318073 * M + 1.16364789 * S].map((v) => Math.max(0, Math.min(1, v)));
@@ -314,7 +438,7 @@ const docText = (() => {
     const st = ["error", "success", "warning", "info"]
       .map((s) => ({ s, v: resolve(`--color-status-${s}-fg`, mode).value }))
       .filter((x) => x.v && /^#/.test(x.v));
-    for (const kind of ["deutan", "protan"]) {
+    for (const kind of ["deutan", "protan", "tritan"]) {
       for (let i = 0; i < st.length; i++)
         for (let j = i + 1; j < st.length; j++) {
           const d = dE(simCVD(st[i].v, kind), simCVD(st[j].v, kind));
@@ -334,6 +458,55 @@ const docText = (() => {
                 : `ΔE ${d.toFixed(1)} — colour is the only signal (WCAG 1.4.1); pair with an icon`);
           }
         }
+    }
+  }
+
+  /* Chart categorical palette. TOKENS.md and tokens.css both claim "min ΔE 21.4
+     under deuteranopia and protanopia" for cat-1..6 — and NOTHING enforced it.
+     It was a one-time manual measurement, so any future edit to a cat token
+     would silently undo the property the comment promises. It is a check now.
+     cat-1..6 are contracted CVD-safe; cat-7/8 are documented as requiring a
+     second, non-colour cue, so pairs involving them are informational. */
+  {
+    const SAFE = 6, TOTAL = 8;
+    for (const mode of ["light", "dark"]) {
+      const cats = [];
+      for (let i = 1; i <= TOTAL; i++) {
+        const v = resolve(`--color-chart-cat-${i}`, mode).value;
+        if (v && /^#/.test(v)) cats.push({ i, v });
+      }
+      for (const kind of ["deutan", "protan", "tritan"]) {
+        let worst = null;
+        for (let a = 0; a < cats.length; a++)
+          for (let b = a + 1; b < cats.length; b++) {
+            const d = dE(simCVD(cats[a].v, kind), simCVD(cats[b].v, kind));
+            const bothSafe = cats[a].i <= SAFE && cats[b].i <= SAFE;
+            if (bothSafe && (!worst || d < worst.d)) worst = { d, a: cats[a].i, b: cats[b].i };
+            /* Tritan NEVER gates. simCVD is a single-plane model, which Viénot
+               1999 states is not valid for the blue-yellow axis; correct Brettel
+               1997 needs two half-planes. Two single-plane models disagree by 2x
+               on this palette, so the number is indicative, not a verdict.
+               Reported so it is visible, never escalated so it cannot lie. */
+            if (kind === "tritan") {
+              if (bothSafe && d < 20)
+                A("info", "a11y", `chart cat-${cats[a].i}/cat-${cats[b].i} close under tritan (${mode}) — approximate`,
+                  `ΔE ${d.toFixed(1)} — single-plane simulation is not valid for tritanopia; treat as indicative and use a non-colour cue`);
+              continue;
+            }
+            if (bothSafe && d < 15)
+              A("error", "a11y", `chart cat-${cats[a].i} and cat-${cats[b].i} collide under ${kind} (${mode})`,
+                `ΔE ${d.toFixed(1)} — cat-1..6 are contracted to be distinguishable by colour alone`);
+            else if (bothSafe && d < 20)
+              A("warn", "a11y", `chart cat-${cats[a].i} and cat-${cats[b].i} are close under ${kind} (${mode})`,
+                `ΔE ${d.toFixed(1)} — below the ΔE 20 the palette claims`);
+            else if (!bothSafe && d < 15)
+              A("info", "a11y", `chart cat-${cats[a].i}/cat-${cats[b].i} close under ${kind} (${mode})`,
+                `ΔE ${d.toFixed(1)} — expected: past 6 series colour must not be the only cue (WCAG 1.4.1)`);
+          }
+        if (worst)
+          A("info", "a11y", `chart cat-1..6 worst pair under ${kind} (${mode})`,
+            `ΔE ${worst.d.toFixed(1)} (cat-${worst.a} vs cat-${worst.b}) — this is the number TOKENS.md quotes`);
+      }
     }
   }
 }
@@ -403,12 +576,18 @@ for (const mode of ["light", "dark"]) {
     if (close.length) {
       const badge = fs.existsSync(path.join(UI, "badge.tsx")) && /lucide-react/.test(fs.readFileSync(path.join(UI, "badge.tsx"), "utf8"));
       const alert = fs.existsSync(path.join(UI, "alert.tsx")) && /lucide-react/.test(fs.readFileSync(path.join(UI, "alert.tsx"), "utf8"));
+      /* Report the measurement, not a stock paragraph. This message used to
+         assert a fixed "Δlum 0.025 achievable / ~0.05 needed, measured in
+         Chrome" regardless of what was actually computed — which is where
+         CONTEXT.md's "all four within Δlum 0.01" came from. It is true of
+         three of the four in light and false in dark (full spread 0.306). */
+      const all = keys.map((k) => `${k} ${ls[k].toFixed(3)}`).join(", ");
+      const spread = Math.max(...keys.map((k) => ls[k])) - Math.min(...keys.map((k) => ls[k]));
       A(badge && alert ? "info" : "error", "a11y",
-        `status colours are near-identical in greyscale (${mode})${badge && alert ? " — icons are load-bearing" : " AND the icons are gone"}`,
-        `${close.join(", ")}. Measured in Chrome. This cannot be fixed by recolouring: ` +
-        `the best achievable spread across four statuses that all clear 4.5:1 on their pale tints is Δlum 0.025, ` +
-        `and ~0.05 is needed to be distinguishable. The icon in Badge and Alert is therefore the ONLY channel ` +
-        `for monochromacy and greyscale print. Removing it is a regression, not a simplification.`);
+        `${close.length} status pair(s) are near-identical in greyscale (${mode})${badge && alert ? " — icons are load-bearing" : " AND the icons are gone"}`,
+        `${close.join(", ")}. Full-set spread Δlum ${spread.toFixed(3)} across [${all}]. ` +
+        `Pairs this close cannot be separated by hue alone, so the icon in Badge and Alert is the ` +
+        `second channel WCAG 1.4.1 requires. Removing it is a regression, not a simplification.`);
     }
   }
 }
@@ -538,6 +717,44 @@ for (const file of components) {
         `${f} defines ${redefines} tokens of its own and never imports tokens.css`,
         "A preview that copies tokens will drift and then lie about what ships. Import them.");
   }
+}
+
+// E4 — hex values quoted in TOKENS.md must match the resolved token
+{
+  /* The chart table in TOKENS.md documented the ORIGINAL pre-CVD palette for a
+     whole generation after the code moved on — cat-3 listed as green #16a34a
+     while tokens.css said emerald-900. E2 validates that class names exist, and
+     nothing validated the values beside them, so the canonical doc drifted from
+     the canonical source with every check still green. A quoted value is a
+     promise; check it like one. */
+  const tokensMd = path.join(DOCS, "TOKENS.md");
+  const md = fs.existsSync(tokensMd) ? fs.readFileSync(tokensMd, "utf8") : "";
+  const norm = (h) => {
+    h = h.trim().toLowerCase();
+    if (/^#[0-9a-f]{3}$/.test(h)) h = "#" + [...h.slice(1)].map((c) => c + c).join("");
+    return h;
+  };
+  let checked = 0;
+  for (const line of md.split("\n")) {
+    if (!line.trim().startsWith("|")) continue;
+    const cells = line.split("|").map((c) => c.trim());
+    const nameM = /^`([a-z][a-z0-9-]*)`$/.exec(cells[1] || "");
+    if (!nameM) continue;
+    const hexes = cells.slice(2).map((c) => /^`(#[0-9a-fA-F]{3,8})`$/.exec(c)).map((m) => (m ? m[1] : null));
+    if (!hexes.some(Boolean)) continue;
+    const tok = `--color-${nameM[1]}`;
+    const modes = ["light", "dark"];
+    hexes.filter(Boolean).forEach((hex, idx) => {
+      const mode = modes[idx] ?? "light";
+      const got = resolve(tok, mode).value;
+      if (!got || !/^#/.test(got)) return;
+      checked++;
+      if (norm(got) !== norm(hex))
+        A("error", "docs", `TOKENS.md documents ${nameM[1]} (${mode}) as ${hex} but the token resolves to ${got}`,
+          `the doc and tokens.css disagree — one of them is lying to whoever reads it next`);
+    });
+  }
+  A("info", "docs", `TOKENS.md hex values checked against resolved tokens`, `${checked} value(s) verified`);
 }
 
 /* ═══════════════ OUTPUT ═══════════════ */
