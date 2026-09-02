@@ -245,6 +245,8 @@ source references them.
 | `bg-status-info-bg`         | Info alert background           |
 | `border-status-warning-border` | Warning alert border          |
 | `text-status-attention-fg`  | Attention text/icon (orange — overdue, retries) |
+| `bg-status-attention-bg`    | Attention alert background      |
+| `border-status-attention-border` | Attention alert border     |
 
 ### Icon Colors
 
@@ -276,14 +278,32 @@ Order is fixed so the same category keeps its colour across every chart in the a
 
 | Tailwind class  | Light     | Dark      | Hue    |
 |-----------------|-----------|-----------|--------|
-| `chart-cat-1`   | `#2563eb` | `#60a5fa` | blue   |
-| `chart-cat-2`   | `#f97316` | `#fb923c` | orange |
-| `chart-cat-3`   | `#16a34a` | `#4ade80` | green  |
-| `chart-cat-4`   | `#a855f7` | `#c084fc` | purple |
-| `chart-cat-5`   | `#db2777` | `#f9a8d4` | pink   |
-| `chart-cat-6`   | `#0891b2` | `#67e8f9` | cyan   |
-| `chart-cat-7`   | `#ca8a04` | `#facc15` | yellow |
-| `chart-cat-8`   | `#0d9488` | `#5eead4` | teal   |
+| `chart-cat-1`   | `#1e40af` | `#60a5fa` | blue    |
+| `chart-cat-2`   | `#ea580c` | `#fb923c` | orange  |
+| `chart-cat-3`   | `#064e3b` | `#6ee7b7` | emerald |
+| `chart-cat-4`   | `#8b5cf6` | `#8b5cf6` | violet  |
+| `chart-cat-5`   | `#db2777` | `#db2777` | pink    |
+| `chart-cat-6`   | `#0891b2` | `#0891b2` | cyan    |
+| `chart-cat-7`   | `#713f12` | `#eab308` | yellow  |
+| `chart-cat-8`   | `#0f172a` | `#cbd5e1` | slate   |
+
+`cat-1`–`cat-6` are verified distinguishable under **protanopia and deuteranopia**
+at min CIE76 ΔE 20.3 — the worst case across two independent simulation models, so
+the figure does not depend on which model you trust. Each step also clears 3:1 on
+the canvas *and* on the elevated/overlay surface.
+
+**Tritanopia is not verified.** Single-plane CVD simulation is not valid for the
+blue-yellow axis, and the two models available disagree by roughly 2x on this
+palette. `audit-full` reports tritan as informational and never fails on it. Treat
+a non-colour cue as good practice for any chart with a general audience.
+
+`cat-7`/`cat-8` fall below ΔE 20 even on the validated axes, so **past six series
+colour must not be the only cue** — add dash patterns or markers (WCAG 1.4.1).
+
+This table was stale for a whole palette generation: it still listed the original
+pre-CVD ramp (`cat-3` green, `cat-2` orange-500) long after the code had moved on.
+`audit-full` E4 now compares every hex in this file against the resolved token, so
+the drift cannot recur silently.
 
 Identical across `data-brand` modes — categorical colour is about telling series
 apart, not about brand. Only light/dark varies.

@@ -33,6 +33,10 @@ The script walks every `.tsx` / `.ts` file under `src/` and fails on any of thes
 
 | ❌ Forbidden | ✅ Correct replacement |
 |---|---|
+| **Private primitives (`--_*`)** | |
+| `px-[var(--_size-2_5)]` | `px-[var(--spacing-chip-px)]` |
+| `py-[var(--_size-1_5)]` | `py-[var(--control-py-sm)]` |
+| `gap-[var(--_size-1)]` | `gap-inline-xs` |
 | **Hardcoded hex / rgba** | |
 | `bg-[#004030]` | `bg-action-primary` |
 | `bg-[#003526]` | `bg-action-primary-hover` |
