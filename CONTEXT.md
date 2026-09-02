@@ -303,6 +303,12 @@ rather than reading the comments:
 
 ## 7. What's actually left
 
+> The full, ranked version of this section now lives in `docs/TEST-PLAN.md` — what is
+> unverified, the tests that would close it, and what each would have caught. The
+> highest-leverage item there is that **CI does not run `npm run audit`**: every rule in
+> this document is unenforced on pull requests until it does.
+
+
 **Verified but never seen by a human.** Still true, and now the most valuable 15 minutes
 in the repo. Nothing has been rendered and reviewed: dark mode, the badge icons, the
 darker input borders — all confirmed numerically, none looked at. `docs/HUMAN-TEST.md` is

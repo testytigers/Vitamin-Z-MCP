@@ -1,5 +1,9 @@
 # Human test checklist
 
+> This covers what only a person can check. For the automated side — what is unverified
+> and which tests would close it — see `TEST-PLAN.md`. Do Tier 0 there first; it is three
+> lines of CI config and everything else depends on it.
+
 Everything in here is something **no script can check**. The automated suites
 (`npm test`, `npm run audit`) already cover token integrity, contrast maths, scale
 coherence, component contracts and doc drift — 0 errors, 0 warnings. What remains is
